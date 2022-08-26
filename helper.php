@@ -94,7 +94,7 @@ function get_user_where($where = []){
     }  
     $user['group_name'] = user_group_get($user['group_id'])['name'];
     if($login['avatar_url']){
-    //	$user['avatar_url'] = $login['avatar_url'];
+    //  $user['avatar_url'] = $login['avatar_url'];
     }
     return $user;
 }
@@ -980,7 +980,7 @@ function get_theme(){
     return $config['theme_front']?:'default';
 }
 //加载theme下文件 
-function view($name){
+function view($name,$params = []){
     $dir = PATH.'theme/';
     $theme = get_theme();
     if($theme != 'default'){
@@ -995,6 +995,9 @@ function view($name){
     
     $file_1 = $dir.$theme.'/'.$name.'.php';
     $file_2 = $dir.$default_theme.'/'.$name.'.php'; 
+    if($params){ 
+        extract($params);  
+    }
     if(file_exists($file_1)){
         include $file_1;
     }else if(file_exists($file_2)){
