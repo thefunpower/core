@@ -1,0 +1,37 @@
+{
+    "name": "thefunpower/core",
+    "type": "library",
+    "description": "sample core",
+    "keywords": ["php"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "ken.sun",
+            "email": "kungfutime@foxmail.com" 
+        }
+    ],
+    "require": {
+        "php": ">=7.1",
+        "firebase/php-jwt": "^5.4",
+        "guzzlehttp/guzzle": "^7.3",
+        "phpseclib/phpseclib": "^2.0",
+        "bramus/router": "~1.6",
+        "phpoffice/phpspreadsheet": "^1.20",  
+        "symfony/yaml": "^5.3", 
+        "vlucas/valitron": "^1.4", 
+        "topthink/think-cache": "^2.0",
+        "topthink/think-log": "^2.0",
+        "symfony/mailer": "^5.4",    
+        "topthink/think-orm": "^2.0",   
+        "apache/log4php": "^2.3",
+        "catfan/medoo": "^2.1"
+    }, 
+    "autoload": { 
+        "psr-0": {
+            "Upload": "./composer/codeguy/upload/src/"
+        },
+        "psr-4": {
+            "lib\\": "./lib/"
+        }
+    }
+}
