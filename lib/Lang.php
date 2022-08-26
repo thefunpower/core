@@ -13,7 +13,7 @@ class Lang{
     public static $lang_dir;
     public static $obj; 
 
-    public function setLang($name = 'zh-cn'){
+    public static function setLang($name = 'zh-cn'){
         cookie('lang',$name);
         self::$lang_dir = PATH.'lang/'.$name.'/';
     } 
