@@ -1,10 +1,12 @@
-<?php 
+<?php
+
 /**
  * 
  * @license read license.txt
  * @author sun <sunkangchina@163.com>
  * @copyright (c) 2021 
- */ 
+ */
+
 use think\facade\Cache;
 //缓存 使用 https://www.kancloud.cn/manual/thinkphp6_0/1037634
 // 缓存配置
@@ -21,55 +23,55 @@ $config['cache_redis']['port'] = 6379;
 //redis缓存前缀
 $config['cache_redis']['prefix'] = '';
 
-*/
+ */
 Cache::config([
-    'default'   =>  $config['cache_drive']?:'file',
+    'default'   =>  $config['cache_drive'] ?: 'file',
     'stores'    =>  [
         'file'  =>  [
             'type'   => 'File',
             // 缓存保存目录
-            'path'   => PATH.'data/cache/',
+            'path'   => PATH . 'data/cache/',
             // 缓存前缀 $config['cache_prefix'] = 'domain_'; 
-            'prefix' => $config['cache_prefix']?:'',
+            'prefix' => $config['cache_prefix'] ?: '',
             // 缓存有效期 0表示永久缓存
             'expire' => 0,
         ],
         'redis' =>  [
             'type'   => 'redis',
             'host'   => $config['cache_redis']['host'],
-            'port'   => $config['cache_redis']['port']?:6379,
+            'port'   => $config['cache_redis']['port'] ?: 6379,
             'prefix' => $config['cache_redis']['prefix'],
             'expire' => 0,
         ],
     ],
-]); 
- 
+]);
+
 /**
  * 缓存删除
- */  
+ */
 function cache_delete($key)
-{ 
-	Cache::delete($key);
-} 
+{
+    Cache::delete($key);
+}
 /**
  * 缓存设置|获取
- */ 
+ */
 function cache($key, $data = null, $second = null)
-{ 
+{
     if ($key && $data) {
-    	if(is_object($data)){
-    		$data = (array)$data; 
-    	}
+        if (is_object($data)) {
+            $data = (array)$data;
+        }
         if (is_array($data)) {
-            $data = json_encode($data,JSON_UNESCAPED_UNICODE);
+            $data = json_encode($data, JSON_UNESCAPED_UNICODE);
         };
-        Cache::set($key,$data,$second);  
-    } else {  
-    	$data = Cache::get($key);  
-	    $arr  = json_decode($data, true);
-	    if($arr){
-	    	$data = $arr;
-	    }
+        Cache::set($key, $data, $second);
+    } else {
+        $data = Cache::get($key);
+        $arr  = json_decode($data, true);
+        if ($arr) {
+            $data = $arr;
+        }
         return $data;
     }
-} 
+}

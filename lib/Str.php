@@ -1,17 +1,20 @@
 <?php
+
 /**
  * 
  * @license read license.txt
  * @author sun <sunkangchina@163.com>
  * @copyright (c) 2021 
  */
+
 namespace lib;
- 
+
 class Str
 {
-	public static function order_num($t = ''){
-        return $t.date('Ymd') . str_pad(mt_rand(1, 99999), 5, '0', STR_PAD_LEFT);
-    }
+	public static function order_num($t = '')
+	{
+		return $t . date('Ymd') . str_pad(mt_rand(1, 99999), 5, '0', STR_PAD_LEFT);
+	}
 	/**
 	 * 500m 1km
 	 * 1公里
@@ -39,7 +42,7 @@ class Str
 	public static function discount($price, $nowprice)
 	{
 		return round(10 / ($price / $nowprice), 1);
-	} 
+	}
 
 	static $size = ['B', 'KB', 'MB', 'GB', 'TB'];
 
@@ -162,9 +165,5 @@ class Str
 			}
 		}
 		return join('', $info[0]);
-	} 
-
-	 
+	}
 }
-
-

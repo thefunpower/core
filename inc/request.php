@@ -1,15 +1,19 @@
-<?php 
+<?php
+
 /**
  * 
  * @license read license.txt
  * @author sun <sunkangchina@163.com>
  * @copyright (c) 2021 
  */
-if(!defined('VERSION')){die();}  
+if (!defined('VERSION')) {
+    die();
+}
 /**
-* 有\'内容转成'显示，与addslashes相反
-*/
-function output_html($str){
+ * 有\'内容转成'显示，与addslashes相反
+ */
+function output_html($str)
+{
     return stripslashes($str);
 }
 /**
@@ -24,7 +28,7 @@ if (!function_exists('global_trim')) {
                 foreach ($v as $key => $val) {
                     if ($v && !is_array($val)) {
                         //防止注入
-                        $val = addslashes(trim($val)); 
+                        $val = addslashes(trim($val));
                     }
                     $in[$k][$key] = $val;
                     $in[] = &$in[$k][$key];
@@ -33,48 +37,52 @@ if (!function_exists('global_trim')) {
         }
     }
     global_trim();
-} 
+}
 /**
-* 取GET
-*/
-function get($key = ""){
-    if($key){
-        return $_GET[$key];    
+ * 取GET
+ */
+function get($key = "")
+{
+    if ($key) {
+        return $_GET[$key];
     }
     return $_GET;
 }
 /**
-* 取POST
-*/
-function post($key = ""){ 
+ * 取POST
+ */
+function post($key = "")
+{
     return get_post($key);
 }
 /**
  * 取POST值
  */
-function get_post($key = ""){
-    $input = get_input(); 
-    $data  = $_POST;   
-    if($key){
-        $val = $data[$key]; 
-        if($input && is_array($input) && !$val){
+function get_post($key = "")
+{
+    $input = get_input();
+    $data  = $_POST;
+    if ($key) {
+        $val = $data[$key];
+        if ($input && is_array($input) && !$val) {
             $val = $input[$key];
         }
         return $val;
-    }else{
-        return $data?:$input;
+    } else {
+        return $data ?: $input;
     }
 }
 
-if(!function_exists('g')){
-    function g($key = null){
-       $val = get_post($key);
-       if(!$val){
-         $val = $_GET[$key];
-       }
-       return $val;
-    } 
-} 
+if (!function_exists('g')) {
+    function g($key = null)
+    {
+        $val = get_post($key);
+        if (!$val) {
+            $val = $_GET[$key];
+        }
+        return $val;
+    }
+}
 
 /**
  * 取php://input值
@@ -86,12 +94,12 @@ function get_input()
         return json_decode($data, true);
     }
     return $data;
-} 
- 
+}
+
 
 /**
-* CURL请求
-* 
+ * CURL请求
+ * 
 GET
 $client = guzzle_http();
 $res    = $client->request('GET', $url);
@@ -129,10 +137,11 @@ $res = $client->request('POST', '/form.php', [
     ]
 ]);
 
-* 
-*/
-function guzzle_http($click_option = []){  
-    $click_option['timeout'] = $click_option['timeout']?:60;
-    $client = new \GuzzleHttp\Client($click_option); 
+ * 
+ */
+function guzzle_http($click_option = [])
+{
+    $click_option['timeout'] = $click_option['timeout'] ?: 60;
+    $client = new \GuzzleHttp\Client($click_option);
     return $client;
-} 
+}

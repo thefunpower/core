@@ -1,4 +1,5 @@
-<?php  
+<?php
+
 /**
  * 
  * @license read license.txt
@@ -7,7 +8,7 @@
  */
 if (!defined('VERSION')) {
     die();
-} 
+}
 /**
  * 数组转tree 
  * 
@@ -57,12 +58,13 @@ function array_to_tree($list, $pk = 'id', $pid = 'pid', $child = 'children', $ro
     return $tree;
 }
 /**
-* 所有会员
-*/
-function get_user_all($where = []){
-    $all  = db_get("user","*",$where);
+ * 所有会员
+ */
+function get_user_all($where = [])
+{
+    $all  = db_get("user", "*", $where);
     $list = [];
-    foreach($all as $v){
+    foreach ($all as $v) {
         $list[] = get_user($v['id']);
     }
     return $list;
@@ -70,107 +72,113 @@ function get_user_all($where = []){
 /**
  * 根据用户id查用户信息
  */
-function get_user($user_id){
+function get_user($user_id)
+{
     $where['id'] = $user_id;
     return get_user_where($where);
 }
 /**
-* 查用户信息，where条件
-*/
-function get_user_where($where = []){
-    $user    = db_get_one('user','*',$where);    
+ * 查用户信息，where条件
+ */
+function get_user_where($where = [])
+{
+    $user    = db_get_one('user', '*', $where);
     $user_id = $user['id'];
-    $login_where = ['user_id'=>$user_id];
+    $login_where = ['user_id' => $user_id];
     $from = g('from');
-    if($from){
+    if ($from) {
         $login_where['type'] = $from;
     }
-    $login   = db_get_one('login','*',$login_where)?:[]; 
-    $user    = array_merge($login,$user); 
+    $login   = db_get_one('login', '*', $login_where) ?: [];
+    $user    = array_merge($login, $user);
     //meta字段 
     $all = get_user_meta($user_id);
-    foreach($all as $k=>$v){ 
+    foreach ($all as $k => $v) {
         $user[$k] = $v;
-    }  
+    }
     $user['group_name'] = user_group_get($user['group_id'])['name'];
-    if($login['avatar_url']){
-    //  $user['avatar_url'] = $login['avatar_url'];
+    if ($login['avatar_url']) {
+        //  $user['avatar_url'] = $login['avatar_url'];
     }
     return $user;
 }
 /**
-* 取用户扩展字段值
-*/
-function get_user_meta_where($where = [],$return_row = false){
+ * 取用户扩展字段值
+ */
+function get_user_meta_where($where = [], $return_row = false)
+{
     $user_id = $where['user_id'];
-    foreach($where as $k=>$v){
-        if($k != 'user_id'){
+    foreach ($where as $k => $v) {
+        if ($k != 'user_id') {
             unset($where[$k]);
-            $where['AND'] = ['title'=>$k,'value[~]'=>$v];
+            $where['AND'] = ['title' => $k, 'value[~]' => $v];
         }
     }
-    if($user_id){
-        $where['AND'] = ['user_id'=>$user_id];
+    if ($user_id) {
+        $where['AND'] = ['user_id' => $user_id];
     }
-    $new_where['AND'] = $where; 
-    $all  = db_select('user_meta','*',$new_where);   
+    $new_where['AND'] = $where;
+    $all  = db_select('user_meta', '*', $new_where);
     $meta = [];
-    foreach($all as $v){
+    foreach ($all as $v) {
         $val = $v['value'];
-        if($arr  = json_decode($val,true)){
+        if ($arr  = json_decode($val, true)) {
             $val = $arr;
         }
-        if($return_row){
-            $meta[$v['title']] = $val;    
-        }else{
+        if ($return_row) {
+            $meta[$v['title']] = $val;
+        } else {
             $meta[] = $v;
         }
-        
-    } 
+    }
     return $meta;
 }
 
 /**
-* 取用户扩展字段值
-*/
-function get_user_meta($user_id){ 
-    return get_user_meta_where(['user_id'=>$user_id],true);
+ * 取用户扩展字段值
+ */
+function get_user_meta($user_id)
+{
+    return get_user_meta_where(['user_id' => $user_id], true);
 }
 /**
-* 更新用户的meta信息
-* @param array $meta ['nickname'=>'']
-*/
-function set_user_meta($user_id,$meta){ 
-    $user  = db_get_one('user','*',['id'=>$user_id]);    
-    if($user){
-        $all = db_select('user_meta','*',['user_id'=>$user_id]);
+ * 更新用户的meta信息
+ * @param array $meta ['nickname'=>'']
+ */
+function set_user_meta($user_id, $meta)
+{
+    $user  = db_get_one('user', '*', ['id' => $user_id]);
+    if ($user) {
+        $all = db_select('user_meta', '*', ['user_id' => $user_id]);
         $insert  = $update = [];
-        foreach($meta as $k=>$v){
-            $one = db_get_one('user_meta','*',['user_id'=>$user_id,'title'=>$k]);
+        foreach ($meta as $k => $v) {
+            $one = db_get_one('user_meta', '*', ['user_id' => $user_id, 'title' => $k]);
             $id = $one['id'];
-            if(is_array($v)){
-                $v = json_encode($v,JSON_UNESCAPED_UNICODE);
+            if (is_array($v)) {
+                $v = json_encode($v, JSON_UNESCAPED_UNICODE);
             }
-            if($id){
-                db_update('user_meta',['title'=>$k,'value'=>$v],['id'=>$id]);    
-            }else{
-                db_insert('user_meta',['title'=>$k,'value'=>$v,'user_id'=>$user_id]); 
-            } 
-        } 
+            if ($id) {
+                db_update('user_meta', ['title' => $k, 'value' => $v], ['id' => $id]);
+            } else {
+                db_insert('user_meta', ['title' => $k, 'value' => $v, 'user_id' => $user_id]);
+            }
+        }
     }
 }
 
-function pr($str){
+function pr($str)
+{
     print_r("<pre>");
     print_r($str);
     print_r("</pre>");
 }
 
 /**
-* 当前请求URL
-*/
-function current_url(){ 
-    $refer = $_SERVER['REQUEST_URI']; 
+ * 当前请求URL
+ */
+function current_url()
+{
+    $refer = $_SERVER['REQUEST_URI'];
     return $refer;
 }
 /**
@@ -184,13 +192,13 @@ function current_url(){
 function add_action($name, $call)
 {
     global $_app;
-    if(strpos($name,'|') !==false){
-        $arr = explode('|',$name);
-        foreach($arr as $v){
-            add_action($v,$call);
+    if (strpos($name, '|') !== false) {
+        $arr = explode('|', $name);
+        foreach ($arr as $v) {
+            add_action($v, $call);
         }
         return;
-    }    
+    }
     $_app['actions'][$name][] = $call;
 }
 /**
@@ -204,9 +212,9 @@ function add_action($name, $call)
 function do_action($name, &$par = null)
 {
     global $_app;
-    if(!is_array($_app)){
+    if (!is_array($_app)) {
         return;
-    }  
+    }
     $calls  = $_app['actions'][$name];
     if ($calls) {
         foreach ($calls as $v) {
@@ -216,36 +224,38 @@ function do_action($name, &$par = null)
 }
 
 /**
-* 取本地插件
-*/
-function local_plugin(){
-    $dir = PATH.'/plugins/';
-    $all = glob($dir.'*/info.php'); 
+ * 取本地插件
+ */
+function local_plugin()
+{
+    $dir = PATH . '/plugins/';
+    $all = glob($dir . '*/info.php');
     $list = [];
-    foreach($all as $v){
+    foreach ($all as $v) {
         $info  = include $v;
-        $name  = str_replace($dir,'',$v);
-        $name  = substr($name,0,strpos($name,'/'));
-        $base_dir = substr($v,0,strrpos($v,'/'));
-        $info['name'] = $name; 
+        $name  = str_replace($dir, '', $v);
+        $name  = substr($name, 0, strpos($name, '/'));
+        $base_dir = substr($v, 0, strrpos($v, '/'));
+        $info['name'] = $name;
         $list[$name] = $info;
     }
     return $list;
 }
 /**
  * 已安装插件
-*/
-function has_actived_plugin(){
-    global $config; 
-    if(!file_exists(PATH.'/config.ini.php')){        
+ */
+function has_actived_plugin()
+{
+    global $config;
+    if (!file_exists(PATH . '/config.ini.php')) {
         return;
     }
-    if(!$config['db_host']){
+    if (!$config['db_host']) {
         return;
     }
-    $all  = db_get("plugin","*",['status'=>1,"ORDER"=>['level'=>"DESC"]]);
+    $all  = db_get("plugin", "*", ['status' => 1, "ORDER" => ['level' => "DESC"]]);
     $list = [];
-    foreach($all as $v){
+    foreach ($all as $v) {
         $list[$v['name']] = $v;
     }
     return $list;
@@ -257,88 +267,93 @@ function has_actived_plugin(){
  * 自动加载include.php
  */
 function auto_include()
-{ 
-    $_autoinclude_dir = PATH.'plugins/';
-    $_actived = has_actived_plugin(); 
-    foreach ($_actived as $name => $v ){
-        $_autoinclude_file = $_autoinclude_dir.$name.'/include.php';  
-        $router = $_autoinclude_dir.$name.'/router.php';  
-        if(file_exists($_autoinclude_file)){
+{
+    $_autoinclude_dir = PATH . 'plugins/';
+    $_actived = has_actived_plugin();
+    foreach ($_actived as $name => $v) {
+        $_autoinclude_file = $_autoinclude_dir . $name . '/include.php';
+        $router = $_autoinclude_dir . $name . '/router.php';
+        if (file_exists($_autoinclude_file)) {
             include $_autoinclude_file;
         }
-    }  
+    }
 }
 
 /**
  * 自动加载router.php
  */
 function auto_include_router()
-{ 
-    $_autoinclude_dir = PATH.'plugins/';
-    $_actived = has_actived_plugin(); 
-    foreach ($_actived as $name => $v ){
-        $_autoinclude_file = $_autoinclude_dir.$name.'/router.php';  
-        if(file_exists($_autoinclude_file)){
+{
+    $_autoinclude_dir = PATH . 'plugins/';
+    $_actived = has_actived_plugin();
+    foreach ($_actived as $name => $v) {
+        $_autoinclude_file = $_autoinclude_dir . $name . '/router.php';
+        if (file_exists($_autoinclude_file)) {
             include $_autoinclude_file;
         }
-    }  
+    }
 }
 /**
  * 自动加载主题
-*/
-function autoload_theme($name = "front"){ 
-    global $config;    
-    $file = PATH.'/theme/'.$config['theme_'.$name].'/include.php';
-    if(file_exists($file)){
-        include $file;    
-    }   
+ */
+function autoload_theme($name = "front")
+{
+    global $config;
+    $file = PATH . '/theme/' . $config['theme_' . $name] . '/include.php';
+    if (file_exists($file)) {
+        include $file;
+    }
 }
 //部门tree
-function user_group_tree($id = null){
-  $where = [  
-      'status' => 1,
-      'ORDER'=>[
-          'sort'=>'DESC'
-      ]
-  ];  
-  $title = get_post('name');
-  if($title){ 
-      $where['name[~]'] = $title;
-  }  
-  $where['ORDER'] = ['sort'=>'DESC','pid'=>"ASC"];
-  $all = db_get("user_group","*", $where);  
-  foreach ($all as $v) { 
-      $v['label'] = $v['name']; 
-      $v['_pid_name'] = user_group_get($v['pid'])['name'];
-      $list[] = $v;
-  } 
-  $list =  array_to_tree($list, 
-              'id', 
-              $pid = 'pid', 
-              $child = 'children', 
-              $root = 0,
-              $id
-          );
-  $list =  array_values($list);
-  return $list;
+function user_group_tree($id = null)
+{
+    $where = [
+        'status' => 1,
+        'ORDER' => [
+            'sort' => 'DESC'
+        ]
+    ];
+    $title = get_post('name');
+    if ($title) {
+        $where['name[~]'] = $title;
+    }
+    $where['ORDER'] = ['sort' => 'DESC', 'pid' => "ASC"];
+    $all = db_get("user_group", "*", $where);
+    foreach ($all as $v) {
+        $v['label'] = $v['name'];
+        $v['_pid_name'] = user_group_get($v['pid'])['name'];
+        $list[] = $v;
+    }
+    $list =  array_to_tree(
+        $list,
+        'id',
+        $pid = 'pid',
+        $child = 'children',
+        $root = 0,
+        $id
+    );
+    $list =  array_values($list);
+    return $list;
 }
 
 /**
-* 取单个用户组信息
-*/
-function user_group_get($group_id){
+ * 取单个用户组信息
+ */
+function user_group_get($group_id)
+{
     static $obj;
-    if($obj[$group_id]){
-      return $obj[$group_id];
+    if ($obj[$group_id]) {
+        return $obj[$group_id];
     }
-    $one = db_get_one("user_group","*",['id'=>$group_id]);  
-    $one['_pid_name'] = db_get_one("user_group","*",['id'=>$one['pid']]);['name']; 
-    do_action("plugins.product.type",$one);
+    $one = db_get_one("user_group", "*", ['id' => $group_id]);
+    $one['_pid_name'] = db_get_one("user_group", "*", ['id' => $one['pid']]);
+    ['name'];
+    do_action("plugins.product.type", $one);
     $obj[$group_id] = $one;
     return $one;
 }
- 
- 
+
+
 /**
  * 跳转
  *
@@ -361,19 +376,19 @@ if (!function_exists('static_url')) {
     {
         global $config;
         $host = $config['host'];
-        $arr  = $config['cdn_url']?:[]; 
+        $arr  = $config['cdn_url'] ?: [];
         $n    = count($arr);
         if ($n > 0) {
             $i    = mt_rand(0, $n - 1);
-            return $arr[$i]?:'/';
+            return $arr[$i] ?: '/';
         } else {
             return $host;
         }
-        
     }
 }
 if (!function_exists('cdn')) {
-    function cdn(){
+    function cdn()
+    {
         return static_url();
     }
 }
@@ -386,12 +401,12 @@ function json($data)
     global $config;
     $config['is_json'] = true;
     //JSON输出前
-    do_action('end.data',$data);
+    do_action('end.data', $data);
     echo json_encode($data);
     //JSON输出后或页面渲染后
     do_action("end");
     exit;
-}  
+}
 /**
  * 域名
  */
@@ -399,9 +414,9 @@ function host()
 {
     global $config;
     static $_host;
-    if($_host){
+    if ($_host) {
         return $_host;
-    }    
+    }
     $_host = $config['host'];
     return $_host;
 }
@@ -415,8 +430,9 @@ function is_cli()
 /**
  * 是否是POST请求
  */
-function is_post(){
-    if(strtolower($_SERVER['REQUEST_METHOD']) == 'post'){
+function is_post()
+{
+    if (strtolower($_SERVER['REQUEST_METHOD']) == 'post') {
         return true;
     }
 }
@@ -425,7 +441,7 @@ function is_post(){
  */
 function is_json($data, $assoc = false)
 {
-    if(is_array($data)){ 
+    if (is_array($data)) {
         return $data;
     }
     $data = json_decode($data, $assoc);
@@ -435,14 +451,14 @@ function is_json($data, $assoc = false)
     return false;
 }
 
- 
+
 
 /**
  * 加载css
  */
 function css($file, $is_output = true)
 {
-    global $_app; 
+    global $_app;
     $key = md5($file);
     if (isset($_app['css'][$key])) {
         return;
@@ -458,7 +474,7 @@ function css($file, $is_output = true)
 function js($file, $is_output = true)
 {
     global $_app;
-    $key = md5($file); 
+    $key = md5($file);
     if (isset($_app['js'][$key])) {
         return;
     }
@@ -530,8 +546,8 @@ function get_dir($name)
  */
 function get_ext($name)
 {
-    if(strpos($name,'?') !== false){
-        $name = substr($name,0,strpos($name,'?'));
+    if (strpos($name, '?') !== false) {
+        $name = substr($name, 0, strpos($name, '?'));
     }
     $name =  substr($name, strrpos($name, '.'));
     return strtolower(substr($name, 1));
@@ -676,13 +692,13 @@ function get_distance($longitude1, $latitude1, $longitude2, $latitude2, $unit = 
 function cookie($name, $value = null, $expire = 0, $path = '/')
 {
     global  $config;
-    $name   = $config['cookie_prefix'].$name;
-    $path   = $config['cookie_path']?:'/';
-    $domain = $config['cookie_domain']?:'';
+    $name   = $config['cookie_prefix'] . $name;
+    $path   = $config['cookie_path'] ?: '/';
+    $domain = $config['cookie_domain'] ?: '';
     if (!$value) {
         return $_COOKIE[$name];
     }
-    setcookie($name, $value, $expire, $path,$domain);
+    setcookie($name, $value, $expire, $path, $domain);
     $_COOKIE[$name] = $value;
 }
 /**
@@ -691,10 +707,10 @@ function cookie($name, $value = null, $expire = 0, $path = '/')
 function remove_cookie($name)
 {
     global  $config;
-    $name   = $config['cookie_prefix'].$name;
-    $path   = $config['cookie_path']?:'/';
-    $domain = $config['cookie_domain']?:'';
-    setcookie($name, null, time() - 1, $path,$domain);
+    $name   = $config['cookie_prefix'] . $name;
+    $path   = $config['cookie_path'] ?: '/';
+    $domain = $config['cookie_domain'] ?: '';
+    setcookie($name, null, time() - 1, $path, $domain);
     $_COOKIE[$name] = null;
 }
 
@@ -708,7 +724,7 @@ if (!function_exists('date_limit')) {
     {
         return ' min="1900-01-01" max="3099-12-31"';
     }
-} 
+}
 
 /**
  * 路径列表，支持文件夹下的子所有文件夹
@@ -746,18 +762,18 @@ if (!function_exists('el_size')) {
         return "medium";
     }
 }
-  
+
 /**
  * 显示2位小数
  * @version 1.0.0
  * @author sun <sunkangchina@163.com>
  */
-function price_yuan($fen, $wei = 100,$num = 2)
+function price_yuan($fen, $wei = 100, $num = 2)
 {
-    if(!$fen){
+    if (!$fen) {
         $fen = 0;
     }
-    return   sprintf("%.".$num."f", $fen / $wei);
+    return   sprintf("%." . $num . "f", $fen / $wei);
 }
 /**
  * 显示2位小数 
@@ -810,7 +826,7 @@ function json_decode_array(&$value, $arr = [])
             $value[$k] = json_decode($value[$k], true);
         }
     }
-} 
+}
 
 
 /**
@@ -856,11 +872,11 @@ function yaml($str)
 }
 
 /**
-* 验证数据
-* https://github.com/vlucas/valitron
-* 
-* 事例代码
-* 
+ * 验证数据
+ * https://github.com/vlucas/valitron
+ * 
+ * 事例代码
+ * 
 $data    = g();   
 $vali    = validate([
     'company_title'   => '客户名',
@@ -882,7 +898,7 @@ if($vali){
     json($vali);
 } 
 
-* 更多规则 
+ * 更多规则 
 
 required - Field is required
 requiredWith - Field is required if any other fields are present
@@ -926,148 +942,156 @@ creditCard - Field is a valid credit card number
 instanceOf - Field contains an instance of the given class
 optional - Value does not need to be included in data array. If it is however, it must pass validation.
 arrayHasKeys - Field is an array and contains all specified keys.
-*/
-function validate($labels,$data,$rules,$show_array = false){
-    $v = new \lib\Validate($data); 
+ */
+function validate($labels, $data, $rules, $show_array = false)
+{
+    $v = new \lib\Validate($data);
     $v->rules($rules);
-    $v->labels($labels);    
+    $v->labels($labels);
     $v->validate();
-    $error = $v->errors();  
-    if($error) { 
-        if(!$show_array){
-            foreach($error as $k=>$v){
+    $error = $v->errors();
+    if ($error) {
+        if (!$show_array) {
+            foreach ($error as $k => $v) {
                 $error = $v[0];
                 break;
             }
         }
-        return ['code'=>250,'msg'=>$error,'type'=>'error'];
+        return ['code' => 250, 'msg' => $error, 'type' => 'error'];
     } else {
         return;
     }
 }
 /**
-* 取文件信息
-*/
-function get_file($id){
+ * 取文件信息
+ */
+function get_file($id)
+{
     static $obj;
     $key = $id;
-    if(is_array($id)){
+    if (is_array($id)) {
         $key = md5(json_encode($id));
     }
     $data = $obj[$key];
-    if($data){
+    if ($data) {
         return $data;
     }
-    $f = db_get("upload","*",['id'=>$id]);
+    $f = db_get("upload", "*", ['id' => $id]);
     //上传成功后
-    do_action("upload.after",$f); 
+    do_action("upload.after", $f);
     $obj[$key] = $f;
     return $f;
 }
- 
+
 //图片缩放
-function image_resize($img,$par = []){
+function image_resize($img, $par = [])
+{
     $data = [
         'url'           => $img,
         'x-oss-process' => $par,
     ];
-    do_action("image_resize",$data);
+    do_action("image_resize", $data);
     return $data['url'];
 }
 //获取主题 
-function get_theme(){
+function get_theme()
+{
     global $config;
-    return $config['theme_front']?:'default';
+    return $config['theme_front'] ?: 'default';
 }
 //加载theme下文件 
-function view($name,$params = []){
-    $dir = PATH.'theme/';
+function view($name, $params = [])
+{
+    $dir = PATH . 'theme/';
     $theme = get_theme();
-    if($theme != 'default'){
+    if ($theme != 'default') {
         $default_theme = 'default';
     }
-    if(strpos($name,"@")!==false){
-        $arr  = explode("@",$name);
+    if (strpos($name, "@") !== false) {
+        $arr  = explode("@", $name);
         $name = $arr[1];
-        $file_3 = PATH.'plugins/'.$arr[0].'/'.$name.'.php';
-        $name = $arr[0].'/'.$name; 
+        $file_3 = PATH . 'plugins/' . $arr[0] . '/' . $name . '.php';
+        $name = $arr[0] . '/' . $name;
     }
-    
-    $file_1 = $dir.$theme.'/'.$name.'.php';
-    $file_2 = $dir.$default_theme.'/'.$name.'.php'; 
-    if($params){ 
-        extract($params);  
+
+    $file_1 = $dir . $theme . '/' . $name . '.php';
+    $file_2 = $dir . $default_theme . '/' . $name . '.php';
+    if ($params) {
+        extract($params);
     }
-    if(file_exists($file_1)){
+    if (file_exists($file_1)) {
         include $file_1;
-    }else if(file_exists($file_2)){
+    } else if (file_exists($file_2)) {
         include $file_2;
-    }else if(file_exists($file_3)){
-        include $file_3; 
+    } else if (file_exists($file_3)) {
+        include $file_3;
     }
-}  
+}
 //创建或更新用户
-function admin_user($user,$pwd,$tag){
-    $find = db_get_one('user','*',['user'=>$user,'tag'=>$tag]); 
-    if(!$find){
-        if($user && $pwd){
-            db_insert('user',[
+function admin_user($user, $pwd, $tag)
+{
+    $find = db_get_one('user', '*', ['user' => $user, 'tag' => $tag]);
+    if (!$find) {
+        if ($user && $pwd) {
+            db_insert('user', [
                 'user'  => $user,
                 'pwd'   => md5($pwd),
                 'tag'   => $tag,
-                'created_at'=> now()
+                'created_at' => now()
             ]);
-        } 
-    }else{
+        }
+    } else {
         $id = $find['id'];
-        if($pwd){
-            db_update('user',['pwd'=>md5($pwd)],['id'=>$id]);    
-        }        
+        if ($pwd) {
+            db_update('user', ['pwd' => md5($pwd)], ['id' => $id]);
+        }
     }
 }
 
 //设置配置
-function set_config($title,$body){
-    $one = db_get_one("config","*",['title'=>$title]);
-    if(is_array($body)){
-        $body = json_encode($body,JSON_UNESCAPED_UNICODE);
+function set_config($title, $body)
+{
+    $one = db_get_one("config", "*", ['title' => $title]);
+    if (is_array($body)) {
+        $body = json_encode($body, JSON_UNESCAPED_UNICODE);
     }
-    if(!$one){
-        db_insert("config",['title'=>$title,'body'=>$body]);
-    }else{
-        db_update("config",['body'=>$body],['id'=>$one['id']]);
+    if (!$one) {
+        db_insert("config", ['title' => $title, 'body' => $body]);
+    } else {
+        db_update("config", ['body' => $body], ['id' => $one['id']]);
     }
 }
 /**
-* 优先取数据库，未找到后取配置文件
-*/
-function get_config($title){
-    global $config; 
-    if(is_array($title)){
+ * 优先取数据库，未找到后取配置文件
+ */
+function get_config($title)
+{
+    global $config;
+    if (is_array($title)) {
         $list = [];
-        $all  = db_get("config","*",['title'=>$title]);
-        foreach($all as $one){
+        $all  = db_get("config", "*", ['title' => $title]);
+        foreach ($all as $one) {
             $body = $one['body'];
-            if(is_json($body)){
-                $body = json_decode($body,true);
+            if (is_json($body)) {
+                $body = json_decode($body, true);
             }
-            $list[$one['title']] = $body?:$config[$one['title']];
+            $list[$one['title']] = $body ?: $config[$one['title']];
         }
-        return $list; 
-    }else{
-        $one  = db_get_one("config","*",['title'=>$title]);
+        return $list;
+    } else {
+        $one  = db_get_one("config", "*", ['title' => $title]);
         $body = $one['body'];
-        if(!$body){
+        if (!$body) {
             return $config[$title];
         }
-        if(is_json($body)){
-            return json_decode($body,true);
-        }else{
+        if (is_json($body)) {
+            return json_decode($body, true);
+        } else {
             return $body;
         }
-    }    
+    }
 }
- 
+
 
 /**
  * elementui table序号
@@ -1138,15 +1162,15 @@ function array_to_xml($arr)
  */
 function page_size($name)
 {
-    $key  = 'page_size_' . $name; 
-    $time = time() + 86400 * 365 * 10; 
+    $key  = 'page_size_' . $name;
+    $time = time() + 86400 * 365 * 10;
     $size = cookie($key);
     if (get_post('page_size')) {
         $size = (int)get_post('page_size');
         cookie($key, $size, $time);
         $size = cookie($key);
     }
-    return $size?:20;
+    return $size ?: 20;
 }
 
 /**
@@ -1156,96 +1180,105 @@ function page_size_array()
 {
     $defaults =  [
         20, 50, 100, 500, 1000
-    ]; 
+    ];
     return $defaults;
 }
-if(!function_exists('json')){
-    function json($data){
-        echo json_encode($data);exit;
-    } 
-} 
+if (!function_exists('json')) {
+    function json($data)
+    {
+        echo json_encode($data);
+        exit;
+    }
+}
 
 /**
-* 前台主题url
-*/
-function theme_url(){
-    return "/theme/".cookie('front_theme').'/';
+ * 前台主题url
+ */
+function theme_url()
+{
+    return "/theme/" . cookie('front_theme') . '/';
 }
 /**
-* 设置前台主题
-*/
-function set_theme($name){ 
-    cookie("front_theme",$name,time()+86400*350*10);
+ * 设置前台主题
+ */
+function set_theme($name)
+{
+    cookie("front_theme", $name, time() + 86400 * 350 * 10);
 }
 /*
 * 根据请求设置主题
 */
-if($_GET['_theme']){
+if ($_GET['_theme']) {
     set_theme($_GET['_theme']);
 }
 /**
-* 设置后台主题
-*/
-function set_admin_theme($name){  
-    cookie("admin_theme",$name);
+ * 设置后台主题
+ */
+function set_admin_theme($name)
+{
+    cookie("admin_theme", $name);
 }
 
 /**
-* 后台主题url
-*/
-function admin_theme_url(){
-    return "/theme/".cookie('admin_theme').'/';
-} 
+ * 后台主题url
+ */
+function admin_theme_url()
+{
+    return "/theme/" . cookie('admin_theme') . '/';
+}
 /**
-* AES加密
+ * AES加密
 // aes 加密
 $config['aes_key'] = "123456";
 $config['aes_iv']  = md5('app_sun');
 
 
 $token = urlencode(aes_encode($d)); 
-*/
-function aes_encode($data,$key='',$iv='',$type='AES-128-CBC',$options=''){
+ */
+function aes_encode($data, $key = '', $iv = '', $type = 'AES-128-CBC', $options = '')
+{
     global $config;
-    if(!$key){
+    if (!$key) {
         $key = $config['aes_key'];
     }
-    if(!$iv){
+    if (!$iv) {
         $iv  = $config['aes_iv'];
     }
-    $obj = new \lib\Aes($key,$iv,$type,$options);
+    $obj = new \lib\Aes($key, $iv, $type, $options);
     return base64_encode($obj->encrypt($data));
 }
 /**
-* AES解密 
+ * AES解密 
 
 $token = $_GET['token']; 
 $token = aes_decode($token);
 pr($token);
 
-*/
-function aes_decode($data,$key='',$iv='',$type='AES-128-CBC',$options=''){
+ */
+function aes_decode($data, $key = '', $iv = '', $type = 'AES-128-CBC', $options = '')
+{
     global $config;
-    if(!$key){
+    if (!$key) {
         $key = $config['aes_key'];
     }
-    if(!$iv){
+    if (!$iv) {
         $iv  = $config['aes_iv'];
     }
     $data = base64_decode($data);
-    $obj = new \lib\Aes($key,$iv,$type,$options);
+    $obj = new \lib\Aes($key, $iv, $type, $options);
     return $obj->decrypt($data);
 }
- 
+
 function el_page_sizes()
 {
     $arr = page_size_array();
     return json_encode($arr);
-} 
+}
 /**
-* 多语言
-*/
-function set_lang($lang){
+ * 多语言
+ */
+function set_lang($lang)
+{
     return lib\Lang::setLang($lang);
 }
 /**
@@ -1253,23 +1286,25 @@ return [
     'welcome' => '你好{name}', 
 ];
 <?= lang('welcome',['name'=>'test'])?>
-*/
-function lang($name,$val = [],$pre = 'app'){
-    return lib\Lang::trans($name,$val,$pre);
+ */
+function lang($name, $val = [], $pre = 'app')
+{
+    return lib\Lang::trans($name, $val, $pre);
 }
 /**
-* 设置JSON字段 
-*/
-function set_json(&$data,$field = []){
-    foreach($field as $v){
-        if(!$data[$v]){
+ * 设置JSON字段 
+ */
+function set_json(&$data, $field = [])
+{
+    foreach ($field as $v) {
+        if (!$data[$v]) {
             $data[$v] = [];
         }
     }
-    foreach($field as $v){
-        $data[$v] = json_encode($data[$v],JSON_UNESCAPED_UNICODE);
+    foreach ($field as $v) {
+        $data[$v] = json_encode($data[$v], JSON_UNESCAPED_UNICODE);
     }
-} 
+}
 /**
  * 搜索替换\n , ，空格
  * @param string $name
@@ -1377,10 +1412,11 @@ function timeago($time)
 /**
  * 请求是否是AJAX
  */
-function is_ajax(){
-    if(isset($_SERVER["HTTP_X_REQUESTED_WITH"]) && strtolower($_SERVER["HTTP_X_REQUESTED_WITH"])=="xmlhttprequest"){ 
+function is_ajax()
+{
+    if (isset($_SERVER["HTTP_X_REQUESTED_WITH"]) && strtolower($_SERVER["HTTP_X_REQUESTED_WITH"]) == "xmlhttprequest") {
         return true;
-    }else{
+    } else {
         return false;
     }
 }
@@ -1388,7 +1424,7 @@ function is_ajax(){
 
 /**
  * 防止重复执行
- */ 
+ */
 function cli_prevent_duplication($argv, $cmd = 'php cmd.php')
 {
     $cmd_line = "php";
@@ -1422,15 +1458,16 @@ function cli_prevent_duplication($argv, $cmd = 'php cmd.php')
         exit();
     }
 }
- 
+
 /**
  * 静态资源
  */
-function app($name,$val = ''){
+function app($name, $val = '')
+{
     static $_obj;
-    if($val){
+    if ($val) {
         $_obj[$name][] = $val;
-    }else{
+    } else {
         return $_obj[$name];
     }
 }
@@ -1438,93 +1475,99 @@ function app($name,$val = ''){
 /**
  * 包含文件 
  */
-function import($file,$vars = [],$check_vars = false){
+function import($file, $vars = [], $check_vars = false)
+{
     static $obj;
-    $key = md5(str_replace('\\','/',$file));
-    if($vars && $check_vars){
+    $key = md5(str_replace('\\', '/', $file));
+    if ($vars && $check_vars) {
         $md5 = md5(json_encode($vars));
-        $key = $key.$md5;
+        $key = $key . $md5;
     }
-    if($vars){
+    if ($vars) {
         extract($vars);
-    }  
-    if(!isset($obj[$key])){
-        if(file_exists($file)){
+    }
+    if (!isset($obj[$key])) {
+        if (file_exists($file)) {
             include $file;
             $obj[$key] = true;
             return true;
-        }else{
-            return false; 
-        } 
-    }else{
+        } else {
+            return false;
+        }
+    } else {
         return true;
     }
 }
 /**
  * 取远程图片或本地图片
  */
-function file_get($file){
-      $ch = curl_init(); 
-      curl_setopt($ch, CURLOPT_TIMEOUT,10); 
-      curl_setopt($ch,CURLOPT_URL,$file);
-      curl_setopt($ch,CURLOPT_RETURNTRANSFER,1);
-      curl_setopt($ch,CURLOPT_HEADER,0);
-      curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, '0'); 
-      curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, '0');  
-      $output = curl_exec($ch);
-      if($output === FALSE ){
-         $output = file_get_contents($file); 
-      } 
-      curl_close($ch);
-      return $output;
+function file_get($file)
+{
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_TIMEOUT, 10);
+    curl_setopt($ch, CURLOPT_URL, $file);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+    curl_setopt($ch, CURLOPT_HEADER, 0);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, '0');
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, '0');
+    $output = curl_exec($ch);
+    if ($output === FALSE) {
+        $output = file_get_contents($file);
+    }
+    curl_close($ch);
+    return $output;
 }
 /**
-* 生成表单TOKEN，防止重复提交
+ * 生成表单TOKEN，防止重复提交
 <input type="hidden" name="form_token" value="<?=create_form_token()?>">
-*/
-function create_form_token(){
+ */
+function create_form_token()
+{
     $salt = "ken.2022";
-    if (session_status() !==PHP_SESSION_ACTIVE) {
+    if (session_status() !== PHP_SESSION_ACTIVE) {
         session_start();
     }
     $form_token = $_SESSION['form_token'];
-    if($form_token){
+    if ($form_token) {
         return $form_token;
     }
-    return $_SESSION['form_token'] = md5(mt_rand(1,1000000).$salt);
+    return $_SESSION['form_token'] = md5(mt_rand(1, 1000000) . $salt);
 }
 /**
-* 检测表单TOKEN
+ * 检测表单TOKEN
 
 //检测form_token
 check_form_token(g('form_token'));
-*/
-function check_form_token($token = ''){
-    if (session_status() !==PHP_SESSION_ACTIVE) {
+ */
+function check_form_token($token = '')
+{
+    if (session_status() !== PHP_SESSION_ACTIVE) {
         session_start();
     }
-    $token = $token?:g('form_token');
+    $token = $token ?: g('form_token');
     $session_token = $_SESSION['form_token'];
-    if($session_token && $session_token == $token){
+    if ($session_token && $session_token == $token) {
         //unset($_SESSION['form_token']);
-    }else{
-        json_error(['msg'=>'请求已过期，请刷新当前页面！']);
-    } 
-} 
-/**
-* 检测reffer是否正常，如异常返回JSON
-*/
-function check_reffer_with_json($allow_domain=[],$is_root = true){
-    $flag = check_reffer($allow_domain,$is_root);
-    if(!$flag){
-        json_error(['msg'=>'请求异常']);
+    } else {
+        json_error(['msg' => '请求已过期，请刷新当前页面！']);
     }
 }
 /**
-* 检测reffer
-*/
-function check_reffer($allow_domain=[],$is_root = true){
-    if(!$allow_domain){
+ * 检测reffer是否正常，如异常返回JSON
+ */
+function check_reffer_with_json($allow_domain = [], $is_root = true)
+{
+    $flag = check_reffer($allow_domain, $is_root);
+    if (!$flag) {
+        json_error(['msg' => '请求异常']);
+    }
+}
+/**
+ * 检测reffer
+ */
+function check_reffer($allow_domain = [], $is_root = true)
+{
+    if (!$allow_domain) {
         $allow_domain[] = $_SERVER['HTTP_REFERER'];
     }
     $root = [];
@@ -1532,82 +1575,87 @@ function check_reffer($allow_domain=[],$is_root = true){
         $root[] = get_root_domain($v);
     }
     $refer = get_reffer($refer);
-    if($is_root){
+    if ($is_root) {
         $refer = get_root_domain($refer);
-    } 
-    if(in_array($refer,$root)){
+    }
+    if (in_array($refer, $root)) {
         return true;
-    } 
+    }
     return false;
 }
 /**
-* 取reffer
-*/
-function get_reffer($refer = ''){
-    $refer = $refer?:$_SERVER['HTTP_REFERER'];
-    $refer = str_replace("http://",'',$refer);
-    $refer = str_replace("https://",'',$refer);
-    $refer = str_replace("/",'',$refer);
+ * 取reffer
+ */
+function get_reffer($refer = '')
+{
+    $refer = $refer ?: $_SERVER['HTTP_REFERER'];
+    $refer = str_replace("http://", '', $refer);
+    $refer = str_replace("https://", '', $refer);
+    $refer = str_replace("/", '', $refer);
     return $refer;
 }
 /**
-* 取主域名，如 admin.baidu.com返回baidu.com
-*/
-function get_root_domain($host = ''){
-    $host = $host?:host();
-    preg_match("#\.(.*)#i",$host,$match);
+ * 取主域名，如 admin.baidu.com返回baidu.com
+ */
+function get_root_domain($host = '')
+{
+    $host = $host ?: host();
+    preg_match("#\.(.*)#i", $host, $match);
     $host = $match[1];
-    return str_replace("/",'',$host);  
+    return str_replace("/", '', $host);
 }
 /**
-* 取子域名，如admin.baidu.com返回admin
-*/
-function get_sub_domain($host = ''){
-    $host = $host?:host();
-    preg_match("#(http://|https://)(.*?)\.#i",$host,$match); 
+ * 取子域名，如admin.baidu.com返回admin
+ */
+function get_sub_domain($host = '')
+{
+    $host = $host ?: host();
+    preg_match("#(http://|https://)(.*?)\.#i", $host, $match);
     $host = $match[2];
-    return str_replace("/",'',$host);  
+    return str_replace("/", '', $host);
 }
 
 /**
  * 获取config.ini.php内容
  */
-function get_config_file_content($name = 'config.ini.php'){
-    $file = PATH.$name;
-    if(file_exists($file)){
-        include ($file);
+function get_config_file_content($name = 'config.ini.php')
+{
+    $file = PATH . $name;
+    if (file_exists($file)) {
+        include($file);
         return $config;
     }
 }
 /**
  * 设置config.ini.php内容
  */
-function set_config_file_content($k,$v,$file_config_var = 'config',$name = 'config.ini.php'){
+function set_config_file_content($k, $v, $file_config_var = 'config', $name = 'config.ini.php')
+{
     $content = get_config_file_content($name);
-    if($content){
+    if ($content) {
         $content[$k] = $v;
-        $file = PATH.$name;
-        if(file_exists($file) && is_writable($file)){
-            file_put_contents($file,"<?php \n\$".$file_config_var." = \n".var_export($content,true).";");
-        }else{
-            write_log_error('写入配置文件'.$file.'失败！');
+        $file = PATH . $name;
+        if (file_exists($file) && is_writable($file)) {
+            file_put_contents($file, "<?php \n\$" . $file_config_var . " = \n" . var_export($content, true) . ";");
+        } else {
+            write_log_error('写入配置文件' . $file . '失败！');
         }
     }
 }
 
-function admin_header(){
-    include PATH.ADMIN_DIR_NAME.'/header.php';    
+function admin_header()
+{
+    include PATH . ADMIN_DIR_NAME . '/header.php';
 }
 
-function admin_footer(){
-    include PATH.ADMIN_DIR_NAME.'/footer.php';    
+function admin_footer()
+{
+    include PATH . ADMIN_DIR_NAME . '/footer.php';
 }
 
-include __DIR__.'/third/cjavascript.php'; 
-include __DIR__.'/third/vue.php';  
-include __DIR__.'/third/jquery.php'; 
+include __DIR__ . '/third/cjavascript.php';
+include __DIR__ . '/third/vue.php';
+include __DIR__ . '/third/jquery.php'; 
 
 //加载授权
 //include __DIR__.'/gpl.php';  
-
-

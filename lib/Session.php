@@ -1,22 +1,28 @@
-<?php namespace lib;
+<?php
+
+namespace lib;
+
 /**
  * session 
  * 
  * @license 非开源协议，请查看根目录license.txt
  * @author  sun <sunkangchina@163.com>
  * @copyright (c) 2022 
- */ 
-class Session{ 
-    public static function init(){ 
-        if(session_status()){
+ */
+class Session
+{
+    public static function init()
+    {
+        if (session_status()) {
             session_start();
         }
     }
 
-    public static function key($name){
+    public static function key($name)
+    {
         global  $config;
-        $key   = $config['cookie_prefix'].$name;
-        return $name.$key;
+        $key   = $config['cookie_prefix'] . $name;
+        return $name . $key;
     }
     /*
     * 获取
@@ -25,7 +31,7 @@ class Session{
     {
         self::init();
         $name = self::key($name);
-        return $_SESSION[$name]; 
+        return $_SESSION[$name];
     }
     /**
      * 设置
@@ -34,7 +40,7 @@ class Session{
     {
         self::init();
         $name = self::key($name);
-        return $_SESSION[$name] = $value; 
+        return $_SESSION[$name] = $value;
     }
     /**
      * 删除seesion
@@ -43,27 +49,27 @@ class Session{
     {
         self::init();
         $name = self::key($name);
-        $_SESSION[$name] = ''; 
+        $_SESSION[$name] = '';
     }
     /**
      * session flash message
      */
-    public static function _message($name,$val = '')
+    public static function _message($name, $val = '')
     {
-         if($val){
-            self::set($name,$val);
-         }else{
+        if ($val) {
+            self::set($name, $val);
+        } else {
             $val = self::get($name);
             self::delete($name);
             return $val;
-         }
+        }
     }
     /**
      * set flash message
      */
-    public static function set_message($name,$val)
+    public static function set_message($name, $val)
     {
-        return self::_message($name,$val);
+        return self::_message($name, $val);
     }
     /**
      * get flash message
@@ -71,17 +77,16 @@ class Session{
     public static function get_message($name)
     {
         return self::_message($name);
-    } 
+    }
     /**
      * check session flash message is exists
      */
     public static function has_message($name)
     {
-        if(self::get($name)){
+        if (self::get($name)) {
             return true;
-        }else{
+        } else {
             return false;
         }
-    } 
-
+    }
 }

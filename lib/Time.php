@@ -8,7 +8,7 @@
  */
 
 namespace lib;
- 
+
 /*
 *  
 */
@@ -16,42 +16,42 @@ namespace lib;
 class Time
 {
 	//取时间是上午还是下午
-	public static function am_or_pm($timestamp,$show_am_pm = false)
-    {
-        $today = strtotime('today');
-        $yesterday = strtotime('yesterday');
-        // 本周一
-        $thismonday = $today - ((date('w', time()) == 0 ? 7 : date('w', time())) - 1) * 24 * 3600;
-        // 上周一
-        $lastmonday = $thismonday - 7 * 24 * 3600;
-        if ($timestamp > $today) { 
-            if($show_am_pm){
-                $a = date('a', $timestamp); 
-                $t = date('h:i', $timestamp); 
-                if ($a == 'am') {
-                    $a = '上午 ';
-                } else {
-                    $a = '下午 ';
-                } 
-                $result = $a . $t;
-            }else{
-                $result = date('H:i', $timestamp);
-            } 
-        } else if ($timestamp > $yesterday) {
-            $result = '昨天';
-        } else if ($timestamp > $thismonday) {
-            $result = self::getWeek($timestamp);
-        } else if ($timestamp > $lastmonday) {
-            $result = '上' . self::getWeek($timestamp);
-        } else {
-            if (date('y', $timestamp) == date('y', time())) {
-                $result = date('m月d日', $timestamp);
-            } else {
-                $result = date('y年m月d日', $timestamp);
-            }
-        }
-        return $result;
-    }
+	public static function am_or_pm($timestamp, $show_am_pm = false)
+	{
+		$today = strtotime('today');
+		$yesterday = strtotime('yesterday');
+		// 本周一
+		$thismonday = $today - ((date('w', time()) == 0 ? 7 : date('w', time())) - 1) * 24 * 3600;
+		// 上周一
+		$lastmonday = $thismonday - 7 * 24 * 3600;
+		if ($timestamp > $today) {
+			if ($show_am_pm) {
+				$a = date('a', $timestamp);
+				$t = date('h:i', $timestamp);
+				if ($a == 'am') {
+					$a = '上午 ';
+				} else {
+					$a = '下午 ';
+				}
+				$result = $a . $t;
+			} else {
+				$result = date('H:i', $timestamp);
+			}
+		} else if ($timestamp > $yesterday) {
+			$result = '昨天';
+		} else if ($timestamp > $thismonday) {
+			$result = self::getWeek($timestamp);
+		} else if ($timestamp > $lastmonday) {
+			$result = '上' . self::getWeek($timestamp);
+		} else {
+			if (date('y', $timestamp) == date('y', time())) {
+				$result = date('m月d日', $timestamp);
+			} else {
+				$result = date('y年m月d日', $timestamp);
+			}
+		}
+		return $result;
+	}
 	/**
 	 * 多少岁
 	 * @return string　 
@@ -80,7 +80,7 @@ class Time
 		$secs = $remain % 60;
 		return ["d" => $days, "h" => $hours, "m" => $mins, "s" => $secs];
 	}
-	 
+
 	/**
 	 * 最近30天
 	 */
@@ -93,38 +93,41 @@ class Time
 		$arr = array_reverse($arr);
 		return $arr;
 	}
-	 
-	/**
-	* 最近几天
-	*/
-	public static function neerDays($num = 5,$separate = ""){  
-		$list  = []; 
-		for($i = 0;$i<$num;$i++){
-			$list[] = date("Y".$separate."m".$separate."d",strtotime("-".$i." day",time()));  
-		}
-		$list = array_reverse($list);
-		return $list;
-	}
 
 	/**
-	* 返回最近几月
-	*/
-	public static function neerMonths($num = 5,$separate = ""){  
-		$list  = []; 
-		for($i = 0;$i<$num;$i++){
-			$list[] = date("Y".$separate."m",strtotime("-".$i." month",time()));  
-		}
-		$list = array_reverse($list);
-		return $list;
-	}
-
-	/**
-	* 返回最近几年
-	*/
-	public static function neerYears($num = 5){ 
-		$start = date("Y",strtotime("-".($num-1)." year",time())); 
+	 * 最近几天
+	 */
+	public static function neerDays($num = 5, $separate = "")
+	{
 		$list  = [];
-		for($i = 1;$i<=$num;$i++){
+		for ($i = 0; $i < $num; $i++) {
+			$list[] = date("Y" . $separate . "m" . $separate . "d", strtotime("-" . $i . " day", time()));
+		}
+		$list = array_reverse($list);
+		return $list;
+	}
+
+	/**
+	 * 返回最近几月
+	 */
+	public static function neerMonths($num = 5, $separate = "")
+	{
+		$list  = [];
+		for ($i = 0; $i < $num; $i++) {
+			$list[] = date("Y" . $separate . "m", strtotime("-" . $i . " month", time()));
+		}
+		$list = array_reverse($list);
+		return $list;
+	}
+
+	/**
+	 * 返回最近几年
+	 */
+	public static function neerYears($num = 5)
+	{
+		$start = date("Y", strtotime("-" . ($num - 1) . " year", time()));
+		$list  = [];
+		for ($i = 1; $i <= $num; $i++) {
 			$list[] = $start++;
 		}
 		return $list;

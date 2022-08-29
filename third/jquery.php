@@ -1,9 +1,7 @@
-<?php 
+<?php
 
-class Jquery{
-
-
-
+class Jquery
+{
 }
 
 /**
@@ -42,44 +40,46 @@ echo (new Jquery_Echats)->set([
         }
     ]"
 ])->run();
-*/
-class Jquery_Echats{
+ */
+class Jquery_Echats
+{
 	public $url = "";
 	public $chartDom = 'chartDom';
 	public $myChart  = 'myChart';
 	public $option = [];
 	public $id     = "";
 	public $series = "";
-	public $call   = ""; 
+	public $call   = "";
 
-	public function set($config = []){
-		$this->chartDom = "chartDom".mt_rand(1,9999);
-		$this->myChart  = "myChart".mt_rand(1,9999);
-		$this->url      = $config['url']; 
+	public function set($config = [])
+	{
+		$this->chartDom = "chartDom" . mt_rand(1, 9999);
+		$this->myChart  = "myChart" . mt_rand(1, 9999);
+		$this->url      = $config['url'];
 		$defaults = [
-			'title'=>[
-				'text'=>'',
+			'title' => [
+				'text' => '',
 			],
-			'tooltip'=>[
+			'tooltip' => [
 				'trigger' => 'axis'
 			],
-			'xAxis'=>[
+			'xAxis' => [
 				'type' => 'category',
 				'data' => "",
 				'name' => "",
 			],
-			'yAxis'=>[
+			'yAxis' => [
 				'type' => 'value',
 				'name' => "",
 			],
 			//'series'=>[]
 		];
 		$option = $config['option'];
-		foreach($defaults as $k=>$v){
-			foreach($v as $k1=>$v1){
-				if($option[$k][$k1]){
+		foreach ($defaults as $k => $v) {
+			foreach ($v as $k1 => $v1) {
+				if ($option[$k][$k1]) {
 					$defaults[$k][$k1] = $option[$k][$k1];
-				} 
+				}
 			}
 		}
 		$this->id     = $config['id'];
@@ -88,18 +88,18 @@ class Jquery_Echats{
 		$this->call   = $config['call'];
 		return $this;
 	}
- 
 
-	public function run(){
-		return 
-		"var ".$this->chartDom." = document.getElementById('".$this->id."');
-        var ".$this->myChart." = echarts.init(".$this->chartDom."); 
-        ajax('".$this->url."', {}, function(res) { 
-        	".$this->call."
-        	let option = ".array_encode_to_js($this->option).";
-        	option.series = ".$this->series.";
-            ".$this->myChart.".setOption(option);
+
+	public function run()
+	{
+		return
+			"var " . $this->chartDom . " = document.getElementById('" . $this->id . "');
+        var " . $this->myChart . " = echarts.init(" . $this->chartDom . "); 
+        ajax('" . $this->url . "', {}, function(res) { 
+        	" . $this->call . "
+        	let option = " . array_encode_to_js($this->option) . ";
+        	option.series = " . $this->series . ";
+            " . $this->myChart . ".setOption(option);
         }); ";
 	}
-
 }

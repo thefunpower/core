@@ -22,8 +22,7 @@
         "topthink/think-cache": "^2.0",
         "topthink/think-log": "^2.0",
         "symfony/mailer": "^5.4",    
-        "topthink/think-orm": "^2.0",   
-        "apache/log4php": "^2.3",
+        "topthink/think-orm": "^2.0",    
         "catfan/medoo": "^2.1"
     }, 
     "autoload": { 

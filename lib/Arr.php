@@ -1,10 +1,12 @@
-<?php  
+<?php
+
 /**
  * 
  * @license read license.txt
  * @author sun <sunkangchina@163.com>
  * @copyright (c) 2021 
  */
+
 namespace lib;
 
 class Arr
@@ -29,7 +31,7 @@ class Arr
             'total' => $count,
             'pages' => $total_page
         ];
-    }  
+    }
     /**
      * 
      * 对二维数组进行group by操作
@@ -74,5 +76,5 @@ class Arr
             return array_pop($args);
         }
         return;
-    } 
+    }
 }

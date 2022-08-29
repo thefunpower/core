@@ -1,11 +1,14 @@
-<?php 
+<?php
+
 /**
  * 
  * @license read license.txt
  * @author sun <sunkangchina@163.com>
  * @copyright (c) 2021 
- */ 
-if(!defined('VERSION')){die();}
+ */
+if (!defined('VERSION')) {
+    die();
+}
 /**
 复杂的查寻，(...  AND ...) OR (...  AND ...)
 "OR #1" => [
@@ -14,27 +17,26 @@ if(!defined('VERSION')){die();}
     ]
 ];  
 
-*/
-global $db; 
+ */
+global $db;
 global $_db_par;
 //连接数据库  
 try {
-    $pdo = new PDO($dsn, $user, $pwd);  
-    $db = new Medoo\Medoo([ 
+    $pdo = new PDO($dsn, $user, $pwd);
+    $db = new Medoo\Medoo([
         'pdo'     => $pdo,
         'type'    => 'mysql',
         'option'  => [
             PDO::ATTR_CASE => PDO::CASE_NATURAL
-        ], 
+        ],
         'command' => [
             'SET SQL_MODE=ANSI_QUOTES'
         ],
         'error' => PDO::ERRMODE_WARNING
     ]);
-
 } catch (Exception $e) {
     $err = $e->getMessage();
-    add_action("db_connect_error",$err);
+    add_action("db_connect_error", $err);
 }
 
 /**
@@ -48,24 +50,25 @@ $config['db_user'] = 'root';
 $config['db_pwd']  = '111111'; 
 //数据库端口号
 $config['db_port'] = 3306;
-*/
-function new_db($config = []){
-    $db = new \Medoo\Medoo([ 
+ */
+function new_db($config = [])
+{
+    $db = new \Medoo\Medoo([
         'type' => 'mysql',
         'host' => $config['db_host'],
         'database' => $config['db_name'],
         'username' => $config['db_user'],
-        'password' => $config['db_pwd'], 
+        'password' => $config['db_pwd'],
         // [optional]
         'charset'   => 'utf8mb4',
         'collation' => 'utf8mb4_general_ci',
-        'port'      => $config['db_port'], 
-        'prefix'    => '', 
-        'error'     => PDO::ERRMODE_SILENT, 
+        'port'      => $config['db_port'],
+        'prefix'    => '',
+        'error'     => PDO::ERRMODE_SILENT,
         // Read more from http://www.php.net/manual/en/pdo.setattribute.php.
         'option'    => [
             PDO::ATTR_CASE => PDO::CASE_NATURAL
-        ], 
+        ],
         'command' => [
             'SET SQL_MODE=ANSI_QUOTES'
         ]
@@ -79,7 +82,7 @@ function new_db($config = []){
  */
 function db()
 {
-    global $db; 
+    global $db;
     return $db;
 }
 
@@ -122,65 +125,66 @@ $data = db_pager("do_order",
  */
 
 
-function db_pager_count($nums = null){
+function db_pager_count($nums = null)
+{
     static $_page_count;
-    if($nums && $nums >= 0){
+    if ($nums && $nums >= 0) {
         $_page_count = $nums;
-    }else{
+    } else {
         return $_page_count;
     }
 }
 
-function db_pager($table, $join, $columns=null, $where=null)
-{  
+function db_pager($table, $join, $columns = null, $where = null)
+{
     global $_db_par;
     $flag = true;
-    if(!$where){
+    if (!$where) {
         $where   = $columns;
-        $columns = $join?:"*";
-        $join    = ''; 
-        $count   = db_pager_count()?:db_get_count($table,$where);  
-    }else if($join && $where){ 
+        $columns = $join ?: "*";
+        $join    = '';
+        $count   = db_pager_count() ?: db_get_count($table, $where);
+    } else if ($join && $where) {
         $flag    = false;
-        $count   = db_pager_count()?:db_get_count($table,$join,"$table.id",$where);   
-    }   
-    $current_page  = $_REQUEST['page']; 
-    if(!$current_page){
-       $current_page  = g('page'); 
-    } 
-    if(!$current_page) {
-        $current_page = 1;
-    } 
-    $p1 = $_REQUEST['per_page']?:g('per_page');  
-    $p2 = $_REQUEST['page_size']?:g('page_size');
-    if($p1 >= 1){
-        $pre_page  = $p1;      
-    }else{
-        $pre_page  = $p2;      
+        $count   = db_pager_count() ?: db_get_count($table, $join, "$table.id", $where);
     }
-    if(!$pre_page){
+    $current_page  = $_REQUEST['page'];
+    if (!$current_page) {
+        $current_page  = g('page');
+    }
+    if (!$current_page) {
+        $current_page = 1;
+    }
+    $p1 = $_REQUEST['per_page'] ?: g('per_page');
+    $p2 = $_REQUEST['page_size'] ?: g('page_size');
+    if ($p1 >= 1) {
+        $pre_page  = $p1;
+    } else {
+        $pre_page  = $p2;
+    }
+    if (!$pre_page) {
         $pre_page = 20;
     }
     $count = (int)$count;
-    $last_page     = ceil($count/$pre_page);
-    $has_next_page = $last_page > $current_page?true:false;
-    $start         = ($current_page-1)*$pre_page;  
-    $where['LIMIT'] = [$start,$pre_page];  
-    if($flag){  
-        $data  =  db_get($table, $columns,$where);
-    }else{
+    $last_page     = ceil($count / $pre_page);
+    $has_next_page = $last_page > $current_page ? true : false;
+    $start         = ($current_page - 1) * $pre_page;
+    $where['LIMIT'] = [$start, $pre_page];
+    if ($flag) {
+        $data  =  db_get($table, $columns, $where);
+    } else {
         $data  =  db_get($table, $join, $columns, $where);
-    }   
+    }
     $_db_par['size'] = $pre_page;
-    $_db_par['count']= $count;
+    $_db_par['count'] = $count;
     return [
         'current_page' => $current_page,
         'last_page'    => $last_page,
         'pre_page'     => $pre_page,
         'total'        => $count,
-        'has_next_page'=> $has_next_page,
-        'data'         => $data, 
-        'data_count'   => count($data), 
+        'has_next_page' => $has_next_page,
+        'data'         => $data,
+        'data_count'   => count($data),
     ];
 }
 /**
@@ -190,37 +194,40 @@ function db_pager($table, $join, $columns=null, $where=null)
  *      'url'=>'',
  * ]);
  */
-function db_pager_html($arr = []){
+function db_pager_html($arr = [])
+{
     global $_db_par;
-    if($arr['count']){
+    if ($arr['count']) {
         $count  = $arr['count'];
-    }else{
+    } else {
         $count = $_db_par['count'];
     }
     $page_url = $arr['url'];
-    if($arr['size']){
+    if ($arr['size']) {
         $size  = $arr['size'];
-    }else{
-        $size = $_db_par['size']?:20; 
+    } else {
+        $size = $_db_par['size'] ?: 20;
     }
-    $paginate = new \lib\Paginate($count,$size); 
-    if($page_url){
-        $paginate->url = $page_url;    
-    }    
+    $paginate = new \lib\Paginate($count, $size);
+    if ($page_url) {
+        $paginate->url = $page_url;
+    }
     $limit  = $paginate->limit;
     $offset = $paginate->offset;
     return $paginate->show();
 }
 
 global $db_error;
-function db_add_error($str){
+function db_add_error($str)
+{
     global $db_error;
     $db_error[] = $str;
 }
 
-function db_get_error(){
+function db_get_error()
+{
     global $db_error;
-    if($db_error)
+    if ($db_error)
         return $db_error;
 }
 
@@ -235,27 +242,26 @@ function db_get_error(){
  * @param array $where  条件 [LIMIT=>1]  
  * @return array
  */
-function db_get($table, $join = null, $columns=null, $where=null)
+function db_get($table, $join = null, $columns = null, $where = null)
 {
-    if(is_array($join)){
-        foreach($join as $k=>$v){
-            if(is_string($v) && strpos($v,'(') !== false){
+    if (is_array($join)) {
+        foreach ($join as $k => $v) {
+            if (is_string($v) && strpos($v, '(') !== false) {
                 $join[$k] = db_raw($v);
             }
         }
     }
-    if(is_string($columns) && strpos($columns,'WHERE') !== FALSE){
+    if (is_string($columns) && strpos($columns, 'WHERE') !== FALSE) {
         $columns = db_raw($columns);
     }
     try {
         $all =  db()->select($table, $join, $columns, $where);
         //查寻数据
-        do_action("db_get.$table",$all);  
+        do_action("db_get.$table", $all);
         return $all;
     } catch (Exception $e) {
         db_add_error($e->getMessage());
     }
-    
 }
 /** 
 $lists = db_select('do_order', [ 
@@ -265,8 +271,9 @@ $lists = db_select('do_order', [
         ], 
         'WHERE `status` = 1 GROUP BY `date` LIMIT 30'
 );  
-*/
-function db_select($table, $join = "*", $columns=null, $where=null){
+ */
+function db_select($table, $join = "*", $columns = null, $where = null)
+{
     return db_get($table, $join, $columns, $where);
 }
 /**
@@ -277,24 +284,23 @@ function db_select($table, $join = "*", $columns=null, $where=null){
  * @return array
  */
 function db_insert($table, $data = [])
-{ 
-    foreach($data as $k=>$v){
-        if(substr($k,0,1) == "_"){
+{
+    foreach ($data as $k => $v) {
+        if (substr($k, 0, 1) == "_") {
             unset($data[$k]);
         }
-    }   
+    }
     try {
         //写入数据前
-        do_action("db_insert.$table.before",$data); 
-        $db    = db()->insert($table, $data); 
-        $id = db()->id(); 
+        do_action("db_insert.$table.before", $data);
+        $db    = db()->insert($table, $data);
+        $id = db()->id();
         //写入数据后
-        do_action("db_insert.$table.after",$id); 
+        do_action("db_insert.$table.after", $id);
         return $id;
-    } catch (Exception $e) { 
+    } catch (Exception $e) {
         db_add_error($e->getMessage());
     }
-    
 }
 
 /**
@@ -309,28 +315,27 @@ function db_update($table, $data = [], $where = [])
     global $db_where;
     $db_where = $where;
 
-    foreach($data as $k=>$v){
-        if(substr($k,0,1) == "_"){
+    foreach ($data as $k => $v) {
+        if (substr($k, 0, 1) == "_") {
             unset($data[$k]);
         }
     }
     try {
         //更新数据前
-        do_action("db_update.$table.before",$data);  
+        do_action("db_update.$table.before", $data);
         $db    = db()->update($table, $data, $where);
-        $error = db()->error;  
-        if($error){ 
-            write_log(['db_error'=>$error,'sql'=>db()->last()]); 
-            throw new Exception($error); 
+        $error = db()->error;
+        if ($error) {
+            write_log(['db_error' => $error, 'sql' => db()->last()]);
+            throw new Exception($error);
         }
-        $count =  $db->rowCount(); 
+        $count =  $db->rowCount();
         //更新数据后
-        do_action("db_update.$table.after",$data); 
+        do_action("db_update.$table.after", $data);
         return $count;
     } catch (Exception $e) {
         db_add_error($e->getMessage());
     }
-    
 }
 
 /**
@@ -353,18 +358,18 @@ function action($call)
  * @param array  $where 条件 
  * @return array
  */
-function db_get_one($table, $join  = "*", $columns=null, $where=null)
-{ 
-    if(!$where){ 
+function db_get_one($table, $join  = "*", $columns = null, $where = null)
+{
+    if (!$where) {
         $columns['LIMIT'] = 1;
-    }else{
+    } else {
         $where['LIMIT']   = 1;
-    } 
+    }
     $db = db_get($table, $join, $columns, $where);
     if ($db) {
         $one =  $db[0];
         //查寻数据
-        do_action("db_get_one.$table",$one);  
+        do_action("db_get_one.$table", $one);
         return $one;
     }
     return;
@@ -379,35 +384,34 @@ function sql_run($sql)
 {
     db()->query($sql);
 }
- 
+
 /**
-* SQL查寻
-*/
-function db_query($sql,$raw=null)
-{ 
-    if($raw === null){
+ * SQL查寻
+ */
+function db_query($sql, $raw = null)
+{
+    if ($raw === null) {
         return db()->query($sql);
     }
-    $q = db()->query($sql,$raw); 
-    if($q){
-        $all =  $q->fetchAll(\PDO::FETCH_ASSOC) ?: [];    
+    $q = db()->query($sql, $raw);
+    if ($q) {
+        $all =  $q->fetchAll(\PDO::FETCH_ASSOC) ?: [];
         //查寻数据
-        do_action("db_query",$all);  
+        do_action("db_query", $all);
         return $all;
-    }else{
+    } else {
         return [];
     }
-    
 }
 /**
-* Quotes the string for the query.
-* https://medoo.in/api/quote
-*/
+ * Quotes the string for the query.
+ * https://medoo.in/api/quote
+ */
 function db_quote($data)
 {
     return db()->quote($data);
 }
- 
+
 /**
  * 取最小值 
  * https://medoo.in/api/min
@@ -418,7 +422,7 @@ function db_quote($data)
  * @param array $where   条件
  * @return void
  */
-function db_get_min($table, $join  = "*", $column=null, $where=null)
+function db_get_min($table, $join  = "*", $column = null, $where = null)
 {
     return db()->min($table, $join, $column, $where);
 }
@@ -446,7 +450,7 @@ function db_get_max($table, $join =  "*", $column = null, $where = null)
  * @return void
  */
 function db_get_count($table, $join =  "*", $column = null, $where = null)
-{  
+{
     return db()->count($table, $join, $column, $where);
 }
 
@@ -472,7 +476,7 @@ function db_get_has($table, $join = null, $where = null)
  * @param array $where   条件
  * @return void
  */
-function db_get_rand($table, $join= "*", $column=null, $where=null)
+function db_get_rand($table, $join = "*", $column = null, $where = null)
 {
     return db()->rand($table, $join, $column, $where);
 }
@@ -486,7 +490,7 @@ function db_get_rand($table, $join= "*", $column=null, $where=null)
  * @param array $where   条件
  * @return void
  */
-function db_get_sum($table, $join="*", $column=null, $where=null)
+function db_get_sum($table, $join = "*", $column = null, $where = null)
 {
     return db()->sum($table, $join, $column, $where);
 }
@@ -500,7 +504,7 @@ function db_get_sum($table, $join="*", $column=null, $where=null)
  * @param array $where   条件
  * @return void
  */
-function db_get_avg($table, $join="*", $column=null, $where=null)
+function db_get_avg($table, $join = "*", $column = null, $where = null)
 {
     return db()->avg($table, $join, $column, $where);
 }
@@ -517,16 +521,18 @@ function db_get_avg($table, $join="*", $column=null, $where=null)
 function db_raw($raw)
 {
     return \Medoo\Medoo::raw($raw);
-}  
+}
 
 //删除
-function db_del($table, $where){
+function db_del($table, $where)
+{
     //删除数据前
-    do_action("db_insert.$table.del",$where); 
+    do_action("db_insert.$table.del", $where);
     return db()->delete($table, $where);
 }
 
-function db_delete($table, $where){
+function db_delete($table, $where)
+{
     return db_del($table, $where);
 }
 
@@ -548,7 +554,7 @@ function show_tables($table)
         }
     }
     return $list;
-} 
+}
 
 
 /**
@@ -557,41 +563,43 @@ function show_tables($table)
  * @param string $table
  * @return void
  */
-function allow_fields($table,$has_key  = true)
+function allow_fields($table, $has_key  = true)
 {
     $sql   = "SHOW FULL FIELDS FROM " . $table . "";
     $lists = db()->query($sql);
     $arr   = [];
     foreach ($lists as $vo) {
-        if($has_key){
-            $arr[$vo['Field']] = $vo['Field'];    
-        }else{
-            $arr[] = $vo['Field']; 
-        } 
+        if ($has_key) {
+            $arr[$vo['Field']] = $vo['Field'];
+        } else {
+            $arr[] = $vo['Field'];
+        }
     }
     return $arr;
 }
 
- /**
+/**
  * 取表中字段
  */
-function get_table_fields($table,$flag = true)
-{ 
-    return allow_fields($table,$flag);
+function get_table_fields($table, $flag = true)
+{
+    return allow_fields($table, $flag);
 }
 /**
  *返回数据库允许的数据，传入其他字段自动忽略
  */
-function db_allow($table,$data){
-    return get_data_db_allow($table,$data);
+function db_allow($table, $data)
+{
+    return get_data_db_allow($table, $data);
 }
-function get_data_db_allow($table,$data){ 
+function get_data_db_allow($table, $data)
+{
     $fields = get_table_fields($table);
-    foreach($data as $k=>$v){
-        if(!$fields[$k]){
+    foreach ($data as $k => $v) {
+        if (!$fields[$k]) {
             unset($data[$k]);
         }
-    } 
+    }
     return $data;
 }
 
@@ -601,17 +609,17 @@ function get_data_db_allow($table,$data){
  * @version 1.0.0
  * @author sun <sunkangchina@163.com>
  */
-function database_tables($name = null,$show_markdown = false)
-{ 
+function database_tables($name = null, $show_markdown = false)
+{
     global $config;
-    if(!$name){
+    if (!$name) {
         $name = $config['dbname'];
     }
-    $sql  = "SHOW TABLE STATUS FROM {$name}";  
-    $all  = db_query($sql,[]);  
+    $sql  = "SHOW TABLE STATUS FROM {$name}";
+    $all  = db_query($sql, []);
     foreach ($all as $k => $v) {
         $sql   = "SHOW FULL FIELDS FROM " . $v['Name'] . "";
-        $lists = db()->query($sql,[]);
+        $lists = db()->query($sql, []);
         $all[$k]['FIELDS'] = $lists;
     }
     if (!$show_markdown) {

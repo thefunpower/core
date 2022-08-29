@@ -1,12 +1,17 @@
-<?php  
+<?php
+
 /**
  * 
  * @license read license.txt
  * @author sun <sunkangchina@163.com>
  * @copyright (c) 2021 
  */
-namespace lib; 
-if(!defined('VERSION')){die('NO DEFINED!');}
+
+namespace lib;
+
+if (!defined('VERSION')) {
+    die('NO DEFINED!');
+}
 class Mime
 {
     /**
@@ -29,9 +34,9 @@ class Mime
             if (is_string($find)) {
                 $find = [$find];
             }
-            if($find){
-                $output = array_merge($find, $output);    
-            }            
+            if ($find) {
+                $output = array_merge($find, $output);
+            }
         }
         if ($ret_array) {
             return $output;

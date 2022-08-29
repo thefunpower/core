@@ -1,14 +1,18 @@
-<?php 
+<?php
+
 /**
  * 
  * @license read license.txt
  * @author sun <sunkangchina@163.com>
  * @copyright (c) 2021 
  */
-namespace lib;   
+
+namespace lib;
+
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+
 /**
 
 生成多个worksheet事例：
@@ -51,12 +55,13 @@ Xls::$works = [
     ]
 ];
 Xls::create($title, $values, $name, true);
-*/
-class Xls{ 
+ */
+class Xls
+{
 
     public static $base_url = '/uploads/tmp/xls/';
     public static $sheet_width = [];
-    public static $works = []; 
+    public static $works = [];
     public static $label = "";
     //title是第几行的，默认第一行是标题信息
     public static $title_index = 1;
@@ -82,9 +87,9 @@ class Xls{
         if (!is_dir($save_path)) {
             mkdir($save_path, 0777, true);
         }
-        $spreadsheet = new Spreadsheet(); 
-        $sheet = $spreadsheet->getActiveSheet(); 
-        if(self::$label){
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+        if (self::$label) {
             $first = self::$label;
             $sheet->setTitle(self::$label);
             $sheet = $spreadsheet->getSheetByName(self::$label);
@@ -93,21 +98,21 @@ class Xls{
             'alignment' => [
                 'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT,
             ],
-        ]; 
+        ];
         //设置一个worksheet
-        self::_sheet($sheet,$xls_titles,$data,$options,self::$sheet_width); 
+        self::_sheet($sheet, $xls_titles, $data, $options, self::$sheet_width);
         //追加更多worksheet
-        if(self::$works){
-            foreach(self::$works as $vv){ 
+        if (self::$works) {
+            foreach (self::$works as $vv) {
                 $label = $vv['label'];
-                $myWorkSheet = new \PhpOffice\PhpSpreadsheet\Worksheet\Worksheet($spreadsheet,$label);  
-                $spreadsheet->addSheet($myWorkSheet); 
+                $myWorkSheet = new \PhpOffice\PhpSpreadsheet\Worksheet\Worksheet($spreadsheet, $label);
+                $spreadsheet->addSheet($myWorkSheet);
                 $sheet = $spreadsheet->getSheetByName($label);
-                self::_sheet($sheet,$vv['title'],$vv['data'],$options,$vv['width']); 
-            } 
-        } 
+                self::_sheet($sheet, $vv['title'], $vv['data'], $options, $vv['width']);
+            }
+        }
         $sheet = $spreadsheet->setActiveSheetIndex(0);
-        $writer = new Xlsx($spreadsheet);  
+        $writer = new Xlsx($spreadsheet);
         //向浏览器输入        
         if ($is_output_to_brower) {
             header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
@@ -124,10 +129,11 @@ class Xls{
         return $base_url . $name . '.xlsx';
     }
     /**
-    * 内部使用
-    * 处理每行值
-    */
-    public static function _sheet(&$sheet,$xls_titles,$data,$options,$sheet_width){ 
+     * 内部使用
+     * 处理每行值
+     */
+    public static function _sheet(&$sheet, $xls_titles, $data, $options, $sheet_width)
+    {
         //设置固定宽度
         if ($sheet_width) {
             foreach ($sheet_width as $k => $v) {
@@ -158,7 +164,7 @@ class Xls{
                 }
             }
             $i++;
-        }  
+        }
     }
     /**
      * 根据 列、行返回对应xls的key
@@ -204,7 +210,7 @@ class Xls{
          * 传入 2 2 对应 B2
          */
         return $array[$start_col] . $start_row;
-    } 
+    }
     /**
      * 解析xlsx文件
      * 
@@ -218,50 +224,52 @@ class Xls{
      * @param array $xls_row_1 xlsx文件第一行配置数组
      * @return array
      */
-    public static function load_all($file,$row,$date = [],$worksheet_arr = []){
+    public static function load_all($file, $row, $date = [], $worksheet_arr = [])
+    {
         $spreadsheet   = IOFactory::load($file);
         $count = $spreadsheet->getSheetCount();
-        if($worksheet_arr){
-            foreach($worksheet_arr as $i){
-                if($i>=0 && $i < $count){
+        if ($worksheet_arr) {
+            foreach ($worksheet_arr as $i) {
+                if ($i >= 0 && $i < $count) {
                     $worksheet = $spreadsheet->getSheet($i);
-                    $new[] = self::load($file, $row,$date = [],$worksheet,$spreadsheet);
-                } 
+                    $new[] = self::load($file, $row, $date = [], $worksheet, $spreadsheet);
+                }
             }
-        }else{
-            for($i=0;$i<$count;$i++){
+        } else {
+            for ($i = 0; $i < $count; $i++) {
                 $worksheet = $spreadsheet->getSheet($i);
-                $new[] = self::load($file, $row,$date = [],$worksheet,$spreadsheet);
-            } 
-        } 
+                $new[] = self::load($file, $row, $date = [], $worksheet, $spreadsheet);
+            }
+        }
         return $new;
     }
     /*
     * 取XLS sheet数
     */
-    public static function load_count($file){
+    public static function load_count($file)
+    {
         $spreadsheet   = IOFactory::load($file);
         $count = $spreadsheet->getSheetCount();
         $arr = [];
-        if($count > 1){
-            for($i = 0;$i<$count;$i++){
-                $arr[$i] = $i+1;
+        if ($count > 1) {
+            for ($i = 0; $i < $count; $i++) {
+                $arr[$i] = $i + 1;
             }
             return $arr;
         }
     }
     public static function load($file, $xls_row_1 = [
         '产品编号' => 'product_num',
-        '产品规格' => 'name', 
-    ],$column_use_date = [],$worksheet = '',$spreadsheet = '')
+        '产品规格' => 'name',
+    ], $column_use_date = [], $worksheet = '', $spreadsheet = '')
     {
         //application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
         //如果需要判断类型，请在这里加判断
         $type          = mime_content_type($file);
-        if(!$spreadsheet){
-             $spreadsheet   = IOFactory::load($file);
-             $worksheet     = $worksheet?:$spreadsheet->getActiveSheet();
-        } 
+        if (!$spreadsheet) {
+            $spreadsheet   = IOFactory::load($file);
+            $worksheet     = $worksheet ?: $spreadsheet->getActiveSheet();
+        }
         // 总行数
         $rows      = $worksheet->getHighestRow();
         // 总列数 A-F
@@ -269,14 +277,14 @@ class Xls{
         $index     = \PhpOffice\PhpSpreadsheet\Cell\Coordinate::columnIndexFromString($columns);
         for ($row = 1; $row <= $rows; $row++) {
             for ($i = 0; $i <= $index; $i++) {
-                
-                if(self::$_format_val){
-                    $name = $worksheet->getCellByColumnAndRow($i, $row)->getFormattedValue();    
-                }else{
+
+                if (self::$_format_val) {
+                    $name = $worksheet->getCellByColumnAndRow($i, $row)->getFormattedValue();
+                } else {
                     $name = $worksheet->getCellByColumnAndRow($i, $row)->getValue();
                 }
 
-                if ($row > 1 && $column_use_date && in_array($i,$column_use_date)) {
+                if ($row > 1 && $column_use_date && in_array($i, $column_use_date)) {
                     if (is_string($name)) {
                         $name = trim($name);
                     }
@@ -298,7 +306,7 @@ class Xls{
                 //修正解析xls出现的某个值解析出来是个对象的问题。
                 if (is_object($name)) {
                     $name = $name->__toString();
-                } 
+                }
                 $list[$row][]  = $name;
             }
         }
@@ -327,9 +335,9 @@ class Xls{
         foreach ($list as $k => $v) {
             $data = [];
             foreach ($kk as $j => $key) {
-                if(!$data[$key]){
-                    $data[$key] = $v[$j];    
-                }                
+                if (!$data[$key]) {
+                    $data[$key] = $v[$j];
+                }
             }
             $lists[$k] = $data;
         }

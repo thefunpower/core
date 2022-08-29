@@ -1,4 +1,4 @@
-<?php  
+<?php
 
 /**
  * Encodes a PHP variable into javascript representation.
@@ -23,60 +23,51 @@
  * Default is false. This parameter is available since 1.1.11.
  * @return string the encoded string
  */
-function array_encode_to_js($value,$safe=false)
+function array_encode_to_js($value, $safe = false)
 {
-    if(is_string($value))
-    {
-        if(strpos($value,'js:')===0 && $safe===false)
-            return substr($value,3);
+    if (is_string($value)) {
+        if (strpos($value, 'js:') === 0 && $safe === false)
+            return substr($value, 3);
         else
-            return "'".yii_quote($value)."'";
-    }
-    elseif($value===null)
+            return "'" . yii_quote($value) . "'";
+    } elseif ($value === null)
         return 'null';
-    elseif(is_bool($value))
-        return $value?'true':'false';
-    elseif(is_integer($value))
+    elseif (is_bool($value))
+        return $value ? 'true' : 'false';
+    elseif (is_integer($value))
         return "$value";
-    elseif(is_float($value))
-    {
-        if($value===-INF)
+    elseif (is_float($value)) {
+        if ($value === -INF)
             return 'Number.NEGATIVE_INFINITY';
-        elseif($value===INF)
+        elseif ($value === INF)
             return 'Number.POSITIVE_INFINITY';
         else
-            return str_replace(',','.',(float)$value);  // locale-independent representation
-    }
-    elseif($value instanceof Yii_CJavaScriptExpression)
+            return str_replace(',', '.', (float)$value);  // locale-independent representation
+    } elseif ($value instanceof Yii_CJavaScriptExpression)
         return $value->__toString();
-    elseif(is_object($value))
-        return array_encode_to_js(get_object_vars($value),$safe);
-    elseif(is_array($value))
-    {
-        $es=array();
-        if(($n=count($value))>0 && array_keys($value)!==range(0,$n-1))
-        {
-            foreach($value as $k=>$v)
-                $es[]="'".yii_quote($k)."':".array_encode_to_js($v,$safe);
-            return '{'.implode(',',$es).'}';
+    elseif (is_object($value))
+        return array_encode_to_js(get_object_vars($value), $safe);
+    elseif (is_array($value)) {
+        $es = array();
+        if (($n = count($value)) > 0 && array_keys($value) !== range(0, $n - 1)) {
+            foreach ($value as $k => $v)
+                $es[] = "'" . yii_quote($k) . "':" . array_encode_to_js($v, $safe);
+            return '{' . implode(',', $es) . '}';
+        } else {
+            foreach ($value as $v)
+                $es[] = array_encode_to_js($v, $safe);
+            return '[' . implode(',', $es) . ']';
         }
-        else
-        {
-            foreach($value as $v)
-                $es[]=array_encode_to_js($v,$safe);
-            return '['.implode(',',$es).']';
-        }
-    }
-    else
+    } else
         return '';
 }
 
-function yii_quote($js,$forUrl=false)
+function yii_quote($js, $forUrl = false)
 {
-    if($forUrl)
-        return strtr($js,array('%'=>'%25',"\t"=>'\t',"\n"=>'\n',"\r"=>'\r','"'=>'\"','\''=>'\\\'','\\'=>'\\\\','</'=>'<\/'));
+    if ($forUrl)
+        return strtr($js, array('%' => '%25', "\t" => '\t', "\n" => '\n', "\r" => '\r', '"' => '\"', '\'' => '\\\'', '\\' => '\\\\', '</' => '<\/'));
     else
-        return strtr($js,array("\t"=>'\t',"\n"=>'\n',"\r"=>'\r','"'=>'\"','\''=>'\\\'','\\'=>'\\\\','</'=>'<\/'));
+        return strtr($js, array("\t" => '\t', "\n" => '\n', "\r" => '\r', '"' => '\"', '\'' => '\\\'', '\\' => '\\\\', '</' => '<\/'));
 }
 
 /**
@@ -109,11 +100,11 @@ class Yii_CJavaScriptExpression
      */
     public function __construct($code)
     {
-        if(!is_string($code))
+        if (!is_string($code))
             throw new CException('Value passed to CJavaScriptExpression should be a string.');
-        if(strpos($code, 'js:')===0)
-            $code=substr($code,3);
-        $this->code=$code;
+        if (strpos($code, 'js:') === 0)
+            $code = substr($code, 3);
+        $this->code = $code;
     }
 
     /**

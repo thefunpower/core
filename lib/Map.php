@@ -1,26 +1,29 @@
-<?php 
+<?php
+
 /**
  * 
  * @license read license.txt
  * @author sun <sunkangchina@163.com>
  * @copyright (c) 2021 
  */
-namespace lib;   
+
+namespace lib;
 /*
 tx_map_key
 gd_map_key
 bd_map_key
 */
+
 class Map
 {
-      
+
     public static function get_request($url)
     {
         $context = stream_context_create(array(
-             'http' => array(
-              'timeout' => 3000 
-             ) 
-        ));   
+            'http' => array(
+                'timeout' => 3000
+            )
+        ));
         $res = file_get_contents($url, 0, $context);
         return $res;
     }
