@@ -71,5 +71,8 @@ if (strpos($plugin_name, 'plugins') !== false) {
 		}
 	}
 }
-auto_include();
+/**
+ * 加载插件中的路径文件 router.php
+ */
+auto_include_router();
 autoload_theme('admin');

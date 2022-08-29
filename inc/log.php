@@ -35,6 +35,7 @@ Log::init([
         'file'  =>  [
             'type'  =>  'file',
             'path'  =>  $log_path,
+            'time_format'   =>    'Y-m-d H:i:s',
         ],
     ],
 ]);
