@@ -269,9 +269,9 @@ function auto_include_router()
     $_actived = has_actived_plugin();
     foreach ($_actived as $name => $v) {
         $_autoinclude_file = $_autoinclude_dir . $name . '/router.php';
-        if (file_exists($_autoinclude_file)) {
-            include $_autoinclude_file;
-        }
+        $_include = $_autoinclude_dir . $name . '/include.php';
+        import($_include);
+        import($_autoinclude_file);
     }
 }
 /**
