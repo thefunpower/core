@@ -83,6 +83,9 @@ function get_user($user_id)
 function get_user_where($where = [])
 {
     $user    = db_get_one('user', '*', $where);
+    if(!$user){
+        return;
+    }
     $user_id = $user['id'];
     $login_where = ['user_id' => $user_id];
     $from = g('from');
