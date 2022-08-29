@@ -36,6 +36,7 @@ try {
     ]);
 } catch (Exception $e) {
     $err = $e->getMessage();
+    write_log_error("连接数据库失败");
     add_action("db_connect_error", $err);
 }
 
