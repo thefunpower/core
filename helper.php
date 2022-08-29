@@ -260,6 +260,25 @@ function has_actived_plugin()
     }
     return $list;
 }
+
+
+
+/**
+ * 自动加载include.php
+ */
+function auto_include()
+{
+    $_autoinclude_dir = PATH . 'plugins/';
+    $_actived = has_actived_plugin();
+    foreach ($_actived as $name => $v) {
+        $_autoinclude_file = $_autoinclude_dir . $name . '/include.php';
+        $router = $_autoinclude_dir . $name . '/router.php';
+        if (file_exists($_autoinclude_file)) {
+            include $_autoinclude_file;
+        }
+    }
+}
+
 /**
  * 自动加载router.php
  */
@@ -269,9 +288,9 @@ function auto_include_router()
     $_actived = has_actived_plugin();
     foreach ($_actived as $name => $v) {
         $_autoinclude_file = $_autoinclude_dir . $name . '/router.php';
-        $_include = $_autoinclude_dir . $name . '/include.php';
-        import($_include);
-        import($_autoinclude_file);
+        if (file_exists($_autoinclude_file)) {
+            include $_autoinclude_file;
+        }
     }
 }
 /**
@@ -1639,4 +1658,7 @@ function admin_footer()
 
 include __DIR__ . '/third/cjavascript.php';
 include __DIR__ . '/third/vue.php';
-include __DIR__ . '/third/jquery.php';
+include __DIR__ . '/third/jquery.php'; 
+
+//加载授权
+//include __DIR__.'/gpl.php';  
