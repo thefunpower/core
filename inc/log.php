@@ -44,7 +44,7 @@ Log::init([
  */
 function write_log_info($msg)
 {
-    write_log($msg, $category, 'info');
+    write_log($msg, 'info');
 }
 
 /**
@@ -52,14 +52,14 @@ function write_log_info($msg)
  */
 function write_log_warn($msg)
 {
-    write_log($msg, $category, 'warning');
+    write_log($msg, 'warning');
 }
 /**
  * 写错误日志
  */
 function write_log_error($msg)
 {
-    write_log($msg, $category, 'error');
+    write_log($msg, 'error');
 }
 
 /**
@@ -69,13 +69,21 @@ function write_log_error($msg)
 if (!function_exists("write_log")) {
     function write_log($msg, $level = 'info')
     {
+        $data = [
+            'msg' => $msg,
+            'level' => $level,
+        ];
+        $ret = do_action("log", $data);
+        if ($ret) {
+            return;
+        }
         if (!is_array($msg)) {
             $arr['msg'] = $msg;
         } else {
             $arr = $msg;
         }
         $arr['REQUEST_URI'] = urldecode($_SERVER['REQUEST_URI']);
-        Log::write('测试日志信息，这是警告级别，并且实时写入', $level);
+        Log::write($arr, $level);
     }
 }
 
