@@ -4,10 +4,9 @@ if (!defined('ADMIN_DIR_NAME')) {
 }
 if (!defined('ADMIN_COOKIE_NAME')) {
 	define("ADMIN_COOKIE_NAME", 'user_id');
-}
-$autoload = include PATH . '/vendor/autoload.php';
+} 
 
-global $_app, $db, $pdo, $log, $autoload, $config;
+global $_app, $db, $pdo, $log,  $config;
 
 if (!$base_path) {
 	$base_path = "/";
