@@ -24,7 +24,8 @@
         "symfony/mailer": "^5.4",    
         "topthink/think-orm": "^2.0",    
         "catfan/medoo": "^2.1",
-        "predis/predis": "^2.0"
+        "predis/predis": "^2.0",
+        "ramsey/uuid": "^4.4"
     }, 
     "autoload": { 
         "psr-0": {

@@ -32,6 +32,9 @@ https://github.com/vlucas/valitron
 
 https://medoo.in/
 
+https://uuid.ramsey.dev/en/stable/rfc4122/version1.html
+
+
 [guzzlephp7]https://docs.guzzlephp.org/en/stable/quickstart.html
 
 [phpseclib2]http://phpseclib.sourceforge.net/
