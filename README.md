@@ -32,12 +32,20 @@ https://github.com/vlucas/valitron
 
 https://medoo.in/
 
-
-
 [guzzlephp7]https://docs.guzzlephp.org/en/stable/quickstart.html
 
 [phpseclib2]http://phpseclib.sourceforge.net/
 
+
+### 如使用 mongodb 请使用
+
+~~~
+composer require mongodb/mongodb
+~~~
+
+https://www.mongodb.com/docs/php-library/current/tutorial/crud/
+
+ 
 
 
 ### 插件forum中使用视图文件
