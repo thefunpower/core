@@ -20,6 +20,19 @@
 
 使用时请使用 `php-start` 开始项目，不能直接使用此扩展包！ 
 
+### [模板](https://github.com/kalimatas/php-liquid)
+
+~~~
+$data['products'] = [
+  [
+    'name'=>'产品名称',
+    'price'=>'99.99',
+    'description'=>'描述',
+  ]
+];
+echo liquid('demo',$data);
+~~~
+
 ### 依赖
 
 https://github.com/predis/predis
