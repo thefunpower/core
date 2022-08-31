@@ -20,6 +20,26 @@
 
 使用时请使用 `php-start` 开始项目，不能直接使用此扩展包！ 
 
+### 依赖
+
+https://github.com/predis/predis
+
+https://github.com/firebase/php-jwt
+
+https://phpspreadsheet.readthedocs.io/en/latest/
+
+https://github.com/vlucas/valitron
+
+https://medoo.in/
+
+
+
+[guzzlephp7]https://docs.guzzlephp.org/en/stable/quickstart.html
+
+[phpseclib2]http://phpseclib.sourceforge.net/
+
+
+
 ### 插件forum中使用视图文件
 
 router.php代码演示，对应的目录有两个：
