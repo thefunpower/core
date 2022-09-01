@@ -1719,7 +1719,7 @@ function ee($msg, $ret = [])
     $arr['msg'] = $th->getMessage();
     $arr['trace'] = $th->getTraceAsString();
     $arr['ret'] = json_encode($ret);
-    do_action('ee', $arr);
+    do_action('ee', $th);
     $arr['created_at'] = now();
     db_insert('ee', $arr);
     return $arr;
