@@ -1691,3 +1691,37 @@ function liquid($name,$data = []){
   return $template->render($data);
 } 
  
+
+/**
+ * 抛出异常 
+ * @param string $msg 
+ * 
+ * 
+CREATE TABLE IF NOT EXISTS `ee` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `file` varchar(1000) NOT NULL COMMENT '',
+  `line` varchar(100) DEFAULT NULL COMMENT '',
+  `msg` varchar(1000) NOT NULL,
+  `trace` text NOT NULL COMMENT '',
+  `ret` json  NULL COMMENT '',
+  `created_at` datetime NULL COMMENT '',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+ */
+function ee($msg, $ret = [])
+{
+  try {
+    throw new \Exception($msg);
+  } catch (\Throwable $th) {
+    $arr['file'] = $th->getFile();
+    $arr['line'] = $th->getLine();
+    $arr['msg'] = $th->getMessage();
+    $arr['trace'] = $th->getTraceAsString();
+    $arr['ret'] = json_encode($ret);
+    do_action('ee', $arr);
+    $arr['created_at'] = now();
+    db_insert('ee', $arr);
+    return $arr;
+  }
+}
