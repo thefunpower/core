@@ -1,15 +1,19 @@
 <?php
 
 /*
-	Copyright (c) 2021-2050 FatPlug, All rights reserved.
-	This file is part of the FatPlug Framework (http://fatplug.cn).
-	This is not free software.
-	you can redistribute it and/or modify it under the
-	terms of the License after purchased commercial license. 
-	mail: sunkangchina@163.com
-	web: http://fatplug.cn
+    Copyright (c) 2021-2050 FatPlug, All rights reserved.
+    This file is part of the FatPlug Framework (http://fatplug.cn).
+    This is not free software.
+    you can redistribute it and/or modify it under the
+    terms of the License after purchased commercial license. 
+    mail: sunkangchina@163.com
+    web: http://fatplug.cn
 */
-
+/**
+* $where = Medoo::raw("WHERE $json like :like", [':like' => "%" . $arr[1] . "%"]); 
+* 
+* $data = db_pager("log", "*", $where); //db_pager_count(100);
+*/
 if (!defined('VERSION')) {
     die();
 }
@@ -174,7 +178,12 @@ function db_pager($table, $join, $columns = null, $where = null)
     $last_page     = ceil($count / $pre_page);
     $has_next_page = $last_page > $current_page ? true : false;
     $start         = ($current_page - 1) * $pre_page;
-    $where['LIMIT'] = [$start, $pre_page];
+    if (is_object($where)) {
+        $where->value =  $where->value . " LIMIT $start, $pre_page";
+    } else {
+        $where['LIMIT'] = [$start, $pre_page];
+    }
+
     if ($flag) {
         $data  =  db_get($table, $columns, $where);
     } else {
@@ -189,7 +198,7 @@ function db_pager($table, $join, $columns = null, $where = null)
         'total'        => $count,
         'has_next_page' => $has_next_page,
         'data'         => $data,
-        'data_count'   => count($data),
+        'data_count'   => count($data ?: []),
     ];
 }
 /**
