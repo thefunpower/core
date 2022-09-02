@@ -4,7 +4,7 @@ if (!defined('ADMIN_DIR_NAME')) {
 }
 if (!defined('ADMIN_COOKIE_NAME')) {
 	define("ADMIN_COOKIE_NAME", 'user_id');
-} 
+}
 
 global $_app, $db, $pdo, $log,  $config;
 
@@ -29,6 +29,9 @@ if (php_sapi_name() !== 'cli' && session_status() !== PHP_SESSION_ACTIVE) {
 include __DIR__ . '/inc/request.php';
 //加载配置
 include PATH . '/config.ini.php';
+//配置时区
+ini_set('date.timezone', $config['timezone'] ?: 'Asia/Shanghai');
+//think-orm
 include __DIR__ . '/inc/orm.php';
 //加载共用函数
 include __DIR__ . '/helper.php';

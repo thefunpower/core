@@ -64,24 +64,63 @@ function write_log_error($msg)
 }
 
 /**
+ * 
  * 记录日志 
  * 日志的级别从低到高依次为： debug, info, notice, warning, error, critical, alert 
+ * 以下级别会记录到数据库 
+ * write_log(['txt'=>"错误了!!!",'trace'=>'登录成功'], 'alert');
+ * write_log("错误了!!!", 'error');
+ * write_log("错误了!!!", 'critical');
+ * write_log("错误了!!!", 'alert'); 
+ * 
+ *          
+CREATE TABLE IF NOT EXISTS `log` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `level` varchar(100) NOT NULL COMMENT '',
+  `url` varchar(1000) NOT NULL COMMENT '',
+  `file` varchar(1000) NOT NULL COMMENT '',
+  `line` varchar(100) DEFAULT NULL COMMENT '',
+  `msg` json NOT NULL,
+  `trace` text NOT NULL COMMENT '', 
+  `created_at` datetime NULL COMMENT '',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4; 
+
  */
 if (!function_exists("write_log")) {
     function write_log($msg, $level = 'info')
     {
-        $data = [
-            'msg' => $msg,
-            'level' => $level,
-        ];
+        if (!$msg) {
+            return;
+        }
+        $level = strtolower($level);
+        if (!is_array($msg)) {
+            $data['log'] = $msg;
+        } else {
+            $data = $msg;
+        }
         $ret = do_action("log", $data);
         if ($ret) {
             return;
         }
-        if (!is_array($msg)) {
-            $arr['msg'] = $msg;
-        } else {
-            $arr = $msg;
+        $trace = debug_backtrace(false)[0];
+        $file = $trace['file'];
+        $line = $trace['line'];
+        $trace = '';
+        if (in_array($level, ['warning', 'error', 'critical', 'alert'])) {
+            $arr = [];
+            $arr['url'] = urldecode($_SERVER['REQUEST_URI']);
+            $arr['level'] = $level;
+            $arr['file'] = $file;
+            $arr['line'] = $line;
+            if ($data['trace']) {
+                $trace = $data['trace'];
+                unset($data['trace']);
+            }
+            $arr['msg']  = json_encode($data);
+            $arr['trace'] = $trace;
+            $arr['created_at'] = now();
+            db_insert('log', $arr);
         }
         $arr['REQUEST_URI'] = urldecode($_SERVER['REQUEST_URI']);
         Log::write($arr, $level);
