@@ -14,12 +14,8 @@ if (!defined('VERSION')) {
     die();
 }
 /**
- * 有\'内容转成'显示，与addslashes相反
- */
-function output_html($str)
-{
-    return stripslashes($str);
-}
+ * 有\'内容转成'显示，与addslashes相反 stripslashes
+ */ 
 /**
  * 对 GET POST COOKIE REQUEST请求字段串去除首尾空格
  */
@@ -31,8 +27,8 @@ if (!function_exists('global_trim')) {
             if (is_array($v)) {
                 foreach ($v as $key => $val) {
                     if ($v && !is_array($val)) {
-                        //防止注入
-                        $val = addslashes(trim($val));
+                        //addslashes
+                        $val = trim($val);
                     }
                     $in[$k][$key] = $val;
                     $in[] = &$in[$k][$key];
