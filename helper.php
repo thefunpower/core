@@ -689,8 +689,15 @@ function get_distance($longitude1, $latitude1, $longitude2, $latitude2, $unit = 
 
     return round($distance, $decimal);
 }
-
-
+/**
+* 判断是否是ssl
+*/
+function is_ssl(){
+    return isset($_SERVER['HTTPS']) && ($_SERVER['HTTPS'] == 1 || strtolower($_SERVER['HTTPS'])=='on') 
+        || isset($_SERVER['SERVER_PORT']) && $_SERVER['SERVER_PORT']==443
+        || isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO']=='https'
+        || isset($_SERVER['HTTP_X_CLIENT_PROTO']) && $_SERVER['HTTP_X_CLIENT_PROTO']=='https';
+}
 /**
  * 设置、获取cookie
  *
@@ -699,16 +706,24 @@ function get_distance($longitude1, $latitude1, $longitude2, $latitude2, $unit = 
  * @param integer $expire
  * @return void
  */
-function cookie($name, $value = null, $expire = 0, $path = '/')
+function cookie($name, $value = NULL, $expire = 0)
 {
     global  $config;
     $name   = $config['cookie_prefix'] . $name;
     $path   = $config['cookie_path'] ?: '/';
     $domain = $config['cookie_domain'] ?: '';
-    if (!$value) {
+    if ($value === NULL) {
         return $_COOKIE[$name];
     }
-    setcookie($name, $value, $expire, $path, $domain);
+    $bool = is_ssl()?true:false;
+    setcookie($name, $value, [
+        'expires' => $expire,
+        'path' => $path,
+        'domain' => $domain,
+        'secure' => $bool,
+        'httponly' => $bool,
+        'samesite' => 'None',
+    ]);  
     $_COOKIE[$name] = $value;
 }
 /**
@@ -716,12 +731,7 @@ function cookie($name, $value = null, $expire = 0, $path = '/')
  */
 function remove_cookie($name)
 {
-    global  $config;
-    $name   = $config['cookie_prefix'] . $name;
-    $path   = $config['cookie_path'] ?: '/';
-    $domain = $config['cookie_domain'] ?: '';
-    setcookie($name, null, time() - 1, $path, $domain);
-    $_COOKIE[$name] = null;
+    cookie($name,'',time()-100); 
 }
 
 
