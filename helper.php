@@ -715,15 +715,19 @@ function cookie($name, $value = NULL, $expire = 0)
     if ($value === NULL) {
         return $_COOKIE[$name];
     }
-    $bool = is_ssl()?true:false;
-    setcookie($name, $value, [
+    $bool = is_ssl()?true:false; 
+    $opt = [
         'expires' => $expire,
         'path' => $path,
         'domain' => $domain,
         'secure' => $bool,
         'httponly' => $bool,
         'samesite' => 'None',
-    ]);  
+    ];
+    if(is_local()){
+        unset($opt['samesite']);
+    }
+    setcookie($name, $value, $opt);  
     $_COOKIE[$name] = $value;
 }
 /**
