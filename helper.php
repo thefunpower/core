@@ -450,10 +450,7 @@ function is_post()
  * 判断是否为json 
  */
 function is_json($data, $assoc = false)
-{
-    if (is_array($data)) {
-        return $data;
-    }
+{ 
     $data = json_decode($data, $assoc);
     if ($data && (is_object($data)) || (is_array($data) && !empty(current($data)))) {
         return $data;
