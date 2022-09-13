@@ -22,9 +22,6 @@ function api($show_error = true)
 	static $_data;
 	if (!$_data) {
 		$_data = get_author(null, false, $show_error);
-		if (is_json($_data)) {
-			exit;
-		}
 	}
 	return $_data;
 }
@@ -39,7 +36,10 @@ function api_admin()
 	}
 }
 
-// 解析 HTTP_AUTHORIZATION
+/**
+ * 解析 HTTP_AUTHORIZATION
+ * 
+ */
 function get_author($sign = null, $ignore_time_check = false, $show_error = true)
 {
 	global $config;
@@ -53,14 +53,14 @@ function get_author($sign = null, $ignore_time_check = false, $show_error = true
 	if (!$key) {
 		$error = 'jwt_key参数有问题';
 	}
-	if (get_post('sign')) {
-		$sign = get_post('sign');
+	if (g('sign')) {
+		$sign = g('sign');
 	}
 	$jwt  = Jwt::decode($sign);
 	if (!$jwt->time) {
 		$error = 'time参数有问题';
 	}
-	$exp = (int)$c['exp'];
+	$exp = $config['jwt_exp_time'];
 	if ($exp <= 0) {
 		$exp = 3600;
 	}
