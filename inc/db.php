@@ -310,7 +310,10 @@ function db_insert($table, $data = [])
         $db    = db()->insert($table, $data);
         $id = db()->id();
         //写入数据后
-        do_action("db_insert.$table.after", $id);
+        $action_data = [];
+        $action_data['id'] = $id;
+        $action_data['data'] = $data;
+        do_action("db_insert.$table.after", $action_data);
         return $id;
     } catch (Exception $e) {
         db_add_error($e->getMessage());
@@ -345,7 +348,10 @@ function db_update($table, $data = [], $where = [])
         }
         $count =  $db->rowCount();
         //更新数据后
-        do_action("db_update.$table.after", $data);
+        $action_data = [];
+        $action_data['where'] = $where;
+        $action_data['data'] = $data;
+        do_action("db_update.$table.after", $action_data);
         return $count;
     } catch (Exception $e) {
         db_add_error($e->getMessage());
