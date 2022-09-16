@@ -606,6 +606,9 @@ function db_allow($table, $data)
 {
     return get_data_db_allow($table, $data);
 }
+/**
+* 功能同db_allow
+*/
 function get_data_db_allow($table, $data)
 {
     $fields = get_table_fields($table);
@@ -627,7 +630,7 @@ function database_tables($name = null, $show_markdown = false)
 {
     global $config;
     if (!$name) {
-        $name = $config['dbname'];
+        $name = $config['db_name'];
     }
     $sql  = "SHOW TABLE STATUS FROM {$name}";
     $all  = db_query($sql, []);
