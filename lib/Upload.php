@@ -92,14 +92,25 @@ class Upload
 
     /**
      *  单个文件上传
+     *  do_action("upload.mime", $mime);
+     *  如果不是管理员或小程序用户，比如PC商家需要上传图片可配置
+     *  global $upload_always;
+     *  $upload_always = true;
      */
     public function one($http_opt = [])
     {
+        global $upload_always;
         $user_id = cookie(ADMIN_COOKIE_NAME) ?: api(false)['user_id'];
-        if (!$user_id) {
-            write_log_error("未登录用户禁止上传文件");
-            json_error(['msg' => '未登录用户禁止上传文件']);
+        $allow_upload = false;
+        if($user_id){
+            $allow_upload = true;
         }
+        if($upload_always){
+            $allow_upload = true;
+        }
+        if(!$allow_upload){
+            json_error(['msg' => '禁止上传文件']);
+        } 
         global $config;
         //上传文件前
         do_action("upload.before", $this);
