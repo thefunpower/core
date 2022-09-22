@@ -26,8 +26,7 @@ if (!function_exists('global_trim')) {
         foreach ($in as $k => $v) {
             if (is_array($v)) {
                 foreach ($v as $key => $val) {
-                    if ($v && !is_array($val)) {
-                        //addslashes
+                    if ($val && !is_array($val)) { 
                         $val = trim($val);
                     }
                     $in[$k][$key] = $val;
