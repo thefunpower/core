@@ -86,49 +86,49 @@ CREATE TABLE IF NOT EXISTS `log` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4; 
 
- */
-if (!function_exists("write_log")) {
-    function write_log($msg, $level = 'info')
-    {
-        if (!$msg) {
-            return;
-        }
-        $level = strtolower($level);
-        if (!is_array($msg)) {
-            $data['log'] = $msg;
-        } else {
-            $data = $msg;
-        }
-        $ret = do_action("log", $data); 
-        $trace = debug_backtrace(false)[0];
-        $file = $trace['file'];
-        $line = $trace['line'];
-        $trace = '';
-        if (in_array($level, ['warning', 'error', 'critical', 'alert'])) {
-            $arr = [];
-            $arr['url'] = urldecode($_SERVER['REQUEST_URI']);
-            $arr['level'] = $level;
-            $arr['file'] = $file;
-            $arr['line'] = $line;
-            if ($data['trace']) {
-                $trace = $data['trace'];
-                unset($data['trace']);
-            }
-            $arr['msg']  = json_encode($data);
-            $arr['trace'] = $trace;
-            $arr['created_at'] = now();
-            db_insert('log', $arr);
-        }else{
-            $arr = [];
-            $arr['trace'] = $data;
-            $arr['level'] = $level;
-            $arr['file'] = $file;
-            $arr['line'] = $line;
-        }
-        $arr['REQUEST_URI'] = urldecode($_SERVER['REQUEST_URI']);
-        Log::write($arr, $level);
+ */ 
+function write_log($msg, $level = 'info')
+{
+    if (!$msg) {
+        return;
     }
-}
+    $level = strtolower($level);
+    if (!is_array($msg)) {
+        $data['log'] = $msg;
+    } else {
+        $data = $msg;
+    }
+    $ret = do_action("log", $data); 
+    $trace = debug_backtrace(false)[0];
+    $file = $trace['file'];
+    $line = $trace['line'];
+    $trace = '';
+    if (in_array($level, ['warning', 'error', 'critical', 'alert'])) {
+        $arr = [];
+        $arr['url'] = urldecode($_SERVER['REQUEST_URI']);
+        $arr['level'] = $level;
+        $arr['file'] = $file;
+        $arr['line'] = $line;
+        if ($data['trace']) {
+            $trace = $data['trace'];
+            unset($data['trace']);
+        }
+        $arr['msg']  = $data;
+        $arr['trace'] = $trace;
+        $arr['created_at'] = now();  
+        $arr = db_allow("log",$arr); 
+        db_insert('log', $arr);
+        
+    }else{
+        $arr = [];
+        $arr['trace'] = $data;
+        $arr['level'] = $level;
+        $arr['file'] = $file;
+        $arr['line'] = $line;
+    }
+    $arr['REQUEST_URI'] = urldecode($_SERVER['REQUEST_URI']);
+    Log::write($arr, $level);
+} 
 
 /**
  * 关闭当前日志写入
