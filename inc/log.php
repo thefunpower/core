@@ -99,10 +99,7 @@ if (!function_exists("write_log")) {
         } else {
             $data = $msg;
         }
-        $ret = do_action("log", $data);
-        if ($ret) {
-            return;
-        }
+        $ret = do_action("log", $data); 
         $trace = debug_backtrace(false)[0];
         $file = $trace['file'];
         $line = $trace['line'];
@@ -121,6 +118,12 @@ if (!function_exists("write_log")) {
             $arr['trace'] = $trace;
             $arr['created_at'] = now();
             db_insert('log', $arr);
+        }else{
+            $arr = [];
+            $arr['trace'] = $data;
+            $arr['level'] = $level;
+            $arr['file'] = $file;
+            $arr['line'] = $line;
         }
         $arr['REQUEST_URI'] = urldecode($_SERVER['REQUEST_URI']);
         Log::write($arr, $level);
