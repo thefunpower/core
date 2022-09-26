@@ -412,7 +412,7 @@ function json($data)
     $config['is_json'] = true;
     //JSON输出前
     do_action('end.data', $data);
-    echo json_encode($data);
+    echo json_encode($data,JSON_UNESCAPED_UNICODE);
     //JSON输出后或页面渲染后
     do_action("end");
     exit;
