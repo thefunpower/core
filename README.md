@@ -35,22 +35,21 @@ echo liquid('demo',$data);
 
 ### 依赖
 
-https://github.com/predis/predis
+[predis](https://github.com/predis/predis)
 
-https://github.com/firebase/php-jwt
+[jwt](https://github.com/firebase/php-jwt)
 
-https://phpspreadsheet.readthedocs.io/en/latest/
+[xls](https://phpspreadsheet.readthedocs.io/en/latest/)
 
-https://github.com/vlucas/valitron
+[validate](https://github.com/vlucas/valitron)
 
-https://medoo.in/
+[database](https://medoo.in/)
 
-https://uuid.ramsey.dev/en/stable/rfc4122/version1.html
+[uuid](https://uuid.ramsey.dev/en/stable/rfc4122/version1.html)
 
+[guzzlephp7](https://docs.guzzlephp.org/en/stable/quickstart.html)
 
-[guzzlephp7]https://docs.guzzlephp.org/en/stable/quickstart.html
-
-[phpseclib2]http://phpseclib.sourceforge.net/
+[phpseclib2](http://phpseclib.sourceforge.net/)
 
 
 ### 如使用 mongodb 请使用
