@@ -213,33 +213,42 @@ class Vue
 
     public function crud()
     {
-        $this->method('load()', "js:ajax('" . $this->page_url . "',this.where,function(res) { 
-            _this.page   = res.current_page;
-            _this.total  = res.total;
-            _this.lists  = res.data;
-            _this.res  = res;
-            if(_this.loading){
-                setTimeout(function(){
-                    _this.loading = false;
-                },300);
-            }
-        });");
-        $this->method("save()", "js:let url = '" . $this->add_url . "';
-            if(this.form.id){
-                url = '" . $this->edit_url . "';
-            } 
-            ajax(url,this.form,function(res){ 
-                    console.log(res);
-                    _this.\$message({
-                      message: res.msg,
-                      type: res.type
-                    }); 
-                    if(res.code == 0){
-                        _this.is_show    = false; 
-                        _this.load();
-                    }
-            }); 
-        ");
+        if($this->page_url){
+            $this->method('load()', "js:ajax('" . $this->page_url . "',this.where,function(res) { 
+                _this.page   = res.current_page;
+                _this.total  = res.total;
+                _this.lists  = res.data;
+                _this.res  = res;
+                if(_this.loading){
+                    setTimeout(function(){
+                        _this.loading = false;
+                    },300);
+                }
+            });");
+        }else{
+            $this->method('load()', "js:");
+        }
+        if($this->add_url || $this->edit_url){
+            $this->method("save()", "js:let url = '" . $this->add_url . "';
+                if(this.form.id){
+                    url = '" . $this->edit_url . "';
+                } 
+                ajax(url,this.form,function(res){ 
+                        console.log(res);
+                        _this.\$message({
+                          message: res.msg,
+                          type: res.type
+                        }); 
+                        if(res.code == 0){
+                            _this.is_show    = false; 
+                            _this.load();
+                        }
+                }); 
+            ");
+        }else{
+            
+        }
+        
     }
 
     public function editor_method()
