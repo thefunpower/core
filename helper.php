@@ -1074,7 +1074,7 @@ function set_config($title, $body)
 {
     $one = db_get_one("config", "*", ['title' => $title]);
     if (is_array($body)) {
-        $body = json_encode($body, JSON_UNESCAPED_UNICODE);
+        
     }
     if (!$one) {
         db_insert("config", ['title' => $title, 'body' => $body]);
