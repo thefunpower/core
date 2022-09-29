@@ -1130,54 +1130,7 @@ function element_index_method()
         return (cpage - 1) * per_page + index + 1;
     }';
 }
-/**
- * XML 转成 数组
- */
-function xml_to_array($xml)
-{
-
-    $reg = "/<(\\w+)[^>]*?>([\\x00-\\xFF]*?)<\\/\\1>/";
-    if (preg_match_all($reg, $xml, $matches)) {
-        $count = count($matches[0]);
-        $arr = array();
-        for ($i = 0; $i < $count; $i++) {
-            $key = $matches[1][$i];
-            $val = xml_to_array($matches[2][$i]);  // 递归
-            if (array_key_exists($key, $arr)) {
-                if (is_array($arr[$key])) {
-                    if (!array_key_exists(0, $arr[$key])) {
-                        $arr[$key] = array($arr[$key]);
-                    }
-                } else {
-                    $arr[$key] = array($arr[$key]);
-                }
-                $arr[$key][] = $val;
-            } else {
-                $arr[$key] = $val;
-            }
-        }
-        return $arr;
-    } else {
-        return $xml;
-    }
-}
-/**
- * 数组转xml 
- */
-function array_to_xml($arr)
-{
-    $xml = "<xml>";
-    foreach ($arr as $key => $val) {
-        if (is_array($val)) {
-            $xml .= "<" . $key . ">" . array_to_xml($val) . "</" . $key . ">";
-        } else {
-            $xml .= "<" . $key . ">" . $val . "</" . $key . ">";
-        }
-    }
-    $xml .= "</xml>";
-    return $xml;
-}
-
+ 
 /**
  * 每页显示多少条记录 
  */
@@ -1674,9 +1627,6 @@ function admin_footer()
     include PATH . ADMIN_DIR_NAME . '/footer.php';
 }
 
-include __DIR__ . '/third/cjavascript.php';
-include __DIR__ . '/third/vue.php';
-include __DIR__ . '/third/jquery.php';
 
 /**
  * 使用liquid模板
@@ -1728,3 +1678,8 @@ function format_money($money, $len = 2, $sign = '￥')
   $format_money = strrev($format_money);
   return $sign . $negative . $format_money . $decimal;
 }
+
+
+include __DIR__ . '/third/cjavascript.php';
+include __DIR__ . '/third/vue.php';
+include __DIR__ . '/third/jquery.php';
