@@ -378,13 +378,21 @@ function db_update($table, $data = [], $where = [])
  * 数据库事务
  *
  */
-function action($call)
+function db_action($call)
 {
     $result = "";
     $db     = db();
     $db->action(function ($db) use (&$result, $call) {
         $call();
     });
+}
+/**
+* 兼容之前的action方法
+*/
+if(!function_exists('action')){
+    function action($call){
+        return db_action($call);
+    }
 }
 /**
  * 根据表名、字段 、条件 查寻一条记录
