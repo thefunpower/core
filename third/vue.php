@@ -253,75 +253,55 @@ class Vue
 
     public function editor_method()
     {
-        $this->data("editor", "js:null");
+        $this->data("editor", "js:{}");
         $this->add_method = [
             "show()" => "js:{
                  this.is_show = true;
                  this.form = {};
-                 setTimeout(function () {
-                     _this.editor.txt.html('');
-                 },500);
+                 setTimeout(function () { 
+                     editor.setHtml('');
+                 },600);
             }",
         ];
 
         $this->edit_method = [
-            "update(row)" => "js:{
-                console.log('更新');
+            "update(row)" => "js:{ 
                 this.is_show = true;
-                this.form = row;
-                console.log(row.body);
+                this.form = row; 
                 setTimeout(function () { 
-                    _this.editor.txt.html(row.body); 
-                 },500);
+                      editor.setHtml(row.body); 
+                },600);
             }"
         ];
-        $this->method("weditor()", "js:if(!this.editor){
-             this.editor = new E(this.\$refs.editor);
-             this.editor.config.height = 200;
-             this.editor.config.uploadFileName = 'file'
-             this.editor.config.uploadImgServer = '/admin/api/upload.php';
-             this.editor.config.zIndex = 10;
-             this.editor.config.focus = false;
-             this.editor.config.uploadImgParams = {
-                handle: 'editor', 
-             };
-             this.editor.config.customUploadImg = function (resultFiles, insertImgFn) {
-                // resultFiles 是 input 中选中的文件列表
-                // insertImgFn 是获取图片 url 后，插入到编辑器的方法
-                console.log(resultFiles);
-                for(let i in resultFiles){
-                    let file = resultFiles[i]; 
-                    let reader = new FileReader();
-                    reader.readAsDataURL(file);
-                    reader.onload = function (res) {
-                        let base = res.target.result;
-                    };
-                    const formdata = new FormData();
-                    // 1.单文件上传时
-                    formdata.append('file', file);
-
-                    $.ajax({
-                    url: '/admin/api/upload.php',
-                    type: 'POST',
-                    cache: false,
-                    data: formdata,
-                    processData: false,
-                    contentType: false,
-                    }).done(function(res) {
-                        res = JSON.parse(res);
-                        console.log(res);
-                        if(res.data){
-                            insertImgFn(res.data);
-                        }
-                    }).fail(function(res) {});
-                }
-            };
-             this.editor.config.onchange = (html) => { 
-                _this.form.body = html;
-             }; 
-             this.editor.create();  
-
-         }  ");
+        $this->method("weditor()", "js: 
+            if(JSON.stringify(this.editor) == '{}'){ 
+                this.editor = {load:1};
+                const editorConfig = {
+                    placeholder: '请输入...',
+                    MENU_CONF: {
+                      uploadImage: {
+                        fieldName: 'file',server: '/api/admin/upload.php?is_editor=1'
+                      }
+                    }, 
+                    onChange(editor) {
+                      const html = editor.getHtml()
+                      console.log('editor content', html)
+                      // 也可以同步到 <textarea>
+                    }
+                }; 
+                editor = E.createEditor({
+                    selector: '#editor-container', 
+                    config: editorConfig,
+                    mode: 'simple', // or 'simple'
+                }); 
+                const toolbarConfig = {}; 
+                const toolbar = E.createToolbar({
+                    editor,
+                    selector: '#toolbar-container',
+                    config: toolbarConfig,
+                    mode: 'simple', // or 'simple'
+                }); 
+          }");
     }
     /**
     日期区间：
