@@ -85,7 +85,7 @@ class Menu
                 }
             }
         }
-
+        do_action("admin.menu.end", $menus); 
         return $menus;
     }
 }
