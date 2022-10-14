@@ -25,8 +25,7 @@
         "topthink/think-orm": "^2.0",    
         "catfan/medoo": "^2.1",
         "predis/predis": "^2.0",
-        "ramsey/uuid": "^4.4",
-        "liquid/liquid": "^1.4"
+        "ramsey/uuid": "^4.4"
     }, 
     "autoload": { 
         "psr-0": {

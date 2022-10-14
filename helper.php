@@ -1625,35 +1625,7 @@ function admin_header()
 function admin_footer()
 {
     include PATH . ADMIN_DIR_NAME . '/footer.php';
-}
-
-
-/**
- * 使用liquid模板
- * https://github.com/kalimatas/php-liquid
-
-$data['products'] = [
-  [
-    'name'=>'产品名称',
-    'price'=>'99.99',
-    'description'=>'描述',
-  ]
-];
-echo liquid('demo',$data);
-
- */
-function liquid($name, $data = [])
-{
-    $template = new \Liquid\Template();
-    ob_start();
-    view($name, $data);
-    $content = ob_get_contents();
-    ob_clean();
-    $template->parse($content);
-    return $template->render($data);
-}
-
-
+} 
 
 /**
  * 格式化金额
