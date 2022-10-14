@@ -1679,6 +1679,35 @@ function format_money($money, $len = 2, $sign = '￥')
   return $sign . $negative . $format_money . $decimal;
 }
 
+/**
+* 生成签名链接
+*/
+function create_sample_sign_url($arr = []){
+    $arr['time'] = time();
+    $arr['sign'] = urlencode(aes_encode(json_encode($arr)));
+    unset($arr['time']); 
+    return http_build_query($arr);
+}
+/**
+* 验证签名链接是否可用
+*/
+function verify_sample_sign_url($exp_time = 60){
+    $sign = g('sign');
+    if(!$sign){
+        return false;
+    }
+    $arr = json_decode(aes_decode($sign),true); 
+    $flag = false; 
+    if($arr && $arr['time'] > time()-$exp_time){
+        $flag = true;
+    } 
+    if($flag){
+       return true;
+    }else{
+       return false;
+    }
+}
+
 
 include __DIR__ . '/third/cjavascript.php';
 include __DIR__ . '/third/vue.php';
