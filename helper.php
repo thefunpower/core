@@ -161,7 +161,7 @@ function set_user_meta($user_id, $meta)
             $one = db_get_one('user_meta', '*', ['user_id' => $user_id, 'title' => $k]);
             $id = $one['id'];
             if (is_array($v)) {
-                $v = json_encode($v, JSON_UNESCAPED_UNICODE);
+                //无需要json_encode，在db中已处理 
             }
             if ($id) {
                 db_update('user_meta', ['title' => $k, 'value' => $v], ['id' => $id]);
