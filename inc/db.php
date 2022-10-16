@@ -307,14 +307,13 @@ function db_insert($table, $data = [])
     try {
         //写入数据前
         do_action("db_insert.$table.before", $data);
-        foreach($data as $k=>$v){
-            if($v){
-                if(!is_array($v))
-                    $data[$k] = addslashes($v);    
-                else
-                    $data[$k] = json_encode($v,JSON_UNESCAPED_UNICODE);
-            }            
-        }
+        foreach($data as $k=>$v){ 
+            if(is_array($v)){
+                $data[$k] = json_encode($v,JSON_UNESCAPED_UNICODE);   
+            }else{
+                $data[$k] = addslashes($v);  
+            }          
+        } 
         $db    = db()->insert($table, $data);
         $id = db()->id();
         //写入数据后
@@ -349,12 +348,11 @@ function db_update($table, $data = [], $where = [])
         //更新数据前
         do_action("db_update.$table.before", $data);
         foreach($data as $k=>$v){
-            if($v){
-                if(!is_array($v))
-                    $data[$k] = addslashes($v);    
-                else
-                    $data[$k] = json_encode($v,JSON_UNESCAPED_UNICODE);
-            }            
+            if(is_array($v)){
+                $data[$k] = json_encode($v,JSON_UNESCAPED_UNICODE);   
+            }else{
+                $data[$k] = addslashes($v);  
+            }          
         }
         $db    = db()->update($table, $data, $where);
         $error = db()->error;
