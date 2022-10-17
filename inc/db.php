@@ -7,7 +7,6 @@
     you can redistribute it and/or modify it under the
     terms of the License after purchased commercial license. 
     mail: sunkangchina@163.com
-    web: http://fatplug.cn
 */
 /**
 * $where = Medoo::raw("WHERE $json like :like", [':like' => "%" . $arr[1] . "%"]); 
