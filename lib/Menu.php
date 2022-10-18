@@ -1,12 +1,12 @@
 <?php
 
 /*
-	Copyright (c) 2021-2050 FatPlug, All rights reserved.
-	This file is part of the FatPlug Framework (http://fatplug.cn).
-	This is not free software.
-	you can redistribute it and/or modify it under the
-	terms of the License after purchased commercial license. 
-	mail: sunkangchina@163.com
+    Copyright (c) 2021-2050 FatPlug, All rights reserved.
+    This file is part of the FatPlug Framework (http://fatplug.cn).
+    This is not free software.
+    you can redistribute it and/or modify it under the
+    terms of the License after purchased commercial license. 
+    mail: sunkangchina@163.com
 */
 
 
@@ -30,7 +30,7 @@ class Menu
             'system' => [
                 'icon' => 'layui-icon layui-icon layui-icon-windows',
                 'label' => '系统',
-                'level' => 90,
+                'level' => 5,
                 'url' => "",
                 'children' => [
                     [
@@ -84,6 +84,7 @@ class Menu
                 }
             }
         }
+        $menus = Arr::order_by($menus,'level',SORT_ASC); 
         do_action("admin.menu.end", $menus); 
         return $menus;
     }
