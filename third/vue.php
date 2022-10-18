@@ -73,22 +73,8 @@ class Vue
         'reset()' => "js:this.where = {};this.load();",
     ];
 
-    public $add_method = [
-        "show()" => "js:{
-             this.is_show = true;
-             this.form = {};
-             this.load_common();
-        }"
-    ];
-
-    public $edit_method = [
-        "update(row)" => "js:{
-            this.is_show = true;
-            let row_cp = JSON.parse(JSON.stringify(row));
-            this.form = row_cp;
-            this.load_common();
-        }"
-    ];
+    public $add_method = ''; 
+    public $edit_method = '';
     public $tree_field = 'pid';
     public $tree_method = [
         'select_click(data)' => "js:{ 
@@ -262,7 +248,7 @@ class Vue
     public function editor_method()
     {
         $this->data("editor", "js:{}");
-        $this->add_method = [
+        $this->add_method = $this->add_method?:[
             "show()" => "js:{
                  this.is_show = true;
                  this.form = {};
@@ -270,7 +256,7 @@ class Vue
             }",
         ];
 
-        $this->edit_method = [
+        $this->edit_method = $this->edit_method?:[
             "update(row)" => "js:{ 
                 this.is_show = true;
                 this.form = row;  
