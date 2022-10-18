@@ -179,7 +179,15 @@ class Vue
                 methods:{" . $methods_str . "$br2}
             });
         ";
-        return $js;
+        $vars = '';
+        $e = self::$_editor; 
+        if($e){
+            foreach($e as $name){
+                $vars .=" var editor".$name.";\n";
+            }    
+        }        
+
+        return $vars . $js;
     }
 
 
@@ -258,50 +266,112 @@ class Vue
             "show()" => "js:{
                  this.is_show = true;
                  this.form = {};
-                 setTimeout(function () { 
-                     editor.setHtml('');
-                 },600);
+                 ".$this->loadEditorAdd()."
             }",
         ];
 
         $this->edit_method = [
             "update(row)" => "js:{ 
                 this.is_show = true;
-                this.form = row; 
-                setTimeout(function () { 
-                      editor.setHtml(row.body); 
-                },600);
+                this.form = row;  
+                ".$this->loadEditorUpdate()."
             }"
         ];
-        $this->method("weditor()", "js: 
-            if(JSON.stringify(this.editor) == '{}'){ 
-                this.editor = {load:1};
-                const editorConfig = {
-                    placeholder: '请输入...',
+        $this->method("weditor()", "js:   
+              ".$this->loadEditor()."  
+        ");
+    }
+    /**
+    * 生成编辑器HTML
+    */
+    public static $_editor;
+    public function editor($name = 'body'){
+        self::$_editor[] = $name; 
+        return '<div id="'.$name.'editor—wrapper" class="editor—wrapper">
+            <div id="'.$name.'weditor-tool" class="toolbar-container"></div>
+            <div id="'.$name.'weditor" class="editor-container" ></div>
+        </div> ';
+    }
+    /**
+    * 添加
+    */
+    public function loadEditorAdd(){
+        $e = self::$_editor; 
+        if(!$e){
+            return;
+        }
+        $js = '';
+        foreach($e as $name){
+            $js .="
+                setTimeout(function(){
+                    editor".$name.".setHtml('');
+                },600);                
+            ";
+        }
+        return $js;
+    }
+    /**
+    * 更新
+    */
+    public function loadEditorUpdate(){
+        $e = self::$_editor; 
+        if(!$e){
+            return;
+        }
+        $js = ''; 
+        foreach($e as $name){
+            $js .=" 
+                let dd_editor".$name." = row.".$name."; 
+                setTimeout(function(){
+                    editor".$name.".setHtml(dd_editor".$name."); 
+                },600); 
+            ";
+        }
+        return $js;
+    }
+
+    /**
+    * 加载wangeditor
+    */
+    public function loadEditor(){
+            $e = self::$_editor; 
+            if(!$e){
+                return;
+            }
+            $js = '';
+            foreach($e as $name){
+                $js .= " 
+                if(editor".$name."){ 
+                    editor".$name.".destroy();
+                }
+                var editorConfig".$name." = {
+                    placeholder: '',
                     MENU_CONF: {
                       uploadImage: {
                         fieldName: 'file',server: '/api/admin/upload.php?is_editor=1'
                       }
                     }, 
-                    onChange(editor) {
-                      const html = editor.getHtml()
-                      console.log('editor content', html)
-                      // 也可以同步到 <textarea>
+                    onChange(editor) {  
+                      _this.form.".$name." = editor.getHtml(); 
                     }
                 }; 
                 editor = E.createEditor({
-                    selector: '#editor-container', 
-                    config: editorConfig,
-                    mode: 'simple', // or 'simple'
+                    selector: '#".$name."weditor', 
+                    config: editorConfig".$name.",
+                    mode: 'simple',  
                 }); 
-                const toolbarConfig = {}; 
-                const toolbar = E.createToolbar({
+                editor".$name." = editor; 
+                var toolbarConfig".$name." = {}; 
+                var toolbar".$name." = E.createToolbar({
                     editor,
-                    selector: '#toolbar-container',
-                    config: toolbarConfig,
-                    mode: 'simple', // or 'simple'
-                }); 
-          }");
+                    selector: '#".$name."weditor-tool',
+                    config: toolbarConfig".$name.",
+                    mode: 'simple',  
+                });   
+                ";    
+            }
+            
+            return $js;
     }
     /**
     日期区间：
