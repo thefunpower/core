@@ -183,6 +183,22 @@ class Vue
         if ($opt['is_page']) {
             $this->created(['load()']);
         }
+        $this->add_method = $this->add_method?:[
+            "show()" => "js:{
+                 this.is_show = true;
+                 this.form = {};
+                 ".$this->loadEditorAdd()."
+            }",
+        ];
+
+        $this->edit_method = $this->edit_method?:[
+            "update(row)" => "js:{ 
+                this.is_show = true;
+                this.form = row;  
+                ".$this->loadEditorUpdate()."
+            }"
+        ];
+        
         foreach ($opt as $k => $v) {
             if ($v) {
                 if ($this->opt_method[$k]) {
@@ -246,23 +262,9 @@ class Vue
     }
 
     public function editor_method()
-    {
+    { 
         $this->data("editor", "js:{}");
-        $this->add_method = $this->add_method?:[
-            "show()" => "js:{
-                 this.is_show = true;
-                 this.form = {};
-                 ".$this->loadEditorAdd()."
-            }",
-        ];
-
-        $this->edit_method = $this->edit_method?:[
-            "update(row)" => "js:{ 
-                this.is_show = true;
-                this.form = row;  
-                ".$this->loadEditorUpdate()."
-            }"
-        ];
+        
         $this->method("weditor()", "js:   
               ".$this->loadEditor()."  
         ");
