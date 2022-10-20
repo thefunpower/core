@@ -234,6 +234,7 @@ global $db_error;
 function db_add_error($str)
 {
     global $db_error;
+    write_log($str,'error');
     $db_error[] = $str;
 }
 
