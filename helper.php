@@ -1001,18 +1001,7 @@ function get_file($id)
     do_action("upload.after", $f);
     $obj[$key] = $f;
     return $f;
-}
-
-//图片缩放
-function image_resize($img, $par = [])
-{
-    $data = [
-        'url'           => $img,
-        'x-oss-process' => $par,
-    ];
-    do_action("image_resize", $data);
-    return $data['url'];
-}
+} 
 //获取主题 
 function get_theme()
 {
