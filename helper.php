@@ -1050,10 +1050,10 @@ function view($name, $params = [])
 //创建或更新用户
 function admin_user($user, $pwd, $tag)
 {
-    $find = db_get_one('user', '*', ['user' => $user, 'tag' => $tag]);
+    $find = db_get_one('user', '*', ['user' => $user]);
     if (!$find) {
         if ($user && $pwd) {
-            db_insert('user', [
+            $id = db_insert('user', [
                 'user'  => $user,
                 'pwd'   => md5($pwd),
                 'tag'   => $tag,
@@ -1066,6 +1066,7 @@ function admin_user($user, $pwd, $tag)
             db_update('user', ['pwd' => md5($pwd)], ['id' => $id]);
         }
     }
+    return $id;
 }
 
 //设置配置
