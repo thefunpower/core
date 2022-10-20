@@ -171,6 +171,13 @@ function set_user_meta($user_id, $meta)
         }
     }
 }
+/**
+* 更新用户信息
+*/
+function set_user($user_id,$data = []){
+    db_update("user",$data,['id'=>$user_id]);
+    return $user_id;
+}
 
 function pr($str)
 {
