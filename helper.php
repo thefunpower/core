@@ -1686,7 +1686,7 @@ function verify_sample_sign_url($exp_time = 60){
 第四步：对签名字符串进行MD5加密，生成32位的字符串
 第五步：将签名生成的32位字符串转换为大写 
 */
-public function sign_by_secret($params,$secret){
+function sign_by_secret($params,$secret){
     $str = ''; 
     //将参与签名的参数按照键值(key)进行字典排序
     ksort($params); 
