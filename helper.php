@@ -1677,6 +1677,32 @@ function verify_sample_sign_url($exp_time = 60){
 }
 
 
+/**
+* 生成签名
+签名生成的通用步骤如下：
+第一步：将参与签名的参数按照键值(key)进行字典排序
+第二步：将排序过后的参数，进行key和value字符串拼接
+第三步：将拼接后的字符串首尾加上app_secret秘钥，合成签名字符串
+第四步：对签名字符串进行MD5加密，生成32位的字符串
+第五步：将签名生成的32位字符串转换为大写 
+*/
+public function sign_by_secret($params,$secret){
+    $str = ''; 
+    //将参与签名的参数按照键值(key)进行字典排序
+    ksort($params); 
+    foreach ($params as $k => $v) { 
+        //将排序过后的参数，进行key和value字符串拼接
+        $str .= "$k=$v";
+    } 
+    //将拼接后的字符串首尾加上app_secret秘钥，合成签名字符串
+    $str .= $secret; 
+    //对签名字符串进行MD5加密，生成32位的字符串
+    $str = md5($str);
+    //将签名生成的32位字符串转换为大写
+    return strtoupper($str);
+}
+
+
 include __DIR__ . '/third/cjavascript.php';
 include __DIR__ . '/third/vue.php';
 include __DIR__ . '/third/jquery.php';
