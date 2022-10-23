@@ -83,7 +83,8 @@ class Upload
     {
         unset($_POST['file']);
         do_action("upload", $model);
-        $model['request'] = $_POST;
+        $model['post'] = $_POST?:[];
+        $model['get']  = $_GET?:[];
         if (!$model['data']) {
             $model['data'] = cdn() . $model['url'];
         }
