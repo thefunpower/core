@@ -126,7 +126,7 @@ function write_log($msg, $level = 'info')
         $arr['file'] = $file;
         $arr['line'] = $line;
     }
-    $arr['REQUEST_URI'] = urldecode($_SERVER['REQUEST_URI']);
+    unset($arr['created_at']);
     Log::write($arr, $level);
 } 
 
