@@ -1,55 +1,27 @@
-### P-System-Core
+### Core
+
+代码不复杂，请仔细阅读代码
+
+https://www.yuque.com/sunkangchina/juhe/phper
+
+
+### 开发您自己的项目，也可以使用以下开源框架 
+
+|  框架   | 网址  |
+|  ----  | ----  |
+| Yii  | https://www.yiiframework.com/ |
+| ThinkPHP | https://www.thinkphp.cn/ |
+| CodeignIter  | https://codeigniter.com/ |
+| Laravel  | https://laravel.com/ |
+| FuelPHP  | https://www.fuelphp.com/ |
+| Nette  | https://www.fuelphp.com/ |
+| CakePHP  | https://cakephp.org/ |
+| Phalcon  | https://phalcon.io/zh-cn |
+| Yar  |  https://github.com/laruence/yar |
  
-
-### 开发您自己的项目，也可以使用以下开源框架O(∩_∩)O 
-
-[Yii](https://www.yiiframework.com/) | 
-[ThinkPHP](https://www.thinkphp.cn/) | 
-[CodeignIter](https://codeigniter.com/) | 
-[Laravel](https://laravel.com/) | 
-[FuelPHP](https://www.fuelphp.com/) | 
-[Nette](https://nette.org/) | 
-[CakePHP](https://cakephp.org/)
-
-
-[phalcon](https://phalcon.io/zh-cn) | [yar](https://github.com/laruence/yar)
-
-
-
-###  核心部分，无需修改代码。
-
-使用时请使用 `php-start` 开始项目，不能直接使用此扩展包！ 
-
-### [模板](https://github.com/kalimatas/php-liquid)
-
-~~~
-$data['products'] = [
-  [
-    'name'=>'产品名称',
-    'price'=>'99.99',
-    'description'=>'描述',
-  ]
-];
-echo liquid('demo',$data);
-~~~
-
-### 依赖
-
-[predis](https://github.com/predis/predis)
-
-[jwt](https://github.com/firebase/php-jwt)
-
-[xls](https://phpspreadsheet.readthedocs.io/en/latest/)
-
-[validate](https://github.com/vlucas/valitron)
-
-[database](https://medoo.in/)
-
-[uuid](https://uuid.ramsey.dev/en/stable/rfc4122/version1.html)
-
-[guzzlephp7](https://docs.guzzlephp.org/en/stable/quickstart.html)
-
-[phpseclib2](http://phpseclib.sourceforge.net/)
+--------------------------------------------------------------------
+-- 以下内容可以不看，直接阅读源码吧！阅读源码！阅读源码！阅读源码！
+--------------------------------------------------------------------
 
 
 ### 如使用 mongodb 请使用
