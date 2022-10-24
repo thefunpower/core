@@ -1,6 +1,6 @@
 ### Core
 
-代码不复杂，请仔细阅读代码
+代码不复杂，请仔细阅读源码
 
 https://www.yuque.com/sunkangchina/juhe/phper
 
