@@ -440,11 +440,10 @@ class Vue
                   let a1 = ".$change_obj."[a];
                   let b1 = ".$change_obj."[b]; 
                   ".$change_obj."[a] = b1;
-                  ".$change_obj."[b] = a1;
-                 console.log(".$change_obj.");    
+                  ".$change_obj."[b] = a1; 
             }
           });
         ");
     }
-    
+
 }
