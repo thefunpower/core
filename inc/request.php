@@ -125,7 +125,7 @@ $res = $client->request('POST', '/json.php', [
 
 发送application/x-www-form-urlencoded POST请求需要你传入form_params
 
-$res = $client->request('POST', '/form.php', [
+$res = $client->request('POST', $url, [
     'form_params' => [
         'field_name' => 'abc',
         'other_field' => '123',
@@ -143,3 +143,68 @@ function guzzle_http($click_option = [])
     $client = new \GuzzleHttp\Client($click_option);
     return $client;
 }
+/*
+$opt = guzzle_http_fake_option();
+$opt['referer'] = '';
+$opt['form_params'] = [
+    'kw'  => $kw,
+    'page'=> $page,
+];
+guzzle_http()->request('POST', $url, $opt);
+$res = (string)$res->getBody();;
+
+*/
+function guzzle_http_fake_option(){
+    $data = array(
+      119.120.'.'.rand(1,255).'.'.rand(1,255),
+      124.174.'.'.rand(1,255).'.'.rand(1,255),
+      116.249.'.'.rand(1,255).'.'.rand(1,255),
+      118.125.'.'.rand(1,255).'.'.rand(1,255),
+      42.175.'.'.rand(1,255).'.'.rand(1,255),
+      124.162.'.'.rand(1,255).'.'.rand(1,255),
+      211.167.'.'.rand(1,255).'.'.rand(1,255),
+      58.206.'.'.rand(1,255).'.'.rand(1,255),
+      117.24.'.'.rand(1,255).'.'.rand(1,255),
+      47.101.'.'.rand(1,255).'.'.rand(1,255),
+    );
+    $agentArray=[ 
+      "safari 5.1 – MAC"=>"Mozilla/5.0 (Windows NT 6.1) AppleWebKit/536.11 (KHTML, like Gecko) Chrome/20.0.1132.57 Safari/536.11",
+      "safari 5.1 – Windows"=>"Mozilla/5.0 (Windows; U; Windows NT 6.1; en-us) AppleWebKit/534.50 (KHTML, like Gecko) Version/5.1 Safari/534.50",
+      "Firefox 38esr"=>"Mozilla/5.0 (Windows NT 10.0; WOW64; rv:38.0) Gecko/20100101 Firefox/38.0",
+      "IE 11"=>"Mozilla/5.0 (Windows NT 10.0; WOW64; Trident/7.0; .NET4.0C; .NET4.0E; .NET CLR 2.0.50727; .NET CLR 3.0.30729; .NET CLR 3.5.30729; InfoPath.3; rv:11.0) like Gecko",
+      "IE 9.0"=>"Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; Trident/5.0",
+      "IE 8.0"=>"Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 6.0; Trident/4.0)",
+      "IE 7.0"=>"Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 6.0)",
+      "IE 6.0"=>"Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1)",
+      "Firefox 4.0.1 – MAC"=>"Mozilla/5.0 (Macintosh; Intel Mac OS X 10.6; rv:2.0.1) Gecko/20100101 Firefox/4.0.1",
+      "Firefox 4.0.1 – Windows"=>"Mozilla/5.0 (Windows NT 6.1; rv:2.0.1) Gecko/20100101 Firefox/4.0.1",
+      "Opera 11.11 – MAC"=>"Opera/9.80 (Macintosh; Intel Mac OS X 10.6.8; U; en) Presto/2.8.131 Version/11.11",
+      "Opera 11.11 – Windows"=>"Opera/9.80 (Windows NT 6.1; U; en) Presto/2.8.131 Version/11.11",
+      "Chrome 17.0 – MAC"=>"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_7_0) AppleWebKit/535.11 (KHTML, like Gecko) Chrome/17.0.963.56 Safari/535.11",
+      "傲游（Maxthon）"=>"Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.1; Maxthon 2.0)",
+      "腾讯TT"=>"Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.1; TencentTraveler 4.0)",
+      "世界之窗（The World） 2.x"=>"Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.1)",
+      "世界之窗（The World） 3.x"=>"Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.1; The World)",
+      "360浏览器"=>"Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.1; 360SE)",
+      "搜狗浏览器 1.x"=>"Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.1; Trident/4.0; SE 2.X MetaSr 1.0; SE 2.X MetaSr 1.0; .NET CLR 2.0.50727; SE 2.X MetaSr 1.0)",
+      "Avant"=>"Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.1; Avant Browser)",
+      "Green Browser"=>"Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.1)",
+    ]; 
+    $ip = $data[array_rand($data)];
+    $userAgent=$agentArray[array_rand($agentArray,1)];  //随机浏览器userAgent
+    $headers = [
+        'CLIENT-IP'=>$ip,
+        'REMOTE-ADDR'=>$ip,
+        'X-FORWARDED-FOR'=>$ip,
+        //'referer'=> '',
+        //'Cookie' => ,
+        'CURLOPT-USERAGENT'=>$userAgent
+    ];   
+    $jar = new \GuzzleHttp\Cookie\CookieJar();
+    return [
+        'headers'=>$headers,
+        'cookies'=>$cookies,
+    ];
+}   
+
+
