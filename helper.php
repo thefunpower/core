@@ -284,8 +284,7 @@ function auto_include()
     $_autoinclude_dir = PATH . 'plugins/';
     $_actived = has_actived_plugin();
     foreach ($_actived as $name => $v) {
-        $_autoinclude_file = $_autoinclude_dir . $name . '/include.php';
-        $router = $_autoinclude_dir . $name . '/router.php';
+        $_autoinclude_file = $_autoinclude_dir . $name . '/include.php'; 
         if (file_exists($_autoinclude_file)) {
             include $_autoinclude_file;
         }
