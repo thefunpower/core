@@ -422,4 +422,29 @@ class Vue
                 }]
             }";
     }
+
+    /**
+    * 排序
+    * misc('sortable'); 
+    * $vue->sort(".sortable1 tbody","_this.form.xcx_banner");
+    */
+    public function sort($element,$change_obj){
+        $sortable = "sortable".mt_rand(1000,9999);
+        $this->mounted('',"js:this.".$sortable."();");
+        $this->method($sortable."()","js: 
+          Sortable.create(document.querySelector('".$element."'),{
+            onEnd(eve) { 
+                  let a = eve.newIndex;
+                  let b = eve.oldIndex;
+                  //把b换成a,a换成b
+                  let a1 = ".$change_obj."[a];
+                  let b1 = ".$change_obj."[b]; 
+                  ".$change_obj."[a] = b1;
+                  ".$change_obj."[b] = a1;
+                 console.log(".$change_obj.");    
+            }
+          });
+        ");
+    }
+    
 }
