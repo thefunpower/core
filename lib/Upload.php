@@ -29,7 +29,13 @@ class Upload
     public $domain;
     static $_upload_always  = false;
     static $_upload_to_new_dir = false;
-    //写入数据库
+    /**
+     * 写入数据库,默认使用uploads表记录，
+     * 也可以设置为false
+     * add_action('upload.init',function(){
+     *      \lib\Upload::$_upload_to_db = false;
+     * })
+     */
     static $_upload_to_db = true;
 
     public function __construct()
@@ -46,16 +52,7 @@ class Upload
         $this->domain  = $host;
         //上传初始化
         do_action("upload.init", $this);
-    }
-    /**
-     * 根据hash值取信息
-     */
-    public function getHash($md5)
-    {
-        $f = db_get_one('upload', '*', ['hash' => $md5]);
-        $this->returnParams($f);
-        return $f;
-    }
+    } 
     /**
      * 批量上传
      */
@@ -79,7 +76,7 @@ class Upload
     /**
      * 返回参数 
      */
-    public function returnParams(&$model)
+    public function return_params(&$model)
     {
         unset($_POST['file']);
         do_action("upload", $model);
@@ -144,7 +141,7 @@ class Upload
                 $f['local_path'] = PATH . $f['url'];
                 //上传成功后
                 do_action("upload.after", $f);
-                $this->returnParams($f);
+                $this->return_params($f);
                 return $f;
             }
         }
@@ -166,7 +163,7 @@ class Upload
             } else {
                 $f = $insert;
             }
-            $this->returnParams($f);
+            $this->return_params($f);
             $f['local_path'] = PATH . $url;
             //上传成功后
             do_action("upload.after", $f);

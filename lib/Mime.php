@@ -11,10 +11,7 @@
 
 
 namespace lib;
-
-if (!defined('VERSION')) {
-    die('NO DEFINED!');
-}
+ 
 class Mime
 {
     /**

@@ -1,4 +1,12 @@
 <?php
+/*
+	Copyright (c) 2021-2050 FatPlug, All rights reserved.
+	This file is part of the FatPlug Framework (http://fatplug.cn).
+	This is not free software.
+	you can redistribute it and/or modify it under the
+	terms of the License after purchased commercial license. 
+	mail: sunkangchina@163.com
+*/
 
 /**
 $vue = new Vue;  
@@ -126,25 +134,27 @@ class Vue
     public  function run()
     {
         $this->init();
-        $data    = array_encode_to_js($this->data);
+        $data    = php_to_js($this->data);
         $created = "";
         foreach ($this->created_js as $v) {
             $created .= "this." . $v . ";";
         }
         $methods_str = "";
+        $watch_str = "";
+        $mounted_str = "";
         $br = "\n\t\t\t\t\t";
         $br2 = "\n\t\t\t\t";
         if (!$this->methods["load_common()"]) {
             $this->methods["load_common()"] = "js:{}";
         }
         foreach ($this->methods as $k => $v) {
-            $methods_str .= $br . $k . "{" . array_encode_to_js($v) . "},";
+            $methods_str .= $br . $k . "{" . php_to_js($v) . "},";
         }
         foreach ($this->watch as $k => $v) {
-            $watch_str .= $br . $k . array_encode_to_js($v) . ",";
+            $watch_str .= $br . $k . php_to_js($v) . ",";
         }
         foreach ($this->mounted as $k => $v) {
-            $mounted_str .= $br . $k . array_encode_to_js($v) . "";
+            $mounted_str .= $br . $k . php_to_js($v) . "";
         }
 
         $js = "

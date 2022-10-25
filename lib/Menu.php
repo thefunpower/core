@@ -55,8 +55,7 @@ class Menu
                 ]
             ],
         ];
-        do_action("admin.menu", $menus);
-        $menus = \lib\Arr::order_by($menus, 'level', SORT_DESC);
+        do_action("admin.menu", $menus); 
         if (!is_admin()) {
             $user_acl = get_user_acl() ?: [];
             foreach ($menus as $k => $v) {
