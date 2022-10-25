@@ -1242,14 +1242,7 @@ function el_page_sizes()
 {
     $arr = page_size_array();
     return json_encode($arr);
-}
-/**
- * 多语言
- */
-function set_lang($lang)
-{
-    return lib\Lang::setLang($lang);
-}
+} 
 /**
 return [
     'welcome' => '你好{name}', 
@@ -1700,8 +1693,18 @@ function sign_by_secret($params,$secret){
     //将签名生成的32位字符串转换为大写
     return strtoupper($str);
 }
+ 
+
+
+/**
+ * 多语言
+ */
+function set_lang($lang = 'zh-cn')
+{
+    lib\Lang::set($lang);
+    lib\Validate::lang($lang);
+}
 
 
 include __DIR__ . '/third/cjavascript.php';
-include __DIR__ . '/third/vue.php';
-include __DIR__ . '/third/jquery.php';
+include __DIR__ . '/third/vue.php'; 

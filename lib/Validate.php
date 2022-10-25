@@ -10,26 +10,18 @@
 namespace lib;
 
 /**
- * https://github.com/vlucas/valitron
-
-$v = new \lib\Validate(array('name' => 'Chester Tester'));
-$v->rule('required', 'name');
-if($v->validate()) {
-    echo "Yay! We're all good!";
-} else {
-    // Errors
-    print_r($v->errors());
-}
-
+ * https://github.com/vlucas/valitron 
  */
 
-use Valitron\Validator as V;
-
-//V::langDir(__DIR__.'/validator_lang'); // always set langDir before lang.
-//此处固定使用中文，系统暂时没必要支持所有语言
-V::lang('zh-cn');
-
-class Validate extends \Valitron\Validator
+use Valitron\Validator;
+ 
+/**
+* 
+* $lang = 'zh-cn';
+* lib\Validate::lang($lang);
+* lib\Validate::langDir(__DIR__.'/validator_lang');
+*/  
+class Validate extends Validator
 {
 
     public function errors($field = null)
@@ -37,7 +29,6 @@ class Validate extends \Valitron\Validator
         if ($field !== null) {
             return isset($this->_errors[$field]) ? $this->_errors[$field] : false;
         }
-
         return $this->_errors;
     }
 }

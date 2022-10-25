@@ -13,6 +13,8 @@
 namespace lib;
 /*  
 * 多语言
+* $lang = 'zh-cn';
+* lib\Lang::set($lang);
 */
 
 class Lang
@@ -30,7 +32,7 @@ class Lang
     {
         $arr = [];
         if (!self::$lang_dir) {
-            self::setLang('zh-cn');
+            self::set();
         }
         if (!self::$obj[$pre]) {
             $file = self::$lang_dir . $pre . '.php';
