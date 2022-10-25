@@ -6,15 +6,11 @@
  * @author sun <sunkangchina@163.com>
  * @copyright (c) 2021 
  */
-/**
- * https://logging.apache.org/log4php/index.html
-
-
+/**  
 write_log_info('一般');
 write_log_warn('警告');
 write_log_error('错误');
-write_log_error(['data'=>['a'=>1]]);
-
+write_log_error(['data'=>['a'=>1]]); 
  */
 
 
