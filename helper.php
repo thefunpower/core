@@ -593,16 +593,7 @@ function create_dir($arr)
         }
     }
 }
-
-/**
- * 数组打印，方便查看
- */
-function dump($str)
-{
-    print_r('<pre>');
-    print_r($str);
-    print_r('</pre>');
-}
+ 
 
 /**
  * 是否是本地环境
@@ -738,9 +729,7 @@ function cookie($name, $value = NULL, $expire = 0)
 function remove_cookie($name)
 {
     cookie($name,'',time()-100); 
-}
-
-
+} 
 
 /**
  * 时间区间
@@ -748,7 +737,8 @@ function remove_cookie($name)
 if (!function_exists('date_limit')) {
     function date_limit()
     {
-        return ' min="1900-01-01" max="3099-12-31"';
+        $max = date("Y",time()+86400*365*100);
+        return ' min="1900-01-01" max="'.$max.'-12-31"';
     }
 }
 
@@ -794,43 +784,23 @@ if (!function_exists('el_size')) {
  * @version 1.0.0
  * @author sun <sunkangchina@163.com>
  */
-function price_yuan($fen, $wei = 100, $num = 2)
+function price_format($yuan,$dot = 2)
 {
-    if (!$fen) {
-        $fen = 0;
-    }
-    return   sprintf("%." . $num . "f", $fen / $wei);
-}
-/**
- * 显示2位小数 
- */
-function price_yuan_array(&$one, $arr = [])
-{
-    foreach ($arr as $v) {
-        $key = $v . "_yuan";
-        $one[$key] = price_yuan($one[$v]);
-    }
-}
+    return bcmul($yuan, 1 ,$dot);
+} 
 
 /**
- * 生成接口URL
+ * 返回错误信息，JSON格式 
  */
-function api_url($name, $arr = [])
-{
-    $url = host() . 'json/' . $name;
-    if ($arr) {
-        $url = $url . "?" . http_build_query($arr);
-    }
-    return $url;
-}
-//返回错误信息，JSON格式 
 function json_error($arr = [])
 {
     $arr['code'] = $arr['code'] ?: 250;
     $arr['type'] = $arr['type'] ?: 'error';
     json($arr);
 }
-//返回成功信息，JSON格式 
+/**
+ * 返回成功信息，JSON格式 
+ */
 function json_success($arr = [])
 {
     $arr['code'] = $arr['code'] ?: 0;
@@ -1008,13 +978,17 @@ function get_file($id)
     $obj[$key] = $f;
     return $f;
 } 
-//获取主题 
+/**
+ * 获取主题 
+ */
 function get_theme()
 {
     global $config;
     return $config['theme_front'] ?: 'default';
 }
-//加载theme下文件 
+/**
+ * 加载theme下文件 
+ */
 function view($name, $params = [])
 {
     $dir = PATH . 'theme/';
@@ -1042,7 +1016,9 @@ function view($name, $params = [])
         include $file_3;
     }
 }
-//创建或更新用户
+/**
+ * 创建或更新用户
+ */
 function admin_user($user, $pwd, $tag)
 {
     $find = db_get_one('user', '*', ['user' => $user]);
@@ -1064,7 +1040,9 @@ function admin_user($user, $pwd, $tag)
     return $id;
 }
 
-//设置配置
+/**
+ * 设置配置
+ */
 function set_config($title, $body)
 {
     $one = db_get_one("config", "*", ['title' => $title]);
@@ -1253,20 +1231,7 @@ function lang($name, $val = [], $pre = 'app')
 {
     return lib\Lang::trans($name, $val, $pre);
 }
-/**
- * 设置JSON字段 
- */
-function set_json(&$data, $field = [])
-{
-    foreach ($field as $v) {
-        if (!$data[$v]) {
-            $data[$v] = [];
-        }
-    }
-    foreach ($field as $v) {
-        $data[$v] = json_encode($data[$v], JSON_UNESCAPED_UNICODE);
-    }
-}
+ 
 /**
  * 搜索替换\n , ，空格
  * @param string $name
@@ -1420,20 +1385,7 @@ function cli_prevent_duplication($argv, $cmd = 'php cmd.php')
         exit();
     }
 }
-
-/**
- * 静态资源
- */
-function app($name, $val = '')
-{
-    static $_obj;
-    if ($val) {
-        $_obj[$name][] = $val;
-    } else {
-        return $_obj[$name];
-    }
-}
-
+ 
 /**
  * 包含文件 
  */
@@ -1460,25 +1412,7 @@ function import($file, $vars = [], $check_vars = false)
         return true;
     }
 }
-/**
- * 取远程图片或本地图片
- */
-function file_get($file)
-{
-    $ch = curl_init();
-    curl_setopt($ch, CURLOPT_TIMEOUT, 10);
-    curl_setopt($ch, CURLOPT_URL, $file);
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-    curl_setopt($ch, CURLOPT_HEADER, 0);
-    curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, '0');
-    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, '0');
-    $output = curl_exec($ch);
-    if ($output === FALSE) {
-        $output = file_get_contents($file);
-    }
-    curl_close($ch);
-    return $output;
-}
+
 /**
  * 生成表单TOKEN，防止重复提交
 <input type="hidden" name="form_token" value="<?=create_form_token()?>">
@@ -1575,34 +1509,6 @@ function get_sub_domain($host = '')
     preg_match("#(http://|https://)(.*?)\.#i", $host, $match);
     $host = $match[2];
     return str_replace("/", '', $host);
-}
-
-/**
- * 获取config.ini.php内容
- */
-function get_config_file_content($name = 'config.ini.php')
-{
-    $file = PATH . $name;
-    if (file_exists($file)) {
-        include($file);
-        return $config;
-    }
-}
-/**
- * 设置config.ini.php内容
- */
-function set_config_file_content($k, $v, $file_config_var = 'config', $name = 'config.ini.php')
-{
-    $content = get_config_file_content($name);
-    if ($content) {
-        $content[$k] = $v;
-        $file = PATH . $name;
-        if (file_exists($file) && is_writable($file)) {
-            file_put_contents($file, "<?php \n\$" . $file_config_var . " = \n" . var_export($content, true) . ";");
-        } else {
-            write_log_error('写入配置文件' . $file . '失败！');
-        }
-    }
 }
 
 function admin_header()
