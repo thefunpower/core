@@ -70,6 +70,7 @@ class Xls
     public static $title_index = 1;
     //取格式化表格内容
     public static $_format_val = false;
+    public static $start_line = 1;
     /**
      * 生成XLSX
      * $xls_titles 
@@ -83,7 +84,7 @@ class Xls
      * $name = '测试'
      * @return string  xls url
      */
-    public static function create($xls_titles, $data, $name, $is_output_to_brower = false)
+    public static function create($xls_titles, $data, $name, $is_output_to_brower = false,$sheet_call = '')
     {
         $base_url   = self::$base_url;
         $save_path  = PATH . $base_url;
@@ -96,6 +97,9 @@ class Xls
             $first = self::$label;
             $sheet->setTitle(self::$label);
             $sheet = $spreadsheet->getSheetByName(self::$label);
+            if($sheet_call){
+                $sheet_call($sheet,$spreadsheet);
+            }
         }
         $options = [
             'alignment' => [
@@ -151,20 +155,20 @@ class Xls
                 $sheet->getStyle($column->getColumnIndex())->applyFromArray($options);
             }
         }
+        //从第几行开始
+        $start_line = self::$start_line;
         //xls 第一行
         $k = 1;
         foreach ($xls_titles as $v) {
-            $sheet->setCellValue(Xls::getCol(1, $k), $v);
+            $sheet->setCellValue(Xls::getCol($start_line, $k), $v?:' ');
             $k++;
         }
-        $i = 2;
+        $i = $start_line+1;
         foreach ($data as $v) {
             $j = 1;
             foreach ($xls_titles as $k1 => $v1) {
-                if ($v[$k1]) {
-                    $sheet->setCellValue(Xls::getCol($i, $j), $v[$k1]);
-                    $j++;
-                }
+                $sheet->setCellValue(Xls::getCol($i, $j), $v[$k1]?:' ');
+                $j++;
             }
             $i++;
         }
