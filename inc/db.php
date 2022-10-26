@@ -597,47 +597,27 @@ function show_tables($table)
     }
     return $list;
 }
-
-
 /**
- * 读取表中的字段
- * 在正式环境有缓存, fields:
- * @param string $table
- * @return void
+ * 取表中字段
  */
-function allow_fields($table, $has_key  = true)
+function get_table_fields($table, $has_key  = true)
 {
     $sql   = "SHOW FULL FIELDS FROM " . $table . "";
     $lists = db()->query($sql);
     $arr   = [];
     foreach ($lists as $vo) {
         if ($has_key) {
-            $arr[$vo['Field']] = $vo['Field'];
+            $arr[$vo['Field']] = $vo;
         } else {
             $arr[] = $vo['Field'];
         }
     }
     return $arr;
 }
-
-/**
- * 取表中字段
- */
-function get_table_fields($table, $flag = true)
-{
-    return allow_fields($table, $flag);
-}
 /**
  *返回数据库允许的数据，传入其他字段自动忽略
- */
+ */ 
 function db_allow($table, $data)
-{
-    return get_data_db_allow($table, $data);
-}
-/**
-* 功能同db_allow
-*/
-function get_data_db_allow($table, $data)
 {
     $fields = get_table_fields($table);
     foreach ($data as $k => $v) {
