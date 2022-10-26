@@ -602,7 +602,7 @@ function show_tables($table)
  */
 function get_table_fields($table, $has_key  = true)
 {
-    $sql   = "SHOW FULL FIELDS FROM " . $table . "";
+    $sql   = "SHOW FULL FIELDS FROM `".$table."`";
     $lists = db()->query($sql);
     $arr   = [];
     foreach ($lists as $vo) {
@@ -640,10 +640,10 @@ function database_tables($name = null, $show_markdown = false)
     if (!$name) {
         $name = $config['db_name'];
     }
-    $sql  = "SHOW TABLE STATUS FROM {$name}";
+    $sql  = "SHOW TABLE STATUS FROM `{$name}`";
     $all  = db_query($sql, []);
     foreach ($all as $k => $v) {
-        $sql   = "SHOW FULL FIELDS FROM " . $v['Name'] . "";
+        $sql   = "SHOW FULL FIELDS FROM `" . $v['Name'] . "`";
         $lists = db()->query($sql, []);
         $all[$k]['FIELDS'] = $lists;
     }
