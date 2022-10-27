@@ -1296,7 +1296,7 @@ function get_dates($start, $end)
 /**
  * 当前时间是周几
  */
-function get_current_week($date)
+function get_date_china($date)
 {
     $weekarray = array("日", "一", "二", "三", "四", "五", "六");
     return $weekarray[date("w", strtotime($date))];
