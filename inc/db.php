@@ -40,7 +40,7 @@ global $db_par;
 global $db_error;
 //连接数据库  
 try {
-    $pdo = new PDO($dsn, $user, $pwd);
+    $pdo = new PDO($config['db_dsn'], $config['db_user'], $config['db_pwd']);
     $db = new Medoo\Medoo([
         'pdo'     => $pdo,
         'type'    => 'mysql',
@@ -54,8 +54,10 @@ try {
     ]);
 } catch (Exception $e) {
     $err = $e->getMessage();
-    write_log_error("连接数据库失败");
-    add_action("db_connect_error", $err);
+    if(DEBUG){
+        pr($err);exit;
+    }
+    echo "连接数据库失败";
 }
 
 /**
@@ -235,6 +237,9 @@ function db_pager_html($arr = [])
 */
 function db_add_error($str)
 {
+    if(DEBUG){
+        pr($str);exit;
+    }
     global $db_error;
     write_log($str,'error');
     $db_error[] = $str;

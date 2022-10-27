@@ -259,6 +259,13 @@ function has_actived_plugin()
     if (!$config['db_host']) {
         return;
     }
+    /**
+    * //无插件
+    * $config['no_plugin']  = true;
+    */
+    if($config['no_plugin']){
+        return;
+    }
     $all  = db_get("plugin", "*", ['status' => 1, "ORDER" => ['level' => "DESC"]]);
     $list = [];
     foreach ($all as $v) {
