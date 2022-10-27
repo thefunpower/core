@@ -9,15 +9,13 @@
     mail: sunkangchina@163.com
 */
 /**
-* $where = Medoo::raw("WHERE $json like :like", [':like' => "%" . $arr[1] . "%"]); 
-* 
-* $data = db_pager("log", "*", $where); //db_pager_count(100);
+*  对数据库操作的封装
+*  https://medoo.in/api/where 
 */
+
 if (!defined('VERSION')) {
     die();
-}
-
-
+} 
 /**
 复杂的查寻，(...  AND ...) OR (...  AND ...)
 "OR #1" => [
