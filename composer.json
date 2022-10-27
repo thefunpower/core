@@ -21,8 +21,7 @@
         "vlucas/valitron": "^1.4", 
         "topthink/think-cache": "^2.0",
         "topthink/think-log": "^2.0",
-        "symfony/mailer": "^5.4",    
-        "topthink/think-orm": "^2.0",    
+        "symfony/mailer": "^5.4",       
         "catfan/medoo": "^2.1",
         "predis/predis": "^2.0",
         "ramsey/uuid": "^4.4"
