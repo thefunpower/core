@@ -57,7 +57,13 @@ try {
     if(DEBUG){
         pr($err);exit;
     }
-    echo "连接数据库失败";
+    echo "<div style='color:#fff;background:red;padding:10px;width:600px;margin:auto;'>数据库连接失败了，出现这个问题说明很严重！</div>
+    <style>
+    html,body{
+        background:#eee;
+    }
+    </style>
+    ";exit;
 }
 
 /**
