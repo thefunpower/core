@@ -25,8 +25,7 @@ $config['cache_prefix'] = 'domain_';
 $config['redis'] = [
    'host'=>'',
    'port'=>'',
-   'auth'=>'',
-   'prefix'=>'',
+   'auth'=>'', 
 ]; 
  */
 
@@ -47,7 +46,7 @@ Cache::config([
             'host'   => $config['redis']['host'],
             'port'   => $config['redis']['port'] ?: 6379,
             'prefix' => $config['cache_prefix'],
-            'password'=> $config['redis']['auth']
+            'password'=> $config['redis']['auth'],
             'expire' => 0,
         ],
     ],
