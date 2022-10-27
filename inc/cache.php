@@ -9,24 +9,27 @@
 	mail: sunkangchina@163.com
 */
 
+/*
+* 缓存
+* https://github.com/top-think/think-cache
+* https://www.kancloud.cn/manual/thinkphp6_0/1037634
+*/
 
-use think\facade\Cache;
-//缓存 使用 https://www.kancloud.cn/manual/thinkphp6_0/1037634
-// 缓存配置
-/**
-
+use think\facade\Cache; 
+/** 
 //缓存  file 或 redis
 $config['cache_drive']  = 'file';
 //文件缓存前缀
-$config['cache_prefix'] = 'domain_'; 
-
+$config['cache_prefix'] = 'domain_';  
 //redis缓存配置，仅当cache_drive为redis时有效
-$config['cache_redis']['host'] = "127.0.0.1";
-$config['cache_redis']['port'] = 6379;
-//redis缓存前缀
-$config['cache_redis']['prefix'] = '';
-
+$config['redis'] = [
+   'host'=>'',
+   'port'=>'',
+   'auth'=>'',
+   'prefix'=>'',
+]; 
  */
+
 Cache::config([
     'default'   =>  $config['cache_drive'] ?: 'file',
     'stores'    =>  [
@@ -41,9 +44,10 @@ Cache::config([
         ],
         'redis' =>  [
             'type'   => 'redis',
-            'host'   => $config['cache_redis']['host'],
-            'port'   => $config['cache_redis']['port'] ?: 6379,
-            'prefix' => $config['cache_redis']['prefix'],
+            'host'   => $config['redis']['host'],
+            'port'   => $config['redis']['port'] ?: 6379,
+            'prefix' => $config['cache_prefix'],
+            'password'=> $config['redis']['auth']
             'expire' => 0,
         ],
     ],

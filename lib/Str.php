@@ -14,9 +14,47 @@ namespace lib;
 
 class Str
 {
-	public static function order_num($t = '')
+	/**
+	* 使用Sonyflake生成唯一值，确保并发时生成唯一ID
+	* config.ini.php
+	* $config['redis'] = [
+	* 	'host'=>'',
+	* 	'port'=>'',
+	* 	'auth'=>'',
+	* 	'prefix'=>'',
+	* ];
+	* 
+	* $config['sony_flake'] = [
+	* 	'center_id'=>0,
+	* 	'work_id'=>0,
+	* 	'from_date'=>'2022-10-27',
+	* ];
+	* https://github.com/godruoyi/php-snowflake
+	*/
+	public static function sony_flake_id(){
+		global $config;
+		$redis_config = $config['redis'];
+		$sony_flake  = $config['sony_flake'];
+		$start_date  = $sony_flake['from_date']?:"2022-10-27";
+		$SonyflakeCenterID  = $sony_flake['center_id']?:0;
+		$SonyflakeWorkID  = $sony_flake['work_id']?:0; 
+		$redis = new \Redis(); 
+		$redis->connect($redis_config['host'], $redis_config['port']); 
+		if($redis_config['auth']){
+			$redis->auth($redis_config['auth']);	
+		}		
+		$snowflake = new \Godruoyi\Snowflake\Sonyflake($SonyflakeCenterID, $SonyflakeWorkID);
+		$snowflake->setStartTimeStamp(strtotime(date($start_date))*1000)
+		        ->setSequenceResolver(new \Godruoyi\Snowflake\RedisSequenceResolver($redis)); 
+		$id = $snowflake->id(); 
+		return $id;
+	}	
+	/**
+	* 生成订单号
+	*/
+	public static function order_num($prefix = '')
 	{
-		return $t . date('Ymd') . str_pad(mt_rand(1, 99999), 5, '0', STR_PAD_LEFT);
+		return $prefix . date('Ymd') .self::sony_flake_id();
 	}
 	/**
 	 * 500m 1km
