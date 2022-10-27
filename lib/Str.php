@@ -20,8 +20,7 @@ class Str
 	* $config['redis'] = [
 	* 	'host'=>'',
 	* 	'port'=>'',
-	* 	'auth'=>'',
-	* 	'prefix'=>'',
+	* 	'auth'=>'', 
 	* ];
 	* 
 	* $config['sony_flake'] = [
