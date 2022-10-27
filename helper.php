@@ -178,21 +178,14 @@ function set_user($user_id,$data = []){
     db_update("user",$data,['id'=>$user_id]);
     return $user_id;
 }
-
+/**
+* 数组或字符输出，方便查看
+*/
 function pr($str)
 {
     print_r("<pre>");
     print_r($str);
     print_r("</pre>");
-}
-
-/**
- * 当前请求URL
- */
-function current_url()
-{
-    $refer = $_SERVER['REQUEST_URI'];
-    return $refer;
 }
 /**
  * 添加动作
