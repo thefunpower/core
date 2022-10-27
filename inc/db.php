@@ -16,6 +16,8 @@
 if (!defined('VERSION')) {
     die();
 }
+
+
 /**
 复杂的查寻，(...  AND ...) OR (...  AND ...)
 "OR #1" => [
@@ -25,8 +27,19 @@ if (!defined('VERSION')) {
 ];  
 
  */
+/**
+* 数据库对象
+* 建议使用 db()
+*/
 global $db;
-global $_db_par;
+/**
+* 数据参数用于分页后生成分页HTML代码
+*/
+global $db_par;
+/**
+* 错误信息
+*/
+global $db_error;
 //连接数据库  
 try {
     $pdo = new PDO($dsn, $user, $pwd);
@@ -130,22 +143,10 @@ $data = db_pager("do_order",
  * @param string $column 字段 
  * @param array $where  条件 [LIMIT=>1]  
  * @return array
- */
-
-
-function db_pager_count($nums = null)
-{
-    static $_page_count;
-    if ($nums && $nums >= 0) {
-        $_page_count = $nums;
-    } else {
-        return $_page_count;
-    }
-}
-
+ */ 
 function db_pager($table, $join, $columns = null, $where = null)
 {
-    global $_db_par;
+    global $db_par;
     $flag = true;
     if (!$where) {
         $where   = $columns;
@@ -188,8 +189,8 @@ function db_pager($table, $join, $columns = null, $where = null)
     } else {
         $data  =  db_get($table, $join, $columns, $where);
     }
-    $_db_par['size'] = $pre_page;
-    $_db_par['count'] = $count;
+    $db_par['size'] = $pre_page;
+    $db_par['count'] = $count;
     return [
         'current_page' => $current_page,
         'last_page'    => $last_page,
@@ -209,17 +210,17 @@ function db_pager($table, $join, $columns = null, $where = null)
  */
 function db_pager_html($arr = [])
 {
-    global $_db_par;
+    global $db_par;
     if ($arr['count']) {
         $count  = $arr['count'];
     } else {
-        $count = $_db_par['count'];
+        $count = $db_par['count'];
     }
     $page_url = $arr['url'];
     if ($arr['size']) {
         $size  = $arr['size'];
     } else {
-        $size = $_db_par['size'] ?: 20;
+        $size = $db_par['size'] ?: 20;
     }
     $paginate = new \lib\Paginate($count, $size);
     if ($page_url) {
@@ -229,15 +230,20 @@ function db_pager_html($arr = [])
     $offset = $paginate->offset;
     return $paginate->show();
 }
+ 
 
-global $db_error;
+/**
+* 添加错误信息
+*/
 function db_add_error($str)
 {
     global $db_error;
     write_log($str,'error');
     $db_error[] = $str;
 }
-
+/**
+* 获取错误信息
+*/
 function db_get_error()
 {
     global $db_error;
@@ -385,14 +391,6 @@ function db_action($call)
     });
 }
 /**
-* 兼容之前的action方法
-*/
-if(!function_exists('action')){
-    function action($call){
-        return db_action($call);
-    }
-}
-/**
  * 根据表名、字段 、条件 查寻一条记录
  *
  * @param string $table 表名
@@ -415,18 +413,7 @@ function db_get_one($table, $join  = "*", $columns = null, $where = null)
         return $one;
     }
     return;
-}
-/**
- * 执行SQL
- *
- * @param string $sql
- * @return void
- */
-function sql_run($sql)
-{
-    db()->query($sql);
-}
-
+}  
 /**
  * SQL查寻
  */
@@ -445,15 +432,6 @@ function db_query($sql, $raw = null)
         return [];
     }
 }
-/**
- * Quotes the string for the query.
- * https://medoo.in/api/quote
- */
-function db_quote($data)
-{
-    return db()->quote($data);
-}
-
 /**
  * 取最小值 
  * https://medoo.in/api/min
