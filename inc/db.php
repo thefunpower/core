@@ -208,6 +208,19 @@ function db_pager($table, $join, $columns = null, $where = null)
     ];
 }
 /**
+ *  设置分页总记录数
+ *  一般情况用不到
+ */
+function db_pager_count($nums = null)
+{
+    static $_page_count;
+    if ($nums && $nums >= 0) {
+        $_page_count = $nums;
+    } else {
+        return $_page_count;
+    }
+}
+/**
  * 显示分页
  * 调用db_pager后，再调用。
  * db_pager_html([
