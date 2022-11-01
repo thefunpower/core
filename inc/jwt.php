@@ -20,7 +20,12 @@ function api($show_error = true)
 {
 	static $_data;
 	if (!$_data) {
-		$_data = get_author(null, false, $show_error);
+		if(cookie('uid')){
+			$_data = get_user(cookie('uid'));
+		}
+		if(!$_data){
+			$_data = get_author(null, false, $show_error);		
+		}				
 	}
 	return $_data;
 }

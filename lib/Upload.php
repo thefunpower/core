@@ -19,7 +19,7 @@ use lib\Upload;
 //是否总是上传
 Upload::$_upload_always = false;
 //是否把上传记录保存到数据库
-Upload::$_upload_to_db = true;
+Upload::$db = true;
 //是否上传到 data/uploads目录下，而不是 uploads/ 下
 Upload::$_upload_to_new_dir = true;
 */
@@ -33,10 +33,10 @@ class Upload
      * 写入数据库,默认使用uploads表记录，
      * 也可以设置为false
      * add_action('upload.init',function(){
-     *      \lib\Upload::$_upload_to_db = false;
+     *      \lib\Upload::$db = false;
      * })
      */
-    static $_upload_to_db = true;
+    static $db = true;
 
     public function __construct()
     {
@@ -106,7 +106,7 @@ class Upload
             $allow_upload = true;
         }
         if(!$allow_upload){
-            json_error(['msg' => '禁止上传文件']);
+            json_error(['msg' => '上传文件被拦截，不支持当前用户上传文件']);
         } 
         global $config;
         //上传文件前
@@ -135,7 +135,7 @@ class Upload
         do_action("upload.mime", $mime);
         do_action("upload.size", $size);
         do_action("upload.ext", $file_ext);
-        if (self::$_upload_to_db) {
+        if (self::$db) {
             $f  = db_get_one('upload', '*', ['hash' => $md5]);
             if ($f && !$upload_always) {
                 $f['local_path'] = PATH . $f['url'];
@@ -157,7 +157,7 @@ class Upload
             $insert['ext']      = $file_ext;
             $insert['name']     = $http_opt['name'] ?: $ori_name;
             $insert['created_at'] = date('Y-m-d H:i:s');
-            if (self::$_upload_to_db) {
+            if (self::$db) {
                 $id = db_insert('upload', $insert);
                 $f  = db_get_one('upload', '*', ['id' => $id]);
             } else {
