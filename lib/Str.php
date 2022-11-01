@@ -17,6 +17,7 @@ class Str
 {
 	/**
 	 * 生成UUID
+	 * https://uuid.ramsey.dev/en/stable/quickstart.html#using-ramsey-uuid
 	 */
 	public static function uuid($int=4){
 		if(is_numeric($int)){
