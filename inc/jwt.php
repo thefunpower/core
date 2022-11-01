@@ -18,16 +18,18 @@ use Firebase\JWT\JWT as Firebase_JWT;
  */
 function api($show_error = true)
 {
-	static $_data;
-	if (!$_data) {
+	static $api_data;
+	if (!$api_data) {
 		if(cookie('uid')){
-			$_data = get_user(cookie('uid'));
+			$user = get_user(cookie('uid'));
+			$user['user_id'] = $user['id'];
+			$api_data = $user;
 		}
-		if(!$_data){
-			$_data = get_author(null, false, $show_error);		
+		if(!$api_data){
+			$api_data = get_author(null, false, $show_error);		
 		}				
 	}
-	return $_data;
+	return $api_data;
 }
 /**
  * 接口是否是管理员
