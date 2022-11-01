@@ -585,13 +585,20 @@ function get_name($name)
 /**
  * 创建目录 
  */
-function create_dir($arr)
+function create_dir_if_not_exists($arr)
 {
-    foreach ($arr as $v) {
+    if(is_string($arr)){
+        $v = $arr;
         if (!is_dir($v)) {
             mkdir($v, 0777, true);
         }
-    }
+    }else if(is_array($arr)){
+        foreach ($arr as $v) {
+            if (!is_dir($v)) {
+                mkdir($v, 0777, true);
+            }
+        }
+    } 
 }
  
 
