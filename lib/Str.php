@@ -11,9 +11,21 @@
 
 
 namespace lib;
+use Ramsey\Uuid\Uuid;
 
 class Str
 {
+	/**
+	 * 生成UUID
+	 */
+	public static function uuid($int=4){
+		if(is_numeric($int)){
+			$met = "uuid".$int;	
+		}else{
+			$met = $int;
+		}		
+		return Uuid::$met()->toString();
+	}
 	/**
 	* 使用Sonyflake生成唯一值，确保并发时生成唯一ID,最长可用174年
 	* $id = \lib\Str::sony_flake_id();
