@@ -991,6 +991,11 @@ function get_theme()
  */
 function view($name, $params = [])
 {
+    //访问文件被重复加载
+    static $_view_loaded;
+    $key = md5($name.json_encode($params));
+    if($_view_loaded[$key]){return;}
+    $_view_loaded[$key]  = true;
     $dir = PATH . 'theme/';
     $theme = get_theme();
     if ($theme != 'default') {
