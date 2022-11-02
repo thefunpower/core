@@ -1623,6 +1623,16 @@ function set_lang($lang = 'zh-cn')
     lib\Validate::lang($lang);
 }
 
+/**
+ * 生成URL
+ */
+function create_url($url){
+    $host = host();
+    if(substr($url,0,1) == '/'){
+        $url = substr($url,1);
+    }
+    return $host.$url;
+}
 
 include __DIR__ . '/third/cjavascript.php';
 include __DIR__ . '/third/vue.php'; 
