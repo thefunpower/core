@@ -39,31 +39,33 @@ global $db_par;
 */
 global $db_error;
 //连接数据库  
-try {
-    $pdo = new PDO($config['db_dsn'], $config['db_user'], $config['db_pwd']);
-    $db = new Medoo\Medoo([
-        'pdo'     => $pdo,
-        'type'    => 'mysql',
-        'option'  => [
-            PDO::ATTR_CASE => PDO::CASE_NATURAL
-        ],
-        'command' => [
-            'SET SQL_MODE=ANSI_QUOTES'
-        ],
-        'error' => PDO::ERRMODE_WARNING
-    ]);
-} catch (Exception $e) {
-    $err = $e->getMessage();
-    if(DEBUG){
-        pr($err);exit;
+if($config['db_dsn'] && $config['db_user'] && $config['db_pwd']){
+    try {
+        $pdo = new PDO($config['db_dsn'], $config['db_user'], $config['db_pwd']);
+        $db = new Medoo\Medoo([
+            'pdo'     => $pdo,
+            'type'    => 'mysql',
+            'option'  => [
+                PDO::ATTR_CASE => PDO::CASE_NATURAL
+            ],
+            'command' => [
+                'SET SQL_MODE=ANSI_QUOTES'
+            ],
+            'error' => PDO::ERRMODE_WARNING
+        ]);
+    } catch (Exception $e) {
+        $err = $e->getMessage();
+        if(DEBUG){
+            pr($err);exit;
+        }
+        echo "<div style='color:#fff;background:red;padding:10px;width:600px;margin:auto;'>数据库连接失败了，出现这个问题说明很严重！</div>
+        <style>
+        html,body{
+            background:#eee;
+        }
+        </style>
+        ";exit;
     }
-    echo "<div style='color:#fff;background:red;padding:10px;width:600px;margin:auto;'>数据库连接失败了，出现这个问题说明很严重！</div>
-    <style>
-    html,body{
-        background:#eee;
-    }
-    </style>
-    ";exit;
 }
 
 /**
