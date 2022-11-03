@@ -38,7 +38,7 @@ function api_admin()
 {
 	$arr = api();
 	if (!$arr['is_admin']) {
-		json_error(['msg' => '403']);
+		json_error(['msg' => lang('Access Deny')]);
 	}
 }
 
@@ -57,25 +57,25 @@ function get_author($sign = null, $ignore_time_check = false, $show_error = true
 	}
 	$key = $config['jwt_key'];
 	if (!$key) {
-		$error = 'jwt_key参数有问题';
+		$error = lang('AUTHORIZATION FAILED');
 	}
 	if (g('sign')) {
 		$sign = g('sign');
 	}
 	$jwt  = Jwt::decode($sign);
 	if (!$jwt->time) {
-		$error = 'time参数有问题';
+		$error = lang('AUTHORIZATION FAILED');
 	}
 	$exp = $config['jwt_exp_time'];
 	if ($exp <= 0) {
 		$exp = 3600;
 	}
 	if (!$ignore_time_check && $jwt->time + $exp < time()) {
-		$error = '请求已过期';
+		$error = lang('Request Expired');
 	}
 	if ($jwt->user_id) {
 	} else {
-		$error = '用户未登录';
+		$error = lang('User Not Logined');
 	}
 	if ($error) {
 		if ($show_error) {

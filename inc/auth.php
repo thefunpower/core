@@ -43,7 +43,7 @@ function get_admin_id()
 function api_is_admin()
 {
     if(!cookie(ADMIN_COOKIE_NAME)){
-        json_error(['msg'=>'无此权限']);
+        json_error(['msg'=>lang('Access Deny')]);
     }
 } 
 /**
@@ -87,7 +87,7 @@ function access($name,$ret = false){
     if($ret){
         return false;
     }
-    json(['code'=>403,'msg'=>'禁止操作，如有疑问请联系管理员！','type'=>'error']);
+    json(['code'=>403,'msg'=>lang('Access Deny'),'type'=>'error']);
 }
 /**
  * 当前登录用户的ACL数组
