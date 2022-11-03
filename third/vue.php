@@ -53,6 +53,7 @@ class Vue
         'form' => "js:{}",
         'node' => "js:{}",
         'row' => "js:{}",
+        'loading'=>true,
     ];
     public $page_data = [
         "is_show" => false,
@@ -63,6 +64,7 @@ class Vue
         'form' => "js:{}",
         'node' => "js:{}",
         'res' => "js:{}",
+        'loading'=>true,
     ];
     public $watch = [];
     public $mounted = [];
