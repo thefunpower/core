@@ -79,8 +79,8 @@ class Vue
     ];
 
     public $reset_method = [
-        'reload()' => "js:this.where.page = 1;this.load();",
-        'reset()' => "js:this.where = {};this.load();",
+        'reload()' => "js:this.where.page = 1;this.loading=true;this.load();",
+        'reset()' => "js:this.where = {};this.loading=true;this.load();",
     ];
 
     public $add_method = ''; 
