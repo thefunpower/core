@@ -241,10 +241,8 @@ class Vue
                 _this.total  = res.total;
                 _this.lists  = res.data;
                 _this.res  = res;
-                if(_this.loading){
-                    setTimeout(function(){
-                        _this.loading = false;
-                    },300);
+                if(_this.loading){ 
+                   _this.loading = false; 
                 }
             });");
         }else{
