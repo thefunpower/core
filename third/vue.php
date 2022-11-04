@@ -203,11 +203,11 @@ class Vue
             $this->created(['load()']);
         }
         $this->add_method = $this->add_method?:[
-            "show()" => "js:{
+            "show()" => "js:
                  this.is_show = true;
                  this.form = {};
                  ".$this->loadEditorAdd()."
-            }",
+            ",
         ];
 
         $this->edit_method = $this->edit_method?:[
