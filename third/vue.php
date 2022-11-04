@@ -1,14 +1,16 @@
 <?php
 /*
-	Copyright (c) 2021-2050 FatPlug, All rights reserved.
-	This file is part of the FatPlug Framework (http://fatplug.cn).
-	This is not free software.
-	you can redistribute it and/or modify it under the
-	terms of the License after purchased commercial license. 
-	mail: sunkangchina@163.com
+    Copyright (c) 2021-2050 FatPlug, All rights reserved.
+    This file is part of the FatPlug Framework (http://fatplug.cn).
+    This is not free software.
+    you can redistribute it and/or modify it under the
+    terms of the License after purchased commercial license. 
+    mail: sunkangchina@163.com
 */
 
 /**
+ * 该功能有点复杂，配置table插件将可实现少量PHP代码生成table带搜索、添加、编辑、删除等操作
+ * table插件仅限商业用户使用！
 $vue = new Vue;  
 $vue->created(['start()']);
 $vue->data('name','100');
@@ -44,6 +46,7 @@ class Vue
     public $add_url;
     public $edit_url;
     public $id   = "#app";
+    public $load_name   = "load";
     public $data = [
         "is_show" => false,
         'where' => "js:{per_page:20}",
@@ -183,9 +186,13 @@ class Vue
             foreach($e as $name){
                 $vars .=" var editor".$name.";\n";
             }    
-        }        
-
-        return $vars . $js;
+        }       
+        $code = $vars . $js; 
+        $name = $this->load_name;
+        if($name != 'load'){
+            $code = str_replace("this.load()","this.".$name."()",$code);    
+        } 
+        return $code;
     }
 
 
