@@ -206,23 +206,28 @@ class Vue
         if ($opt['is_page']) {
             $this->created(['load()']);
         }
-        $data_form = '';
+        $data_form_add = '';
+        $data_form_update = '';
         if($this->data_form){
-            foreach($this->data_form as $k=>$v){
-                if(substr($v,0,3) == 'js:'){
-                    $v  = php_to_js($v);
-                }
-                $data_form.="
-                    if(!this.form.$k){
+            $form = [];
+            foreach($this->data_form as $k=>$v){ 
+                $v  = php_to_js($v); 
+                $data_form_add.=" 
+                     this.\$set(this.form,'".$k."',$v);\n   
+                ";
+                $data_form_update.="
+                    if(!row.$k){
                         this.\$set(this.form,'".$k."',$v);\n    
                     }                    
                 ";
+                $form[$k] = $v; 
             }
+            $this->data['form'] = "js:".json_encode($form);
         }
         $this->add_method = $this->add_method?:[
             "show()" => "js:
                  this.is_show = true;
-                 this.form = {};".$data_form."
+                 this.form = {};".$data_form_add."
                  ".$this->loadEditorAdd()."
             ",
         ];
@@ -230,7 +235,7 @@ class Vue
         $this->edit_method = $this->edit_method?:[
             "update(row)" => "js:{ 
                 this.is_show = true;
-                this.form = row;  ".$data_form."
+                this.form = row;  ".$data_form_update."
                 ".$this->loadEditorUpdate()."
             }"
         ];
