@@ -665,3 +665,30 @@ function database_tables($name = null, $show_markdown = false)
     }
     return $str;
 }
+/**
+ * 取表中json字段
+ */
+function get_table_field_json($table){
+    static $table_fields;
+    if(!$table_fields){
+      $all = get_table_fields($table); 
+      $table_fields = [];
+      foreach($all as $k=>$v){
+        if($v['Type'] == 'json'){
+            $table_fields[$k] = true; 
+        }
+      } 
+    }
+    return $table_fields;
+}
+/**
+ * 判断表中的字段是不是json
+ */
+function get_table_field_is_json($table,$field){
+    $table_fields = get_table_field_json($table); 
+    if($table_fields[$field]){
+      return true;
+    }else{
+      return false;
+    }    
+}
