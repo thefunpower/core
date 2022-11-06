@@ -1631,7 +1631,15 @@ function sign_by_secret($params,$secret='',$array_encode = false,$encodeURICompo
     //将签名生成的32位字符串转换为大写
     return strtoupper($str);
 }
- 
+
+/**
+ * 与JS的encodeURIComponent功能相同
+ */ 
+function encodeURIComponent($str)
+{
+    $revert = array('%21' => '!', '%2A' => '*', '%27' => "'", '%28' => '(', '%29' => ')');
+    return strtr(rawurlencode($str), $revert);
+}
 
 
 /**
