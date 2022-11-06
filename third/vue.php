@@ -28,7 +28,7 @@ class Vue
         'is_tree'  => false,
 
     ];
-
+    public $editor_timeout = 600;
     public $opt_method = [
         'is_page' => 'page_method',
         'is_reset' => 'reset_method',
@@ -332,7 +332,7 @@ class Vue
             $js .="
                 setTimeout(function(){
                     editor".$name.".setHtml('');
-                },600);                
+                },".$this->editor_timeout.");                
             ";
         }
         return $js;
@@ -351,7 +351,7 @@ class Vue
                 let dd_editor".$name." = row.".$name."; 
                 setTimeout(function(){
                     editor".$name.".setHtml(dd_editor".$name."); 
-                },600); 
+                },".$this->editor_timeout."); 
             ";
         }
         return $js;
