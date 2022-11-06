@@ -1,16 +1,16 @@
 <?php 
 /*
-	Copyright (c) 2021-2050 FatPlug, All rights reserved.
-	This file is part of the FatPlug Framework (http://fatplug.cn).
-	This is not free software.
-	you can redistribute it and/or modify it under the
-	terms of the License after purchased commercial license. 
-	mail: sunkangchina@163.com
+    Copyright (c) 2021-2050 FatPlug, All rights reserved.
+    This file is part of the FatPlug Framework (http://fatplug.cn).
+    This is not free software.
+    you can redistribute it and/or modify it under the
+    terms of the License after purchased commercial license. 
+    mail: sunkangchina@163.com
 */
 
 if(!defined('VERSION')){die();} 
 /**
- * 是否是管理员 
+ * 是否是超及管理员，就是用户ID为1的
  */ 
 function is_admin(){
     $user_id = logined_user_id();  
@@ -26,7 +26,9 @@ function is_admin(){
 function is_logined(){
     return logined_user_id()?true:false;
 } 
-
+/**
+ * 获取登录者id,包含平台COOKIE以及小程序token登录的
+ */
 function get_admin_id()
 {
     $admin_id = cookie(ADMIN_COOKIE_NAME) ?: 0;
@@ -40,6 +42,9 @@ function get_admin_id()
     }
     return $admin_id;
 } 
+/**
+ * 接口判断是否是管理员登录
+ */
 function api_is_admin()
 {
     if(!cookie(ADMIN_COOKIE_NAME)){
@@ -49,10 +54,19 @@ function api_is_admin()
 /**
 * 判断后台是否登录
 */
-function check_admin_login()
+function check_admin_login($url = '')
 {
-    if(!is_logined()){
-        jump("/".ADMIN_DIR_NAME."/login.php");
+    if(!cookie(ADMIN_COOKIE_NAME)){ 
+        $jump = "/".ADMIN_DIR_NAME."/login.php"; 
+        if($url){
+            $jump = $jump."?url=".urlencode($url);
+        }
+        if($url === true){
+            return false;
+        }else{
+            jump($jump);
+        }
+        
     }
 }
 

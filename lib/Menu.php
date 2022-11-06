@@ -25,7 +25,10 @@ class Menu
      * 取菜单
      */
     public static function get()
-    {
+    { 
+        if(!check_admin_login()){
+            return [];
+        }
         $menus = [
             'system' => [
                 'icon' => 'layui-icon layui-icon layui-icon-windows',

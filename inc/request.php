@@ -1,12 +1,12 @@
 <?php
 
 /*
-	Copyright (c) 2021-2050 FatPlug, All rights reserved.
-	This file is part of the FatPlug Framework (http://fatplug.cn).
-	This is not free software.
-	you can redistribute it and/or modify it under the
-	terms of the License after purchased commercial license. 
-	mail: sunkangchina@163.com
+    Copyright (c) 2021-2050 FatPlug, All rights reserved.
+    This file is part of the FatPlug Framework (http://fatplug.cn).
+    This is not free software.
+    you can redistribute it and/or modify it under the
+    terms of the License after purchased commercial license. 
+    mail: sunkangchina@163.com
 */
 
 if (!defined('VERSION')) {
@@ -93,7 +93,16 @@ function get_input()
     }
     return $data;
 }
-
+/**
+ * 取当前URL完整地址 
+ */
+function get_full_url($with_http = false){
+    $url = $_SERVER['REQUEST_URI'];
+    if($with_http){
+        $url = host().substr($url,1);
+    } 
+    return $url; 
+}
 
 /**
  * CURL请求
