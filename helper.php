@@ -1588,6 +1588,17 @@ function verify_sample_sign_url($exp_time = 60){
 
 
 /**
+ * 检查签名防止篡改
+ */
+function signature_checker(){
+    $_signature = $_POST['_signature'];
+    unset($_POST['_signature']); 
+    $sign = sign_by_secret($_POST,'',true,true);
+    if($_signature != $sign){
+        json_error(['msg'=>'签名错误'.$sign]);
+    } 
+}
+/**
 * 生成签名
 签名生成的通用步骤如下：
 第一步：将参与签名的参数按照键值(key)进行字典排序
@@ -1596,16 +1607,25 @@ function verify_sample_sign_url($exp_time = 60){
 第四步：对签名字符串进行MD5加密，生成32位的字符串
 第五步：将签名生成的32位字符串转换为大写 
 */
-function sign_by_secret($params,$secret){
+function sign_by_secret($params,$secret='',$array_encode = false,$encodeURIComponent = false){
+    if(!$secret){
+        $secret = get_config('sign_secret')?:'TheCoreFun2022';
+    }
     $str = ''; 
     //将参与签名的参数按照键值(key)进行字典排序
     ksort($params); 
     foreach ($params as $k => $v) { 
         //将排序过后的参数，进行key和value字符串拼接
+        if(is_array($v) && $array_encode){
+            $v = json_encode($v,JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE);
+        }
+        if($encodeURIComponent){
+            $v = encodeURIComponent($v);    
+        }        
         $str .= "$k=$v";
     } 
     //将拼接后的字符串首尾加上app_secret秘钥，合成签名字符串
-    $str .= $secret; 
+    $str .= $secret;  
     //对签名字符串进行MD5加密，生成32位的字符串
     $str = md5($str);
     //将签名生成的32位字符串转换为大写
