@@ -7,7 +7,9 @@
     terms of the License after purchased commercial license. 
     mail: sunkangchina@163.com
 */
-
+/**
+ * 主要服务于后台管理员 
+ */
 if(!defined('VERSION')){die();} 
 /**
  * 是否是超及管理员，就是用户ID为1的
@@ -67,6 +69,8 @@ function check_admin_login($url = '')
             jump($jump);
         }
         
+    }else{
+        return true;
     }
 }
 
