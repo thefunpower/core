@@ -1251,12 +1251,12 @@ function lang($name, $val = [], $pre = 'app')
  * @author sun <sunkangchina@163.com>
  * @return array
  */
-function string_to_array($name)
+function string_to_array($name,$array = '')
 {
     if (!$name) {
         return [];
     }
-    $array = [
+    $array = $array?:[
         "\n",
         "，",
         "、",

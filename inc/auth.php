@@ -145,11 +145,7 @@ function if_access_or($str){
     if(is_array($str)){
         $arr = $str;
     }else{
-        if(strpos($str,',') !== false){ 
-            $arr = explode(',',$str);
-        }else if(is_string($str)){
-            $arr = [$str];
-        } 
+        $arr = string_to_array($str,['|',',']);
     }
     $flag = false; 
     foreach($arr as $v){ 

@@ -79,9 +79,9 @@ class Menu
                         unset($menus[$k]['children'][$k1]);
                     }
                 }
-            }
+            } 
             foreach ($menus as $k => $v) {
-                if (count($v['children']) == 0) {
+                if (!$v['children']) {
                     unset($menus[$k]);
                 }
             }
