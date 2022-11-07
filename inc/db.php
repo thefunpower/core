@@ -707,8 +707,8 @@ function get_table_field_is_json($table,$field){
 * @param $row_data 一行记录
 */
 function db_row_json_to_array($table_name,&$row_data = []){
-    foreach ($v as $key=>$val) {
-        if(is_string($val) && get_table_field_is_json($table,$key)){  
+    foreach ($row_data as $key=>$val) {
+        if(is_string($val) && get_table_field_is_json($table_name,$key)){  
           $row_data[$key] = json_decode($val,true)?:[];   
         }
         if(is_string($val) && is_json($val)){
