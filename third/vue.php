@@ -10,12 +10,9 @@
 
 /**
  * 该功能有点复杂，配置table插件将可实现少量PHP代码生成table带搜索、添加、编辑、删除等操作
- * table插件仅限商业用户使用！
-$vue = new Vue;  
-$vue->created(['start()']);
-$vue->data('name','100');
-$vue->method('start()',"js:alert(1);");
-$js  = $vue->run();
+ * 新增方法202211
+ * $vue->afterSave("_this.main_sql_1 = false;");  
+ *  
  */
 class Vue
 {
@@ -28,6 +25,7 @@ class Vue
         'is_tree'  => false,
 
     ];
+    public $after_save = [];
     public $editor_timeout = 600;
     public $opt_method = [
         'is_page' => 'page_method',
@@ -117,6 +115,11 @@ class Vue
         $this->watch[$name] = $val;
     }
 
+    public function afterSave($val)
+    {
+        $this->after_save[] = $val;
+    }
+    
     /**
      $vue->mounted('',"js:
          const that = this
@@ -277,6 +280,16 @@ class Vue
         }else{
             $this->method('load()', "js:");
         }
+        $after_save = $this->after_save;
+        $after_save_str = '';
+        if($this->after_save){
+            foreach($this->after_save as $v){
+                if($v){
+                    $v = trim($v); 
+                    $after_save_str .= $v;    
+                }                
+            }
+        } 
         if($this->add_url || $this->edit_url){
             $this->method("save()", "js:let url = '" . $this->add_url . "';
                 if(this.form.id){
@@ -292,6 +305,7 @@ class Vue
                             _this.is_show    = false; 
                             _this.load();
                         }
+                        ".$after_save_str."
                 }); 
             ");
         }else{
