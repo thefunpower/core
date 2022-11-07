@@ -344,6 +344,16 @@ function db_insert($table, $data = [])
         //写入数据前
         do_action("db_insert.$table.before", $data);
         foreach($data as $k=>$v){ 
+            if(get_table_field_is_json($table,$k)){
+                if($v && !is_array($v)){
+                    $arr = json_decode($v,true);
+                    if($arr){
+                        $v = $arr;
+                    }else{
+                        $v = yaml($v);
+                    } 
+                }
+            }
             if(is_array($v)){
                 $data[$k] = json_encode($v,JSON_UNESCAPED_UNICODE);   
             }else{
@@ -384,6 +394,16 @@ function db_update($table, $data = [], $where = [])
         //更新数据前
         do_action("db_update.$table.before", $data);
         foreach($data as $k=>$v){
+            if(get_table_field_is_json($table,$k)){
+                if($v && !is_array($v)){
+                    $arr = json_decode($v,true);
+                    if($arr){
+                        $v = $arr;
+                    }else{
+                        $v = yaml($v);
+                    } 
+                }
+            }
             if(is_array($v)){
                 $data[$k] = json_encode($v,JSON_UNESCAPED_UNICODE);   
             }else{
