@@ -127,10 +127,7 @@ function get_user_meta_where($where = [], $return_row = false)
     $all  = db_select('user_meta', '*', $new_where);
     $meta = [];
     foreach ($all as $v) {
-        $val = $v['value'];
-        if ($arr  = json_decode($val, true)) {
-            $val = $arr;
-        }
+        $val = $v['value']; 
         if ($return_row) {
             $meta[$v['title']] = $val;
         } else {
@@ -813,24 +810,7 @@ function json_success($arr = [])
     $arr['code'] = $arr['code'] ?: 0;
     $arr['type'] = $arr['type'] ?: 'success';
     json($arr);
-}
-
-/**
- * 批量json转数组
- *
- * @param array $value
- * @param array $arr
- * @return void
- */
-function json_decode_array(&$value, $arr = [])
-{
-    foreach ($arr as $k) {
-        if ($value[$k]) {
-            $value[$k] = json_decode($value[$k], true);
-        }
-    }
-}
-
+} 
 
 /**
  * yaml转数组

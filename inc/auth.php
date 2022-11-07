@@ -117,15 +117,12 @@ if(!function_exists('get_user_acl')){
         $acl = $res['acl']; 
         $acl_1 = [];
         if($acl){
-            $acl_1 = json_decode($acl,true);
+            $acl_1 = $acl;
         } 
         $group_id = $res['group_id'];
         $acl = [];
         if($group_id){
-            $acl      = db_get_one("user_group","acl",['id'=>$group_id]); 
-            if($acl){
-                $acl = json_decode($acl,true);
-            }
+            $acl      = db_get_one("user_group","acl",['id'=>$group_id]);            
         }
         $acl = array_merge($acl_1,$acl);
         return $acl?:[];
