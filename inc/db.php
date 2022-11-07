@@ -301,6 +301,11 @@ function db_get($table, $join = null, $columns = null, $where = null)
     }
     try {
         $all =  db()->select($table, $join, $columns, $where);
+        if($all){
+            foreach($all as &$v){
+                db_row_json_to_array($table,$v);
+            }
+        } 
         //查寻数据
         do_action("db_get.$table", $all);
         return $all;
@@ -433,6 +438,9 @@ function db_get_one($table, $join  = "*", $columns = null, $where = null)
     $db = db_get($table, $join, $columns, $where);
     if ($db) {
         $one =  $db[0];
+        if($one){
+            db_row_json_to_array($table,$one);    
+        }        
         //查寻数据
         do_action("db_get_one.$table", $one);
         return $one;
