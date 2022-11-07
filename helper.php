@@ -1057,10 +1057,7 @@ function get_config($title)
         $list = [];
         $all  = db_get("config", "*", ['title' => $title]);
         foreach ($all as $one) {
-            $body = $one['body'];
-            if (is_json($body)) {
-                $body = json_decode($body, true);
-            }
+            $body = $one['body']; 
             $list[$one['title']] = $body ?: $config[$one['title']];
         }
         return $list;
@@ -1069,12 +1066,8 @@ function get_config($title)
         $body = $one['body'];
         if (!$body) {
             return $config[$title];
-        }
-        if (is_json($body)) {
-            return json_decode($body, true);
-        } else {
-            return $body;
-        }
+        } 
+        return $body; 
     }
 }
 
