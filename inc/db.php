@@ -678,16 +678,17 @@ function database_tables($name = null, $show_markdown = false)
  */
 function get_table_field_json($table){
     static $table_fields;
-    if(!$table_fields){
+    if(!$table_fields[$table]){
       $all = get_table_fields($table); 
-      $table_fields = [];
+      $table_fields_row = [];
       foreach($all as $k=>$v){
         if($v['Type'] == 'json'){
-            $table_fields[$k] = true; 
+            $table_fields_row[$k] = true; 
         }
       } 
+      $table_fields[$table] = $table_fields_row;
     }
-    return $table_fields;
+    return $table_fields[$table];
 }
 /**
  * 判断表中的字段是不是json
