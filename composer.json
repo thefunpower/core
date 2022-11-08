@@ -12,6 +12,7 @@
     ],
     "require": {
         "php": ">=7.1",
+        "alchemy/zippy": "^1.0",
         "firebase/php-jwt": "^5.4",
         "guzzlehttp/guzzle": "^7.3",
         "phpseclib/phpseclib": "^2.0",

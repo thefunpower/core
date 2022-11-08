@@ -1678,5 +1678,34 @@ function get_block($name = ''){
     } 
 }
 
+/**
+* 处理ZIP
+*/
+/**
+* 所本地文件解压到指定目录
+*/
+function zip_extract($local_file,$extract_local_dir){ 
+    if(strpos($local_file,'/uploads/') !== false && strpos($local_file,'://') !== false){
+        $local_file = PATH.substr($local_file,strpos($local_file,'/uploads/')+1); 
+    }
+    if(!file_exists($local_file)){return false;}
+    $zippy = Alchemy\Zippy\Zippy::load();
+    $archive = $zippy->open($local_file);
+    if(!is_dir($extract_local_dir)){
+        create_dir_if_not_exists([$extract_local_dir]);
+    }
+    $archive->extract($extract_local_dir);
+}
+/**
+* 生成ZIP
+* @param $local_zip_file 本地zip文件
+* @param $files 包含的文件
+*/
+function zip_create($local_zip_file,$files = []){ 
+    $zippy = Alchemy\Zippy\Zippy::load($local_zip_file);
+    $archive = $zippy->create('archive.zip', $files, true);
+    return str_replace(PATH,'',$local_zip_file);
+}
+
 include __DIR__ . '/third/cjavascript.php';
 include __DIR__ . '/third/vue.php'; 
