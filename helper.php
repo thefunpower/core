@@ -1702,6 +1702,10 @@ function zip_extract($local_file,$extract_local_dir){
 * @param $files 包含的文件
 */
 function zip_create($local_zip_file,$files = []){ 
+    $dir = get_dir($local_zip_file);
+    if(!is_dir($dir)){
+        create_dir_if_not_exists([$dir]);
+    } 
     $zippy = Alchemy\Zippy\Zippy::load($local_zip_file);
     $archive = $zippy->create('archive.zip', $files, true);
     return str_replace(PATH,'',$local_zip_file);
