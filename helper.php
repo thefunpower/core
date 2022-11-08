@@ -1706,8 +1706,8 @@ function zip_create($local_zip_file,$files = []){
     if(!is_dir($dir)){
         create_dir_if_not_exists([$dir]);
     } 
-    $zippy = Alchemy\Zippy\Zippy::load($local_zip_file);
-    $archive = $zippy->create('archive.zip', $files, true);
+    $zippy = Alchemy\Zippy\Zippy::load();
+    $archive = $zippy->create($local_zip_file, $files, true);
     return str_replace(PATH,'',$local_zip_file);
 }
 
