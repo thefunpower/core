@@ -1742,6 +1742,12 @@ function jquery_checkbox_select_all($name){
         } 
       });\n";
 }
+/**
+* vue message
+*/
+function vue_message(){
+    return "_this.\$message({type:res.type,message:res.msg});\n";
+}
 
 include __DIR__ . '/yii1-javascript-encode.php';
 include __DIR__ . '/inc/vue.php'; 
