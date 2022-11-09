@@ -353,6 +353,9 @@ function db_insert($table, $data = [])
                         $v = yaml($v);
                     } 
                 }
+                if(!$v){
+                    $v = [];
+                }
             }
             if(is_array($v)){
                 $data[$k] = json_encode($v,JSON_UNESCAPED_UNICODE);   
@@ -402,6 +405,9 @@ function db_update($table, $data = [], $where = [])
                     }else{
                         $v = yaml($v);
                     } 
+                }
+                if(!$v){
+                    $v = [];
                 }
             }
             if(is_array($v)){
