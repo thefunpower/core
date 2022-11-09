@@ -1716,7 +1716,7 @@ function zip_create($local_zip_file,$files = []){
 * jquery_checkbox_get_active('search','search')
 * <input type="checkbox" name="search" :value="k">
 */
-function jquery_checkbox_get_active($var,$name){
+function jquery_checkbox_get_active($var){
     return "let ".$var." = [];
       \$('input[name=".$var."]').each(function(){
         if(\$(this).prop('checked')){
@@ -1727,7 +1727,7 @@ function jquery_checkbox_get_active($var,$name){
 /**
 * checkbox全选|全不选
 */
-function jquery_checkbox_select_all($name,$support_reversal = true){
+function jquery_checkbox_select_all($name){
     $var = "var_jquery_checkbox_select_all".mt_rand(0,99999);
     return " 
       let ".$var." = false;
@@ -1739,8 +1739,7 @@ function jquery_checkbox_select_all($name,$support_reversal = true){
             \$(this).prop('checked',false);
         }else{
             \$(this).prop('checked',true);
-        }
-        
+        } 
       });\n";
 }
 
