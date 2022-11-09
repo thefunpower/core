@@ -1037,6 +1037,12 @@ function admin_user($user, $pwd, $tag)
  */
 function set_config($title, $body)
 {
+    if(in_array($title,[
+        '_timestamp',
+        '_signature',
+    ])){
+        return;
+    }
     $one = db_get_one("config", "*", ['title' => $title]);
     if (is_array($body)) {
         
