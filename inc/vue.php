@@ -500,3 +500,22 @@ class Vue
     }
 
 }
+
+
+/**
+* vue message
+*/
+function vue_message(){
+    return "_this.\$message({type:res.type,message:res.msg});\n";
+}
+/**
+* loading效果
+*/
+function vue_loading($name,$txt){
+    return "const ".$name." = _this.\$loading({
+          lock: true,
+          text: '".$txt."',
+          spinner: 'el-icon-loading',
+          background: 'rgba(0, 0, 0, 0.7)'
+    }); \n";
+}
