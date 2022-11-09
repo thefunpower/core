@@ -45,6 +45,14 @@ function get_admin_id()
     return $admin_id;
 } 
 /**
+* 判断是否是超管，不是显示错误
+*/
+function is_admin_with_error(){
+    if(!cookie(ADMIN_COOKIE_NAME)){
+        echo lang('Access Deny');exit;
+    }
+}
+/**
  * 接口判断是否是管理员登录
  */
 function api_is_admin()
