@@ -29,61 +29,61 @@ if (!defined('VERSION')) {
 * 数据库对象
 * 建议使用 db()
 */
-global $db;
+global $_db;
+global $_db_active;
+$_db_active  = 'default';
+global $_db_connects;
 /**
 * 数据参数用于分页后生成分页HTML代码
 */
-global $db_par;
+global $_db_par;
 /**
 * 错误信息
 */
-global $db_error;
-//连接数据库  
-if($config['db_dsn'] && $config['db_user'] && $config['db_pwd']){
-    try {
-        $pdo = new PDO($config['db_dsn'], $config['db_user'], $config['db_pwd']);
-        $db = new Medoo\Medoo([
-            'pdo'     => $pdo,
-            'type'    => 'mysql',
-            'option'  => [
-                PDO::ATTR_CASE => PDO::CASE_NATURAL
-            ],
-            'command' => [
-                'SET SQL_MODE=ANSI_QUOTES'
-            ],
-            'error' => PDO::ERRMODE_WARNING
-        ]);
-    } catch (Exception $e) {
-        $err = $e->getMessage();
-        if(DEBUG){
-            pr($err);exit;
-        }
-        $error = lang('MySql Connect Failed');
-        echo "<div style='color:#fff;background:red;padding:10px;width:600px;margin:auto;'>".$error."</div>
-        <style>
-        html,body{
-            background:#eee;
-        }
-        </style>
-        ";exit;
-    }
+global $_db_error;
+/**
+ * 连接数据库
+ */
+include __DIR__.'/../db_connect.php';
+/**
+ * 激活平台数据库连接，平台数据库不支持从库读
+ */
+function db_active_main()
+{
+    db_active('main');
+}
+/**
+ * 激活读数据库连接
+ */
+function db_active_read()
+{
+    db_active('read');
+}
+/**
+ * 激活默认数据库连接
+ */
+function db_active_default()
+{
+    db_active('default');
 }
 
 /**
-多数据库时有用
-$config['db_host'] = '127.0.0.1';
-//数据库名
-$config['db_name'] = 'saas_admin';
-//数据库登录用户名
-$config['db_user'] = 'root';
-//数据库登录密码
-$config['db_pwd']  = '111111'; 
-//数据库端口号
-$config['db_port'] = 3306;
+ * 激活当前使用哪个数据库
  */
-function new_db($config = [])
+function db_active($name = 'default')
 {
-    $db = new \Medoo\Medoo([
+    global $_db_active;
+    $_db_active  = $name;
+}
+ 
+
+/** 
+ * 连接数据库
+ */
+function new_db($config = [],$name = '')
+{
+    global $_db_connects;
+    $_db = new \Medoo\Medoo([
         'type' => 'mysql',
         'host' => $config['db_host'],
         'database' => $config['db_name'],
@@ -103,7 +103,10 @@ function new_db($config = [])
             'SET SQL_MODE=ANSI_QUOTES'
         ]
     ]);
-    return $db;
+    if($name){
+        $_db_connects[$name] = $_db;
+    }
+    return $_db;
 }
 /**
  * 数据库实例
@@ -112,8 +115,8 @@ function new_db($config = [])
  */
 function db()
 {
-    global $db;
-    return $db;
+    global $_db_connects,$_db_active; 
+    return $_db_connects[$_db_active];
 }
 
 /***
@@ -155,7 +158,7 @@ $data = db_pager("do_order",
  */ 
 function db_pager($table, $join, $columns = null, $where = null)
 {
-    global $db_par;
+    global $_db_par;
     $flag = true;
     if (!$where) {
         $where   = $columns;
@@ -198,8 +201,8 @@ function db_pager($table, $join, $columns = null, $where = null)
     } else {
         $data  =  db_get($table, $join, $columns, $where);
     }
-    $db_par['size'] = $pre_page;
-    $db_par['count'] = $count;
+    $_db_par['size'] = $pre_page;
+    $_db_par['count'] = $count;
     return [
         'current_page' => $current_page,
         'last_page'    => $last_page,
@@ -232,17 +235,17 @@ function db_pager_count($nums = null)
  */
 function db_pager_html($arr = [])
 {
-    global $db_par;
+    global $_db_par;
     if ($arr['count']) {
         $count  = $arr['count'];
     } else {
-        $count = $db_par['count'];
+        $count = $_db_par['count'];
     }
     $page_url = $arr['url'];
     if ($arr['size']) {
         $size  = $arr['size'];
     } else {
-        $size = $db_par['size'] ?: 20;
+        $size = $_db_par['size'] ?: 20;
     }
     $paginate = new \lib\Paginate($count, $size);
     if ($page_url) {
@@ -262,18 +265,18 @@ function db_add_error($str)
     if(DEBUG){
         pr($str);exit;
     }
-    global $db_error;
+    global $_db_error;
     write_log($str,'error');
-    $db_error[] = $str;
+    $_db_error[] = $str;
 }
 /**
 * 获取错误信息
 */
 function db_get_error()
 {
-    global $db_error;
-    if ($db_error)
-        return $db_error;
+    global $_db_error;
+    if ($_db_error)
+        return $_db_error;
 }
 
 /***
@@ -363,7 +366,7 @@ function db_insert($table, $data = [])
                 $data[$k] = addslashes($v);  
             }          
         } 
-        $db    = db()->insert($table, $data);
+        $_db    = db()->insert($table, $data);
         $id = db()->id();
         //写入数据后
         $action_data = [];
@@ -385,8 +388,8 @@ function db_insert($table, $data = [])
  */
 function db_update($table, $data = [], $where = [])
 {
-    global $db_where;
-    $db_where = $where;
+    global $_db_where;
+    $_db_where = $where;
 
     foreach ($data as $k => $v) {
         if (substr($k, 0, 1) == "_") {
@@ -416,13 +419,13 @@ function db_update($table, $data = [], $where = [])
                 $data[$k] = addslashes($v);  
             }          
         }
-        $db    = db()->update($table, $data, $where);
+        $_db    = db()->update($table, $data, $where);
         $error = db()->error;
         if ($error) {
             write_log(['db_error' => $error, 'sql' => db()->last()]);
             throw new Exception($error);
         }
-        $count =  $db->rowCount();
+        $count =  $_db->rowCount();
         //更新数据后
         $action_data = [];
         $action_data['where'] = $where;
@@ -441,8 +444,8 @@ function db_update($table, $data = [], $where = [])
 function db_action($call)
 {
     $result = "";
-    $db     = db();
-    $db->action(function ($db) use (&$result, $call) {
+    $_db     = db();
+    $_db->action(function ($_db) use (&$result, $call) {
         $call();
     });
 }
@@ -461,9 +464,9 @@ function db_get_one($table, $join  = "*", $columns = null, $where = null)
     } else {
         $where['LIMIT']   = 1;
     }
-    $db = db_get($table, $join, $columns, $where);
-    if ($db) {
-        $one =  $db[0];
+    $_db = db_get($table, $join, $columns, $where);
+    if ($_db) {
+        $one =  $_db[0];
         if($one){
             db_row_json_to_array($table,$one);    
         }        
