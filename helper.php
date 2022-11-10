@@ -1565,14 +1565,16 @@ function verify_sample_sign_url($exp_time = 60){
     }
 }
 
-
 /**
  * 检查签名防止篡改
  */
 function signature_checker(){
+    if(!$_POST['_signature']){
+        $_POST = get_input(); 
+    } 
     $_signature = $_POST['_signature'];
     unset($_POST['_signature']); 
-    $sign = sign_by_secret($_POST,'',true,true);
+    $sign = sign_by_secret($_POST,'',true);
     if($_signature != $sign){
         json_error(['msg'=>'签名错误'.$sign]);
     } 
@@ -1586,7 +1588,7 @@ function signature_checker(){
 第四步：对签名字符串进行MD5加密，生成32位的字符串
 第五步：将签名生成的32位字符串转换为大写 
 */
-function sign_by_secret($params,$secret='',$array_encode = false,$encodeURIComponent = false){
+function sign_by_secret($params,$secret='',$array_encode = false){
     if(!$secret){
         $secret = get_config('sign_secret')?:'TheCoreFun2022';
     }
@@ -1597,28 +1599,17 @@ function sign_by_secret($params,$secret='',$array_encode = false,$encodeURICompo
         //将排序过后的参数，进行key和value字符串拼接
         if(is_array($v) && $array_encode){
             $v = json_encode($v,JSON_UNESCAPED_SLASHES|JSON_UNESCAPED_UNICODE);
-        }
-        if($encodeURIComponent){
-            $v = encodeURIComponent($v);    
-        }        
+        } 
         $str .= "$k=$v";
     } 
     //将拼接后的字符串首尾加上app_secret秘钥，合成签名字符串
-    $str .= $secret;  
+    $str .= $secret; 
     //对签名字符串进行MD5加密，生成32位的字符串
     $str = md5($str);
     //将签名生成的32位字符串转换为大写
     return strtoupper($str);
 }
 
-/**
- * 与JS的encodeURIComponent功能相同
- */ 
-function encodeURIComponent($str)
-{
-    $revert = array('%21' => '!', '%2A' => '*', '%27' => "'", '%28' => '(', '%29' => ')');
-    return strtr(rawurlencode($str), $revert);
-}
 
 
 /**
