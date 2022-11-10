@@ -75,7 +75,42 @@ function db_active($name = 'default')
     global $_db_active;
     $_db_active  = $name;
 }
- 
+/**
+* 获取当前启用的数据库连接 
+*/
+function get_db_active_name()
+{
+    global $_db_active;
+    return $_db_active;
+}
+/**
+* 判断是否可运行action
+*/
+function db_can_run_action(){
+    $name = get_db_active_name();
+    //数据库连接平台时是不能使用action的
+    if($name == 'main'){
+        return false;
+    } 
+    return true;
+}
+/**
+* 数据库是否可执行更新操作
+*/
+function db_can_run_update($sql = ''){
+    $name = get_db_active_name();
+    if($name == 'read'){
+        if($sql){
+            if(strpos(strtoupper($sql),'UPDATE') !== false){
+                return false;
+            }else{
+                return true;
+            }
+        }
+        return false;
+    } 
+    return true;
+}
 
 /** 
  * 连接数据库
@@ -309,8 +344,10 @@ function db_get($table, $join = null, $columns = null, $where = null)
                 db_row_json_to_array($table,$v);
             }
         } 
-        //查寻数据
-        do_action("db_get.$table", $all);
+        //查寻数据 
+        if(db_can_run_action()){
+            do_action("db_get.$table", $all);    
+        }
         return $all;
     } catch (Exception $e) {
         db_add_error($e->getMessage());
@@ -345,7 +382,9 @@ function db_insert($table, $data = [])
     }
     try {
         //写入数据前
-        do_action("db_insert.$table.before", $data);
+        if(db_can_run_action()){
+            do_action("db_insert.$table.before", $data);
+        }
         foreach($data as $k=>$v){ 
             if(get_table_field_is_json($table,$k)){
                 if($v && !is_array($v)){
@@ -372,7 +411,9 @@ function db_insert($table, $data = [])
         $action_data = [];
         $action_data['id'] = $id;
         $action_data['data'] = $data;
-        do_action("db_insert.$table.after", $action_data);
+        if(db_can_run_action()){
+            do_action("db_insert.$table.after", $action_data);
+        }
         return $id;
     } catch (Exception $e) {
         db_add_error($e->getMessage());
@@ -388,6 +429,9 @@ function db_insert($table, $data = [])
  */
 function db_update($table, $data = [], $where = [])
 {
+    if(!db_can_run_update()){
+        exit('从库禁止运行update操作');
+    }
     global $_db_where;
     $_db_where = $where;
 
@@ -398,7 +442,9 @@ function db_update($table, $data = [], $where = [])
     }
     try {
         //更新数据前
-        do_action("db_update.$table.before", $data);
+        if(db_can_run_action()){
+            do_action("db_update.$table.before", $data);
+        }
         foreach($data as $k=>$v){
             if(get_table_field_is_json($table,$k)){
                 if($v && !is_array($v)){
@@ -430,7 +476,9 @@ function db_update($table, $data = [], $where = [])
         $action_data = [];
         $action_data['where'] = $where;
         $action_data['data'] = $data;
-        do_action("db_update.$table.after", $action_data);
+        if(db_can_run_action()){
+            do_action("db_update.$table.after", $action_data);
+        }
         return $count;
     } catch (Exception $e) {
         db_add_error($e->getMessage());
@@ -471,7 +519,9 @@ function db_get_one($table, $join  = "*", $columns = null, $where = null)
             db_row_json_to_array($table,$one);    
         }        
         //查寻数据
-        do_action("db_get_one.$table", $one);
+        if(db_can_run_action()){
+            do_action("db_get_one.$table", $one);
+        }
         return $one;
     }
     return;
@@ -481,6 +531,9 @@ function db_get_one($table, $join  = "*", $columns = null, $where = null)
  */
 function db_query($sql, $raw = null)
 {
+    if(!db_can_run_update($sql)){
+        exit('从库禁止运行update操作');
+    }
     if ($raw === null) {
         return db()->query($sql);
     }
@@ -488,7 +541,9 @@ function db_query($sql, $raw = null)
     if ($q) {
         $all =  $q->fetchAll(\PDO::FETCH_ASSOC) ?: [];
         //查寻数据
-        do_action("db_query", $all);
+        if(db_can_run_action()){
+            do_action("db_query", $all);
+        }
         return $all;
     } else {
         return [];
@@ -609,7 +664,9 @@ function db_raw($raw)
 function db_del($table, $where)
 {
     //删除数据前
-    do_action("db_insert.$table.del", $where);
+    if(db_can_run_action()){
+        do_action("db_insert.$table.del", $where);
+    }
     return db()->delete($table, $where);
 }
 
