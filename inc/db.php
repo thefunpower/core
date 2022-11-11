@@ -211,8 +211,8 @@ function db_pager($table, $join, $columns = null, $where = null)
     if (!$current_page) {
         $current_page = 1;
     }
-    $p1 = $_REQUEST['per_page'] ?: g('per_page');
-    $p2 = $_REQUEST['page_size'] ?: g('page_size');
+    $p1 = (int)($_REQUEST['per_page'] ?: g('per_page'));
+    $p2 = (int)($_REQUEST['page_size'] ?: g('page_size'));
     if ($p1 >= 1) {
         $pre_page  = $p1;
     } else {
