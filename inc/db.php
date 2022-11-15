@@ -404,6 +404,7 @@ function db_insert($table, $data = [],$don_run_action = false)
         } 
         if(db_can_run_action() && !$don_run_action){
             do_action("db_insert.$table.before", $data);
+            do_action("db_save.$table.before", $data);
         }
         $_db    = db()->insert($table, $data);
         $id = db()->id();
@@ -413,6 +414,7 @@ function db_insert($table, $data = [],$don_run_action = false)
         $action_data['data'] = $data;
         if(db_can_run_action() && !$don_run_action){
             do_action("db_insert.$table.after", $action_data);
+            do_action("db_save.$table.after", $data);
         }
         return $id;
     } catch (Exception $e) {
@@ -464,6 +466,7 @@ function db_update($table, $data = [], $where = [],$don_run_action = false)
         }
         if(db_can_run_action() && !$don_run_action){
             do_action("db_update.$table.before", $data);
+            do_action("db_save.$table.before", $data);
         }
         $_db    = db()->update($table, $data, $where);
         $error = db()->error;
@@ -478,6 +481,7 @@ function db_update($table, $data = [], $where = [],$don_run_action = false)
         $action_data['data'] = $data;
         if(db_can_run_action() && !$don_run_action ){
             do_action("db_update.$table.after", $action_data);
+            do_action("db_save.$table.after", $action_data);
         }
         return $count;
     } catch (Exception $e) {
