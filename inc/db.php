@@ -382,6 +382,10 @@ function db_insert($table, $data = [],$don_run_action = false)
     }
     try {
         //写入数据前 
+        if(db_can_run_action() && !$don_run_action){
+            do_action("db_insert.$table.before", $data);
+            do_action("db_save.$table.before", $data);
+        }
         foreach($data as $k=>$v){ 
             if(get_table_field_is_json($table,$k)){
                 if($v && !is_array($v)){
@@ -401,11 +405,7 @@ function db_insert($table, $data = [],$don_run_action = false)
             }else{
                 $data[$k] = addslashes($v);  
             }          
-        } 
-        if(db_can_run_action() && !$don_run_action){
-            do_action("db_insert.$table.before", $data);
-            do_action("db_save.$table.before", $data);
-        }
+        }  
         $_db    = db()->insert($table, $data);
         $id = db()->id();
         //写入数据后
@@ -444,6 +444,10 @@ function db_update($table, $data = [], $where = [],$don_run_action = false)
     }
     try {
         //更新数据前 
+        if(db_can_run_action() && !$don_run_action){
+            do_action("db_update.$table.before", $data);
+            do_action("db_save.$table.before", $data);
+        }
         foreach($data as $k=>$v){
             if(get_table_field_is_json($table,$k)){
                 if($v && !is_array($v)){
@@ -463,11 +467,7 @@ function db_update($table, $data = [], $where = [],$don_run_action = false)
             }else{
                 $data[$k] = addslashes($v);  
             }          
-        }
-        if(db_can_run_action() && !$don_run_action){
-            do_action("db_update.$table.before", $data);
-            do_action("db_save.$table.before", $data);
-        }
+        } 
         $_db    = db()->update($table, $data, $where);
         $error = db()->error;
         if ($error) {
