@@ -373,7 +373,7 @@ function db_select($table, $join = "*", $columns = null, $where = null)
  * @param array  $data  数据 
  * @return array
  */
-function db_insert($table, $data = [])
+function db_insert($table, $data = [],$don_run_action = false)
 {
     foreach ($data as $k => $v) {
         if (substr($k, 0, 1) == "_") {
@@ -381,10 +381,7 @@ function db_insert($table, $data = [])
         }
     }
     try {
-        //写入数据前
-        if(db_can_run_action()){
-            do_action("db_insert.$table.before", $data);
-        }
+        //写入数据前 
         foreach($data as $k=>$v){ 
             if(get_table_field_is_json($table,$k)){
                 if($v && !is_array($v)){
@@ -405,13 +402,16 @@ function db_insert($table, $data = [])
                 $data[$k] = addslashes($v);  
             }          
         } 
+        if(db_can_run_action() && !$don_run_action){
+            do_action("db_insert.$table.before", $data);
+        }
         $_db    = db()->insert($table, $data);
         $id = db()->id();
         //写入数据后
         $action_data = [];
         $action_data['id'] = $id;
         $action_data['data'] = $data;
-        if(db_can_run_action()){
+        if(db_can_run_action() && !$don_run_action){
             do_action("db_insert.$table.after", $action_data);
         }
         return $id;
@@ -427,7 +427,7 @@ function db_insert($table, $data = [])
  * @param array  $data  数据 
  * @return array
  */
-function db_update($table, $data = [], $where = [])
+function db_update($table, $data = [], $where = [],$don_run_action = false)
 {
     if(!db_can_run_update()){
         exit('从库禁止运行update操作');
@@ -441,10 +441,7 @@ function db_update($table, $data = [], $where = [])
         }
     }
     try {
-        //更新数据前
-        if(db_can_run_action()){
-            do_action("db_update.$table.before", $data);
-        }
+        //更新数据前 
         foreach($data as $k=>$v){
             if(get_table_field_is_json($table,$k)){
                 if($v && !is_array($v)){
@@ -465,6 +462,9 @@ function db_update($table, $data = [], $where = [])
                 $data[$k] = addslashes($v);  
             }          
         }
+        if(db_can_run_action() && !$don_run_action){
+            do_action("db_update.$table.before", $data);
+        }
         $_db    = db()->update($table, $data, $where);
         $error = db()->error;
         if ($error) {
@@ -476,7 +476,7 @@ function db_update($table, $data = [], $where = [])
         $action_data = [];
         $action_data['where'] = $where;
         $action_data['data'] = $data;
-        if(db_can_run_action()){
+        if(db_can_run_action() && !$don_run_action ){
             do_action("db_update.$table.after", $action_data);
         }
         return $count;
