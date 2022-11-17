@@ -231,7 +231,16 @@ function do_action($name, &$par = null)
  */
 function local_plugin()
 {
-    $dir = PATH . '/plugins/';
+    $list1 = _local_plugin('plugins');
+    $list2 = _local_plugin('modules');
+    return array_merge($list1?:[],$list2?:[]);
+}
+/**
+* 获取插件列表
+*/
+function _local_plugin($dir_name = 'plugins')
+{
+    $dir = PATH . '/'.$dir_name.'/';
     $all = glob($dir . '*/info.php');
     $list = [];
     foreach ($all as $v) {
@@ -244,6 +253,32 @@ function local_plugin()
     }
     return $list;
 }
+
+function run_plugin_sql($plugins_dir='plugins',$plugin_name){
+    //执行依赖包的SQL
+    $dir = PATH.$plugins_dir.'/'.$plugin_name.'/sql/*.sql';
+    $fs = glob($dir);
+    if($fs){
+        foreach($fs as $sql){
+            $data = file_get_contents($sql);
+            if($data){
+                db_query($data);    
+            }                    
+        }
+    } 
+    //加载升级包
+    $dir = PATH.$plugins_dir.'/'.$plugin_name.'/upgrade/*.sql';
+    $fs = glob($dir);
+    if($fs){
+        foreach($fs as $sql){
+            $data = file_get_contents($sql);
+            if($data){
+                db_query($data);    
+            }                    
+        }
+    }
+}
+
 /**
  * 已安装插件
  */
@@ -278,10 +313,14 @@ function has_actived_plugin()
  */
 function auto_include()
 {
-    $_autoinclude_dir = PATH . 'plugins/';
-    $_actived = has_actived_plugin();
+    _auto_include('plugins');
+    _auto_include('modules');
+}
+function _auto_include($dir_name){
+    $_autoinclude_dir = PATH . $dir_name.'/';
+    $_actived = has_actived_plugin(); 
     foreach ($_actived as $name => $v) {
-        $_autoinclude_file = $_autoinclude_dir . $name . '/include.php'; 
+        $_autoinclude_file = $_autoinclude_dir . $name . '/include.php';  
         if (file_exists($_autoinclude_file)) {
             include $_autoinclude_file;
         }
@@ -293,7 +332,12 @@ function auto_include()
  */
 function auto_include_router()
 {
-    $_autoinclude_dir = PATH . 'plugins/';
+    _auto_include_router('plugins');
+    _auto_include_router('modules'); 
+}
+function _auto_include_router($dir_name)
+{
+    $_autoinclude_dir = PATH . $dir_name.'/';
     $_actived = has_actived_plugin();
     foreach ($_actived as $name => $v) {
         $_autoinclude_file = $_autoinclude_dir . $name . '/router.php';
@@ -356,8 +400,7 @@ function user_group_get($group_id)
     }
     $one = db_get_one("user_group", "*", ['id' => $group_id]);
     $one['_pid_name'] = db_get_one("user_group", "*", ['id' => $one['pid']]);
-    ['name'];
-    do_action("plugins.product.type", $one);
+    ['name']; 
     $obj[$group_id] = $one;
     return $one;
 }
@@ -1706,6 +1749,73 @@ function zip_create($local_zip_file,$files = []){
     $zippy = Alchemy\Zippy\Zippy::load();
     $archive = $zippy->create($local_zip_file, $files, true);
     return str_replace(PATH,'',$local_zip_file);
+}
+
+/**
+ * 加载pdf，自动判断是否使用了背景文字水印 
+ * @param string $text
+ * @return void
+ */
+function pdf_auto($text = null)
+{
+    if ($text) {
+        $pdf = pdf_watermark($text);
+    } else {
+        $pdf = pdf();
+    }
+    return $pdf;
+}
+
+/**
+ * PDF操作
+ * https://mpdf.github.io/
+ * @return void
+ */
+function pdf($font_size = 9,$default_config_option=[])
+{
+    $tempDir = PATH . '/data/runtime';
+    if (!is_dir($tempDir)) {
+        mkdir($tempDir, 0777, true);
+    }
+    $defaultConfig = (new Mpdf\Config\ConfigVariables())->getDefaults();
+    $fontDirs = $defaultConfig['fontDir'];
+    $defaultFontConfig = (new Mpdf\Config\FontVariables())->getDefaults();
+    $fontData = $defaultFontConfig['fontdata'];
+    $pdf = new \Mpdf\Mpdf([
+        'tempDir' => $tempDir,
+        'default_font_size' => $font_size,
+        'fontDir' => array_merge($fontDirs, [
+            PATH . '/data/font',
+        ]),
+        'fontdata' => $fontData + [
+            'simfang' => [
+                'R' => 'simfang.ttf',
+                'I' => 'simfang.ttf',
+            ],
+            'arial' => [
+                'R' => 'arial.ttf',
+                'I' => 'arial.ttf',
+            ],
+        ],
+        'default_font' => 'simfang'
+    ]+$default_config_option);
+    return $pdf;
+}
+/**
+ * PDF文字水印
+ *
+ * @param string $text
+ * @return void
+ */
+function pdf_watermark($text = null)
+{
+    $pdf = pdf();
+    $pdf->SetWatermarkText($text);
+    $pdf->showWatermarkText = true;
+    $pdf->watermark_font = 'simfang';
+    $pdf->watermarkTextAlpha = 0.1;
+    $pdf->watermarkImageAlpha = 0.5;
+    return $pdf;
 }
 
 
