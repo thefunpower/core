@@ -52,29 +52,23 @@ include __DIR__ . '/inc/db.php';
 include __DIR__ . '/inc/auth.php';
 $url = $_SERVER['REQUEST_URI'];
 $plugin_name = substr($url, 1);
-if (strpos($plugin_name, 'plugins') !== false) {
-	$plugin_name = substr($plugin_name, strpos($plugin_name, 'plugins/'));
-	$plugin_name = substr($plugin_name, strpos($plugin_name, '/') + 1);
-	$plugin_name = substr($plugin_name, 0, strpos($plugin_name, '/'));
-	if ($plugin_name) {
-		if (!has_actived_plugin()[$plugin_name]) {
-			if (cookie(ADMIN_COOKIE_NAME)) {
-				//此插件未启用
-				do_action("plugin.not_install", $plugin_name);
-				write_log_error('插件' . $plugin_name . '未安装');
-				die();
-			} else {
-				//访问插件，但用户没登录
-				do_action("admin.not_login");
-				//此插件未启用
-				do_action("plugin.not_install", $plugin_name);
-				jump(ADMIN_DIR_NAME . '/login.php');
-			}
-		}
-	}
-}
+_app_check_plugin($plugin_name,'plugins');
+_app_check_plugin($plugin_name,'modules');
 /**
  * 加载插件中的路径文件 router.php
  */
 auto_include();
 autoload_theme('admin');
+
+function _app_check_plugin($plugin_name,$plugin_dir='plugins'){
+	if (strpos($plugin_name, $plugin_dir) !== false) {
+		$plugin_name = substr($plugin_name, strpos($plugin_name, $plugin_dir.'/'));
+		$plugin_name = substr($plugin_name, strpos($plugin_name, '/') + 1);
+		$plugin_name = substr($plugin_name, 0, strpos($plugin_name, '/'));
+		if ($plugin_name) {
+			if (!has_actived_plugin()[$plugin_name]) {
+				 
+			}
+		}
+	}
+}
