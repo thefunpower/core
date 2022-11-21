@@ -75,10 +75,22 @@ function get_user_all($where = [])
 /**
  * 根据用户id查用户信息
  */
-function get_user($user_id)
+function get_user($user_id,$fields=[])
 {
+    static $_user;
+    if($_user[$user_id]){
+        return $_user[$user_id];
+    }
     $where['id'] = $user_id;
-    return get_user_where($where);
+    $user = get_user_where($where);
+    if($fields){
+        foreach($fields as $k){
+            $new_user[$k] = $user[$k];
+        }
+        $user = $new_user;
+    }
+    $_user[$user_id] = $user;
+    return $user;
 }
 /**
  * 查用户信息，where条件
