@@ -87,6 +87,11 @@ class Menu
             }
         }
         $menus = Arr::order_by($menus,'level',SORT_ASC); 
+        foreach($menus as $kk=>$vv){
+            if($vv['children']){
+                $menus[$kk]['children'] = Arr::order_by($vv['children'],'level',SORT_ASC);
+            }
+        } 
         do_action("admin.menu.end", $menus); 
         return $menus;
     }
