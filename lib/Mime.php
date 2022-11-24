@@ -51,6 +51,7 @@ class Mime
     public static function load()
     {
         return array(
+            'webp'=>['image/webp'],
             'hqx'    =>    array('application/mac-binhex40', 'application/mac-binhex', 'application/x-binhex40', 'application/x-mac-binhex40'),
             'cpt'    =>    'application/mac-compactpro',
             'csv'    =>    array('text/x-comma-separated-values', 'text/comma-separated-values', 'application/octet-stream', 'application/vnd.ms-excel', 'application/x-csv', 'text/x-csv', 'text/csv', 'application/csv', 'application/excel', 'application/vnd.msexcel', 'text/plain'),
