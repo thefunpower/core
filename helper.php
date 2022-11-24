@@ -89,7 +89,8 @@ function get_user($user_id,$fields=[])
         }
         $user = $new_user;
     }
-    $_user[$user_id] = $user;
+    do_action('get_user', $user);
+    $_user[$user_id] = $user; 
     return $user;
 }
 /**
