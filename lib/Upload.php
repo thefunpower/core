@@ -87,22 +87,15 @@ class Upload
 
     /**
      *  单个文件上传
-     *  do_action("upload.mime", $mime);
-     *  如果不是管理员或小程序用户，比如PC商家需要上传图片可配置
-     *  global $upload_always;
-     *  $upload_always = true;
+     *  do_action("upload.mime", $mime); 
      */
     public function one($http_opt = [])
-    {
-        global $upload_always;
+    { 
         $user_id = cookie(ADMIN_COOKIE_NAME) ?: api(false)['user_id'];
         $allow_upload = false;
         if($user_id){
             $allow_upload = true;
-        }
-        if($upload_always){
-            $allow_upload = true;
-        }
+        } 
         if(!$allow_upload){
             json_error(['msg' => '上传文件被拦截，不支持当前用户上传文件']);
         } 
@@ -114,8 +107,8 @@ class Upload
         if($sub_dir){
             $sub_dir = $sub_dir.'/';
         }
-        $url      =  'uploads/' . $this->domain .$sub_dir. $user_id . '/' . date('Y-m-d'); 
-        $path       = PATH . $url . '/';
+        $url   =  'uploads/' . $this->domain .$sub_dir. $user_id . '/' . date('Y-m-d'); 
+        $path  = PATH . $url . '/';
         if (!is_dir($path)) {
             mkdir($path, 0777, true);
         }
@@ -128,14 +121,13 @@ class Upload
         $md5  = $file->getMd5();
         $size = $file->getSize();
         $mime = $file->getMimetype();
-        $file_ext = $file->getExtension();
-        $upload_always = self::$db ?: false;
+        $file_ext = $file->getExtension(); 
         do_action("upload.mime", $mime);
         do_action("upload.size", $size);
         do_action("upload.ext", $file_ext);
         if (self::$db) {
             $f  = db_get_one('upload', '*', ['hash' => $md5]);
-            if ($f && !$upload_always) {
+            if ($f) {
                 $f['local_path'] = PATH . $f['url'];
                 //上传成功后
                 do_action("upload.after", $f);
