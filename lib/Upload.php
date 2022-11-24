@@ -17,18 +17,18 @@ use Upload\File;
 /*
 use lib\Upload;
 //是否总是上传
-Upload::$_upload_always = false;
+Upload::$db = false;
 //是否把上传记录保存到数据库
 Upload::$db = true;
 //是否上传到 data/uploads目录下，而不是 uploads/ 下
-Upload::$_upload_to_new_dir = true;
+Upload::$path = true;
 */
 
 class Upload
 {
     public $domain;
-    static $_upload_always  = false;
-    static $_upload_to_new_dir = false;
+    static $db  = false;
+    static $path = false;
     /**
      * 写入数据库,默认使用uploads表记录，
      * 也可以设置为false
@@ -113,8 +113,8 @@ class Upload
         do_action("upload.before", $this);
         $file_key =  g('file_key') ?: 'file';
         $url      =  'uploads/' . $this->domain . $user_id . '/' . date('Y-m-d');
-        $_upload_to_new_dir  =  self::$_upload_to_new_dir ?: false;
-        if ($_upload_to_new_dir) {
+        $path  =  self::$path ?: false;
+        if ($path || g('path')) {
             $url = 'data/uploads/' . $this->domain . $user_id . '/' . date('Y-m-d');
         }
         $path       = PATH . $url . '/';
@@ -131,7 +131,7 @@ class Upload
         $size = $file->getSize();
         $mime = $file->getMimetype();
         $file_ext = $file->getExtension();
-        $upload_always = self::$_upload_always ?: false;
+        $upload_always = self::$db ?: false;
         do_action("upload.mime", $mime);
         do_action("upload.size", $size);
         do_action("upload.ext", $file_ext);
