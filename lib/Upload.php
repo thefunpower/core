@@ -26,9 +26,7 @@ Upload::$path = true;
 
 class Upload
 {
-    public $domain;
-    static $db  = false;
-    static $path = false;
+    public $domain; 
     /**
      * 写入数据库,默认使用uploads表记录，
      * 也可以设置为false
@@ -112,11 +110,11 @@ class Upload
         //上传文件前
         do_action("upload.before", $this);
         $file_key =  g('file_key') ?: 'file';
-        $url      =  'uploads/' . $this->domain . $user_id . '/' . date('Y-m-d');
-        $path  =  self::$path ?: false;
-        if ($path || g('path')) {
-            $url = 'data/uploads/' . $this->domain . $user_id . '/' . date('Y-m-d');
+        $sub_dir = g('sub_dir');
+        if($sub_dir){
+            $sub_dir = $sub_dir.'/';
         }
+        $url      =  'uploads/' . $this->domain .$sub_dir. $user_id . '/' . date('Y-m-d'); 
         $path       = PATH . $url . '/';
         if (!is_dir($path)) {
             mkdir($path, 0777, true);
