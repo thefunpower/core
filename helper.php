@@ -205,17 +205,17 @@ function pr($str)
  * @author sun <sunkangchina@163.com>
  * @return mixed
  */
-function add_action($name, $call)
+function add_action($name, $call,$level = '')
 {
     global $_app;
     if (strpos($name, '|') !== false) {
         $arr = explode('|', $name);
         foreach ($arr as $v) {
-            add_action($v, $call);
+            add_action($v, $call,$level);
         }
         return;
     }
-    $_app['actions'][$name][] = $call;
+    $_app['actions'][$name][] = ['func'=>$call,'level'=>$level];  
 }
 /**
  * 执行动作
@@ -231,10 +231,12 @@ function do_action($name, &$par = null)
     if (!is_array($_app)) {
         return;
     }
-    $calls  = $_app['actions'][$name];
+    $calls  = $_app['actions'][$name]; 
+    $calls  = lib\Arr::order_by($calls,'level',SORT_DESC);  
     if ($calls) {
         foreach ($calls as $v) {
-            $v($par);
+            $func = $v['func'];
+            $func($par);
         }
     }
 }
