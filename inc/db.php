@@ -345,8 +345,7 @@ function db_get($table, $join = null, $columns = null, $where = null)
             }
         } 
         //查寻数据 
-        if(db_can_run_action()){
-            do_action("db_get.$table", $all); 
+        if(db_can_run_action()){ 
             foreach($all as &$v){
                 do_action("db_get_one.$table", $v);    
             }
