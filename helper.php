@@ -205,7 +205,7 @@ function pr($str)
  * @author sun <sunkangchina@163.com>
  * @return mixed
  */
-function add_action($name, $call,$level = '')
+function add_action($name, $call,$level = 20)
 {
     global $_app;
     if (strpos($name, '|') !== false) {
