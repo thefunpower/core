@@ -1,4 +1,8 @@
 <?php 
+/*
+    Copyright (c) 2021-2031, All rights reserved.
+    This is NOT a freeware, use is subject to license terms  
+*/
 /**
 //saas系统管理平台数据库
 $config['main_db_host'] = '127.0.0.1';

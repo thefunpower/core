@@ -1,4 +1,8 @@
 <?php
+/*
+    Copyright (c) 2021-2031, All rights reserved.
+    This is NOT a freeware, use is subject to license terms  
+*/
 if (!defined('ADMIN_DIR_NAME')) {
 	define("ADMIN_DIR_NAME", 'admin');
 }

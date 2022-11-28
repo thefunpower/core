@@ -1,11 +1,9 @@
 <?php
 
-/**
- * 
- * @license read license.txt
- * @author sun <sunkangchina@163.com>
- * @copyright (c) 2022 
- */
+/*
+    Copyright (c) 2021-2031, All rights reserved.
+    This is NOT a freeware, use is subject to license terms  
+*/
 
 namespace lib;
 
