@@ -5,7 +5,7 @@
 非免费框架，为原项目中分离出的基础代码，以composer形式存在，仅为了方便统一维护底层代码!
 
 
-
+[![Coverage Status](https://coveralls.io/repos/github/sunkangchina/core/badge.svg?branch=main)](https://coveralls.io/github/sunkangchina/core?branch=main)
 
  
 
