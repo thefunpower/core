@@ -1,13 +1,8 @@
 ### FlatPlug-Core
 
-内部系统使用的基础代码！！！
-
-非免费框架，为原项目中分离出的基础代码，以composer形式存在，仅为了方便统一维护底层代码!
+Flat-Admin后台管理项目依赖此扩展包。
 
 
-[![Coverage Status](https://coveralls.io/repos/github/sunkangchina/core/badge.svg?branch=main)](https://coveralls.io/github/sunkangchina/core?branch=main)
-
- 
 
 ### 新项目建议使用以下开源框架，排序不分先后
 
@@ -23,3 +18,7 @@
 | Phalcon  | https://phalcon.io/zh-cn |
 | Yar  |  https://github.com/laruence/yar |
   
+
+### License
+
+This is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
