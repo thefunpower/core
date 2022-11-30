@@ -18,7 +18,4 @@ Flat-Admin后台管理项目依赖此扩展包。
 | Phalcon  | https://phalcon.io/zh-cn |
 | Yar  |  https://github.com/laruence/yar |
   
-
-### License
-
-This is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+ 
