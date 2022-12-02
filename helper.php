@@ -201,17 +201,19 @@ function pr($str)
  * @author sun <sunkangchina@163.com>
  * @return mixed
  */
-function add_action($name, $call,$level = 20)
-{
-    global $_app;
-    if (strpos($name, '|') !== false) {
-        $arr = explode('|', $name);
-        foreach ($arr as $v) {
-            add_action($v, $call,$level);
+if(!function_exists("add_action")){
+    function add_action($name, $call,$level = 20)
+    {
+        global $_app;
+        if (strpos($name, '|') !== false) {
+            $arr = explode('|', $name);
+            foreach ($arr as $v) {
+                add_action($v, $call,$level);
+            }
+            return;
         }
-        return;
+        $_app['actions'][$name][] = ['func'=>$call,'level'=>$level];  
     }
-    $_app['actions'][$name][] = ['func'=>$call,'level'=>$level];  
 }
 /**
  * 执行动作
@@ -221,18 +223,20 @@ function add_action($name, $call,$level = 20)
  * @author sun <sunkangchina@163.com>
  * @return  mixed
  */
-function do_action($name, &$par = null)
-{
-    global $_app;
-    if (!is_array($_app)) {
-        return;
-    }
-    $calls  = $_app['actions'][$name]; 
-    $calls  = lib\Arr::order_by($calls,'level',SORT_DESC);  
-    if ($calls) {
-        foreach ($calls as $v) {
-            $func = $v['func'];
-            $func($par);
+if(!function_exists("do_action")){
+    function do_action($name, &$par = null)
+    {
+        global $_app;
+        if (!is_array($_app)) {
+            return;
+        }
+        $calls  = $_app['actions'][$name]; 
+        $calls  = lib\Arr::order_by($calls,'level',SORT_DESC);  
+        if ($calls) {
+            foreach ($calls as $v) {
+                $func = $v['func'];
+                $func($par);
+            }
         }
     }
 }
@@ -505,13 +509,15 @@ function is_post()
 /**
  * 判断是否为json 
  */
-function is_json($data, $assoc = false)
-{ 
-    $data = json_decode($data, $assoc);
-    if ($data && (is_object($data)) || (is_array($data) && !empty(current($data)))) {
-        return $data;
-    }
-    return false;
+if(!function_exists('is_json')){
+   function is_json($data, $assoc = false)
+   { 
+        $data = json_decode($data, $assoc);
+        if ($data && (is_object($data)) || (is_array($data) && !empty(current($data)))) {
+            return $data;
+        }
+        return false;
+   } 
 }
 
 

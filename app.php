@@ -38,7 +38,7 @@ include __DIR__ . '/inc/orm.php';
 //加载共用函数
 include __DIR__ . '/helper.php';
 //加载css js配置
-include     PATH . '/misc.ini.php';
+include    PATH . '/boot/misc.ini.php';
 include __DIR__ . '/inc/misc.php';
 //跨域
 include __DIR__ . '/inc/cross.php';
