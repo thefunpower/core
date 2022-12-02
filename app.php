@@ -30,9 +30,7 @@ if (php_sapi_name() !== 'cli' && session_status() !== PHP_SESSION_ACTIVE) {
 	session_start();
 }
 //请求
-include __DIR__ . '/inc/request.php';
-//加载配置
-include PATH . '/config.ini.php';
+include __DIR__ . '/inc/request.php'; 
 //配置时区
 ini_set('date.timezone', $config['timezone'] ?: 'Asia/Shanghai');
 //think-orm
@@ -49,9 +47,7 @@ include __DIR__ . '/inc/jwt.php';
 //缓存
 include __DIR__ . '/inc/cache.php';
 //日志
-include __DIR__ . '/inc/log.php';
-//数据库操作
-include __DIR__ . '/inc/db.php';
+include __DIR__ . '/inc/log.php'; 
 //权限 
 include __DIR__ . '/inc/auth.php';
 $url = $_SERVER['REQUEST_URI'];
