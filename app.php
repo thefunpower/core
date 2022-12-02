@@ -38,7 +38,7 @@ include __DIR__ . '/inc/orm.php';
 //加载共用函数
 include __DIR__ . '/helper.php';
 //加载css js配置
-include PATH . '/misc.ini.php';
+include     PATH . '/misc.ini.php';
 include __DIR__ . '/inc/misc.php';
 //跨域
 include __DIR__ . '/inc/cross.php';
@@ -58,8 +58,7 @@ _app_check_plugin($plugin_name,'modules');
  * 加载插件中的路径文件 router.php
  */
 auto_include();
-autoload_theme('admin');
-
+autoload_theme('admin'); 
 function _app_check_plugin($plugin_name,$plugin_dir='plugins'){
 	if (strpos($plugin_name, $plugin_dir) !== false) {
 		$plugin_name = substr($plugin_name, strpos($plugin_name, $plugin_dir.'/'));
