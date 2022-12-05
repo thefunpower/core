@@ -1847,6 +1847,29 @@ function get_site_id(){
     return $uri;
 }
 
+/**
+* 包含域名路径
+*/
+function base_url(){
+    $id = get_site_id(); 
+    if($id){
+        return host().$id.'/';  
+    }else{
+        return host();
+    }   
+}
+/**
+* 相对路径
+*/
+function site_url(){
+    $id = get_site_id(); 
+    if($id){
+        return '/'.$id.'/'; 
+    }else{
+        return '/';
+    }   
+}
+
 include __DIR__ . '/yii1-javascript-encode.php';
 include __DIR__ . '/inc/jquery.php'; 
 include __DIR__ . '/inc/vue.php'; 
