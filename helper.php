@@ -1835,7 +1835,17 @@ function pdf_watermark($text = null)
     return $pdf;
 }
 
-
+/**
+* 获取站点ID
+*/
+function get_site_id(){
+    $uri = $_SERVER['REQUEST_URI'];
+    $uri = substr($uri,1);
+    if(strpos($uri,'/')!==false){
+        $uri = substr($uri,0,strrpos($uri,'/'));    
+    } 
+    return $uri;
+}
 
 include __DIR__ . '/yii1-javascript-encode.php';
 include __DIR__ . '/inc/jquery.php'; 
@@ -1927,3 +1937,5 @@ function get_aliyun_market($host,$path,$querys='',$method = "GET",$json_header=t
         'cache_id'=>$cache_id,
     ];
  }
+
+ 
