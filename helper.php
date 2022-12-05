@@ -1873,6 +1873,7 @@ function site_url(){
 include __DIR__ . '/yii1-javascript-encode.php';
 include __DIR__ . '/inc/jquery.php'; 
 include __DIR__ . '/inc/vue.php'; 
+include __DIR__ . '/install.php'; 
 
 
 
