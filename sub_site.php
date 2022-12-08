@@ -56,3 +56,18 @@ function get_sub_site_cookie_name($site_id = '',$pre_name = ''){
     $name = $pre_name.$site_id;
     return $name;
 }
+/**
+* 使用token登录
+*/
+function sub_site_login_with_token(){
+    $sign = $_GET['sign'];
+    $site_id = get_site_id();
+    $get_name = $_GET['name']?:$site_id;
+    if($sign){ 
+      $arr = get_sub_site_login_token($site_id,$sign,$less_second=5); 
+      if($arr['site_id'] == $site_id){
+        cookie(get_sub_site_cookie_name($site_id),$get_name,time()+86400*365*10);
+        return true;
+      } 
+    } 
+}
