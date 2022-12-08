@@ -1835,45 +1835,12 @@ function pdf_watermark($text = null)
     return $pdf;
 }
 
-/**
-* 获取站点ID
-*/
-function get_site_id(){
-    $uri = $_SERVER['REQUEST_URI'];
-    $uri = substr($uri,1);
-    if(strpos($uri,'/')!==false){
-        $uri = substr($uri,0,strrpos($uri,'/'));    
-    } 
-    return $uri;
-}
-
-/**
-* 包含域名路径
-*/
-function base_url(){
-    $id = get_site_id(); 
-    if($id){
-        return host().$id.'/';  
-    }else{
-        return host();
-    }   
-}
-/**
-* 相对路径
-*/
-function site_url(){
-    $id = get_site_id(); 
-    if($id){
-        return '/'.$id.'/'; 
-    }else{
-        return '/';
-    }   
-}
 
 include __DIR__ . '/yii1-javascript-encode.php';
 include __DIR__ . '/inc/jquery.php'; 
 include __DIR__ . '/inc/vue.php'; 
 include __DIR__ . '/install.php'; 
+include __DIR__ . '/sub_site.php'; 
 
 
 
