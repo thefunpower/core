@@ -71,3 +71,10 @@ function sub_site_login_with_token(){
       } 
     } 
 }
+/**
+* 退出登录
+*/
+function sub_site_logout($site_id = '',$cookie_pre_name=''){ 
+    $name = get_sub_site_cookie_name($site_id,$cookie_pre_name);
+    remove_cookie($name);
+}
