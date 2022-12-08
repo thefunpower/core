@@ -17,18 +17,16 @@ function get_site_id(){
 function create_sub_site_login_token($site_id,$arr = []){
     $d['site_id'] = $site_id;
     $d['times'] = time();
-    $d = $d+$arr;
-    $d = json_encode($d);
-    $token = urlencode(aes_encode($d)); 
-    return $token;
+    $d = $d+$arr; 
+    return urlencode(aes_encode(json_encode($d)));  
 }
 /**
 * 获取站点token
 */
 function get_sub_site_login_token($site_id,$token,$less_second=5){
-    $flag = false;
-    $arr = json_decode(aes_decode(urldecode($token),true));
-    if($arr['times'] && $arr['site_id'] == $site_id ){
+    $flag = false; 
+    $arr = json_decode(aes_decode(urldecode($token)),true); 
+    if($arr['times'] && $arr['site_id'] == $site_id ){ 
         if($arr['times'] > time()-$less_second){
             $flag = true;
         }
