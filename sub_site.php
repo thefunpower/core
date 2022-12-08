@@ -18,6 +18,7 @@ function create_sub_site_login_token($site_id,$arr = []){
     $d['site_id'] = $site_id;
     $d['times'] = time();
     $d = $d+$arr;
+    $d = json_encode($d);
     $token = urlencode(aes_encode($d)); 
     return $token;
 }
@@ -26,7 +27,7 @@ function create_sub_site_login_token($site_id,$arr = []){
 */
 function get_sub_site_login_token($site_id,$token,$less_second=5){
     $flag = false;
-    $arr = aes_decode(urldecode($token));
+    $arr = json_decode(aes_decode(urldecode($token),true));
     if($arr['times'] && $arr['site_id'] == $site_id ){
         if($arr['times'] > time()-$less_second){
             $flag = true;
