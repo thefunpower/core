@@ -1,12 +1,25 @@
-### FlatPlug-Core
+### core
 
-Flat-Admin后台管理项目依赖此扩展包。
+HeloPHP core framework.
+
+Composer 
+
+~~~
+composer require thefunpower/core
+~~~
+
+### License
+
+It is not a free framework.
+
+Just used to our commerce customers.
 
 
 
-### 新项目建议使用以下开源框架，排序不分先后
 
-|  框架   | 网址  |
+### Builder New App Using others open php frameworks.
+
+|  Framework   | Link  |
 |  ----  | ----  |
 | Yii  | https://www.yiiframework.com/ |
 | ThinkPHP | https://www.thinkphp.cn/ |
