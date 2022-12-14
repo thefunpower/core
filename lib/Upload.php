@@ -15,26 +15,18 @@ use lib\Upload;
 //是否总是上传
 Upload::$db = false;
 //是否把上传记录保存到数据库
-Upload::$db = true;
-//是否上传到 data/uploads目录下，而不是 uploads/ 下
-Upload::$path = true;
+Upload::$db = true; 
+//是否可上传
+Upload::$allow_upload = true;
 */
-
 class Upload
 {
     public $domain; 
     /**
-     * 写入数据库,默认使用uploads表记录，
-     * 也可以设置为false
-     * add_action('upload.init',function($upload){
-     *      \lib\Upload::$db = false;
-     *      $upload->allow_upload = true;
-     * })
+     * 写入数据库
      */
-    static $db = true;
-
-    public $allow_upload = false;
-
+    static $db = true; 
+    static $allow_upload = false; 
     public function __construct()
     {
         global $config;
@@ -92,9 +84,9 @@ class Upload
     { 
         $user_id = cookie(ADMIN_COOKIE_NAME) ?: api(false)['user_id']; 
         if($user_id){
-            $this->allow_upload = true;
+            self::$allow_upload = true;
         } 
-        if(!$this->allow_upload){
+        if(!self::$allow_upload){
             json_error(['msg' => '上传文件被拦截，不支持当前用户上传文件']);
         } 
         global $config;
