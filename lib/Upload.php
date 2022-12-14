@@ -156,4 +156,11 @@ class Upload
             return ['error' => $errors];
         }
     }
+    /**
+    * 返回已上传文件总大小，单位M
+    */
+    public static function getSize(){
+        $size = db_get_sum("upload","size");
+        return bcdiv($size,bcmul(1024,1024),2);
+    }
 }
