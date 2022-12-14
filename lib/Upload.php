@@ -136,7 +136,7 @@ class Upload
             $insert['hash']     = $md5;
             $insert['user_id']  = $user_id;
             $insert['mime']     = $mime;
-            $insert['size']     = bcdiv($size, bcmul(1024, 1024), 2);
+            $insert['size']     = $size;
             $insert['ext']      = $file_ext;
             $insert['name']     = $http_opt['name'] ?: $ori_name;
             $insert['created_at'] = date('Y-m-d H:i:s');
