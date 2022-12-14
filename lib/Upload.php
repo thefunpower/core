@@ -80,11 +80,13 @@ class Upload
      *  单个文件上传
      *  do_action("upload.mime", $mime); 
      */
-    public function one($http_opt = [])
+    public function one($http_opt = [],$ignore_user_id = false)
     { 
-        $user_id = cookie(ADMIN_COOKIE_NAME) ?: api(false)['user_id']; 
-        if($user_id){
-            self::$allow_upload = true;
+        if(!$ignore_user_id){
+            $user_id = cookie(ADMIN_COOKIE_NAME) ?: api(false)['user_id']; 
+            if($user_id){
+                self::$allow_upload = true;
+            } 
         } 
         if(!self::$allow_upload){
             json_error(['msg' => '上传文件被拦截，不支持当前用户上传文件']);
@@ -97,7 +99,8 @@ class Upload
         if($sub_dir){
             $sub_dir = $sub_dir.'/';
         }
-        $url   =  'uploads/' . $this->domain .$sub_dir. $user_id . '/' . date('Y-m-d'); 
+        $url =  'uploads/' . $this->domain .$sub_dir. $user_id . '/' . date('Ymd'); 
+        $url = str_replace("//","/",$url);
         $path  = PATH . $url . '/';
         if (!is_dir($path)) {
             mkdir($path, 0777, true);
