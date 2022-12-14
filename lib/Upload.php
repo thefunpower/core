@@ -26,11 +26,14 @@ class Upload
     /**
      * 写入数据库,默认使用uploads表记录，
      * 也可以设置为false
-     * add_action('upload.init',function(){
+     * add_action('upload.init',function($upload){
      *      \lib\Upload::$db = false;
+     *      $upload->allow_upload = true;
      * })
      */
     static $db = true;
+
+    public $allow_upload = false;
 
     public function __construct()
     {
@@ -87,19 +90,18 @@ class Upload
      */
     public function one($http_opt = [])
     { 
-        $user_id = cookie(ADMIN_COOKIE_NAME) ?: api(false)['user_id'];
-        $allow_upload = false;
+        $user_id = cookie(ADMIN_COOKIE_NAME) ?: api(false)['user_id']; 
         if($user_id){
-            $allow_upload = true;
+            $this->allow_upload = true;
         } 
-        if(!$allow_upload){
+        if(!$this->allow_upload){
             json_error(['msg' => '上传文件被拦截，不支持当前用户上传文件']);
         } 
         global $config;
         //上传文件前
         do_action("upload.before", $this);
         $file_key =  g('file_key') ?: 'file';
-        $sub_dir = g('sub_dir');
+        $sub_dir  = g('sub_dir');
         if($sub_dir){
             $sub_dir = $sub_dir.'/';
         }
