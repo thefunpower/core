@@ -38,19 +38,22 @@ class Menu
                         'icon' => 'far fa-circle',
                         'label' => '员工',
                         'url' => ADMIN_DIR_NAME . '/user.php',
-                        'acl' => 'system.user'
+                        'acl' => 'system.user',
+                        'level'=>10,
                     ],
                     [
                         'icon' => 'far fa-circle',
                         'label' => '部门',
                         'url' => ADMIN_DIR_NAME . '/group.php',
-                        'acl' => 'system.group'
+                        'acl' => 'system.group',
+                        'level'=>20,
                     ],
                     [
                         'icon' => 'far fa-circle',
                         'label' => '插件',
                         'url' => ADMIN_DIR_NAME . '/plugin.php',
-                        'acl' => 'system.plugin'
+                        'acl' => 'system.plugin',
+                        'level'=>1000,
                     ],
 
                 ]
