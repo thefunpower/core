@@ -17,8 +17,15 @@ class Auth
      */
     public function load()
     {
+        $arr1 = self::_load('plugins')?:[];
+        $arr2 = self::_load('modules')?:[];
+        $arr = $arr2+$arr1;     
+        return $arr;
+    } 
+    public static function _load($dir_name = 'plugins')
+    {
         $li = [];
-        $dir = PATH . '/plugins/';
+        $dir = PATH . '/'.$dir_name.'/';
         $actived = has_actived_plugin();
         $dirs[] = PATH . '/api/';
         foreach ($actived as $name => $v) {
