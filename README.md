@@ -1,11 +1,17 @@
 ### core
 
-HeloPHP core framework.
+TheFunpower core framework.
 
 Composer 
 
 ~~~
 composer require thefunpower/core
+~~~
+
+Auth
+
+~~~
+composer require thefunpower/auth
 ~~~
 
 ### License

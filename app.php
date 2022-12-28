@@ -49,9 +49,7 @@ include __DIR__ . '/inc/jwt.php';
 //缓存
 include __DIR__ . '/inc/cache.php';
 //日志
-include __DIR__ . '/inc/log.php'; 
-//权限 
-include __DIR__ . '/inc/auth.php';
+include __DIR__ . '/inc/log.php';  
 $url = $_SERVER['REQUEST_URI'];
 $plugin_name = substr($url, 1);
 _app_check_plugin($plugin_name,'plugins');
