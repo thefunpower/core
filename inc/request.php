@@ -74,7 +74,7 @@ if (!function_exists('g')) {
     {
         $val = get_post($key);
         if (!$val) {
-            $val = $_GET[$key];
+            $val = $key?$_GET[$key]:$_GET;
         }
         return $val;
     }
