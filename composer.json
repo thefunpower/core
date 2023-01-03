@@ -27,7 +27,8 @@
         "catfan/medoo": "^2.1",
         "predis/predis": "^2.0",
         "ramsey/uuid": "^4.4",
-        "godruoyi/php-snowflake": "^2.1"  
+        "godruoyi/php-snowflake": "^2.1",
+        "endroid/qr-code": "^4.7"  
     }, 
     "autoload": { 
         "psr-0": {
