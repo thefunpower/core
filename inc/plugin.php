@@ -32,7 +32,9 @@ function _local_plugin($dir_name = 'plugins')
     }
     return $list;
 }
-
+/**
+* 执行插件目录下SQL文件
+*/
 function run_plugin_sql($plugins_dir='plugins',$plugin_name){
     //执行依赖包的SQL
     $dir = PATH.$plugins_dir.'/'.$plugin_name.'/sql/*.sql';
@@ -72,6 +74,12 @@ function install_plugin($name){
             do_install_plugin($plugin_name);
         }
     }
+}
+/**
+* 安装或卸载插件
+*/
+function install_plugin_auto($plugin_name){
+    return do_install_plugin($plugin_name,$support_remove=true,$has_status = null);
 }
 /**
 * 卸载插件
@@ -129,6 +137,7 @@ function load_plugin_to_db(){
             db_del("plugin",['name'=>$v['name']]);
         }
     }
+    return $data;
 }
 /**
 * 卸载插件
@@ -136,12 +145,7 @@ function load_plugin_to_db(){
 function do_remove_plugin($plugin_name){
     return do_install_plugin($plugin_name,$support_remove=false,$has_status = -1);
 }
-/**
-* 安装或卸载插件
-*/
-function install_plugin_auto($plugin_name){
-    return do_install_plugin($plugin_name,$support_remove=true,$has_status = null);
-}
+
 /**
 * 执行安装具体的插件
 */
@@ -164,8 +168,7 @@ function do_install_plugin($plugin_name,$support_remove=false,$has_status = null
    }  
 
    if($has_status){
-        $status = $has_status;
-
+        $status = $has_status; 
         if($status == 1){
             $status = 1;
             $msg = "安装插件".$one['name']."成功！";
