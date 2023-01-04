@@ -798,21 +798,31 @@ function view($name, $params = [])
         $name = $arr[1];
         $file_3 = PATH . 'plugins/' . $arr[0] . '/' . $name . '.php';
         $name = $arr[0] . '/' . $name;
-    }
-
+    } 
     $file_1 = $dir . $theme . '/' . $name . '.php';
     $file_2 = $dir . $default_theme . '/' . $name . '.php';
     if ($params) {
         extract($params);
     }
+    $file_1 = str_replace("//",'/',$file_1);
+    $file_2 = str_replace("//",'/',$file_2);
+    if($file_3){
+        $file_3 = str_replace("//",'/',$file_3);
+    }
     if (file_exists($file_1)) {
         include $file_1;
     } else if (file_exists($file_2)) {
         include $file_2;
-    } else if (file_exists($file_3)) {
+    } else if ($file_3 && file_exists($file_3)) {
         include $file_3;
-    }
-} 
+    }else{
+        echo "<div style='color:red;'>视图文件不存在</div>";
+        echo "<div style='color:red;'>";
+        pr(array_filter([$file_1,$file_2,$file_3]));
+        echo "</div>";
+        exit;
+    } 
+}
 
 /**
  * 设置配置
