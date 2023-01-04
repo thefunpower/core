@@ -164,7 +164,7 @@ class Vue
             $watch_str .= $br . $k . php_to_js($v) . ",";
         }
         foreach ($this->mounted as $k => $v) {
-            $mounted_str .= $br . $k . php_to_js($v) . "";
+            $mounted_str .= $br .  php_to_js($v) . "";
         }
 
         $js = "
