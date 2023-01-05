@@ -1577,7 +1577,17 @@ function get_include_content($local_file){
     ob_end_clean();
     return $data;
 }
-
+/**
+* 返回当前版本号
+*/
+function get_version(){
+    static $version;
+    if($version){
+        return $version;
+    }
+    $version = include __DIR__.'/version.php';
+    return $version;
+}
 
 include __DIR__ . '/yii1-javascript-encode.php';
 include __DIR__ . '/inc/jquery.php'; 
