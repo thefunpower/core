@@ -871,11 +871,7 @@ function get_config($title)
 
 
 /**
- * elementui table序号
- * methods中的方法，参考 /modules/user/user.php
- * <?= element_index_method() ?>,
- * <el-table-column type="index" label="序号" :index="indexMethod" width="50">
-    </el-table-column>
+ * elementui table序号 
  * @return string
  */
 function element_index_method()
@@ -1007,8 +1003,7 @@ function el_page_sizes()
 /**
 return [
     'welcome' => '你好{name}', 
-];
-<?= lang('welcome',['name'=>'test'])?>
+]; 
  */
 function lang($name, $val = [], $pre = 'app')
 {
@@ -1197,8 +1192,7 @@ function import($file, $vars = [], $check_vars = false)
 }
 
 /**
- * 生成表单TOKEN，防止重复提交
-<input type="hidden" name="form_token" value="<?=create_form_token()?>">
+ * 生成表单TOKEN，防止重复提交 
  */
 function create_form_token()
 {
@@ -1586,16 +1580,14 @@ function get_version(){
         return $version;
     }
     $version = include __DIR__.'/version.php';
+
     return $version;
 }
-
+//包含一些必要的文件
 include __DIR__ . '/yii1-javascript-encode.php';
 include __DIR__ . '/inc/jquery.php'; 
 include __DIR__ . '/inc/vue.php'; 
 include __DIR__ . '/inc/plugin.php'; 
 include __DIR__ . '/inc/third.php'; 
 include __DIR__ . '/install.php'; 
-include __DIR__ . '/sub_site.php'; 
-
-
-
+include __DIR__ . '/sub_site.php';
