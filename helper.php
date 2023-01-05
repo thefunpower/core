@@ -1566,6 +1566,17 @@ function pdf_watermark($text = null)
     $pdf->watermarkImageAlpha = 0.5;
     return $pdf;
 }
+/**
+* 获取本地include文件内容
+*/
+function get_include_content($local_file){
+    if(!file_exists($local_file)){return;}
+    ob_start();
+    include $local_file;
+    $data = ob_get_contents();
+    ob_end_clean();
+    return $data;
+}
 
 
 include __DIR__ . '/yii1-javascript-encode.php';
