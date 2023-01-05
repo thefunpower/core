@@ -1,6 +1,11 @@
-### core
+## core
 
 TheFunpower core framework.
+
+### doucment
+
+http://thefunpower.netlify.qihetaiji.com/
+
 
 Composer 
 
