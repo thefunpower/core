@@ -1585,8 +1585,7 @@ function get_version(){
 }
 //包含一些必要的文件
 include __DIR__ . '/yii1-javascript-encode.php';
-include __DIR__ . '/inc/jquery.php'; 
-include __DIR__ . '/inc/vue.php'; 
+include __DIR__ . '/inc/jquery.php';  
 include __DIR__ . '/inc/plugin.php'; 
 include __DIR__ . '/inc/third.php'; 
 include __DIR__ . '/install.php'; 
