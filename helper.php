@@ -1590,7 +1590,8 @@ function get_version(){
     });
  */
 function get_ins($key,$call){
-    global $_ins;
+   global $_ins;
+   $key = "ins_function_".$key;
    if($_ins[$key]){return;}else{$_ins[$key] = 1;echo $call();}
 }
 //包含一些必要的文件 
