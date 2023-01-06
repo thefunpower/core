@@ -1583,6 +1583,16 @@ function get_version(){
 
     return $version;
 }
+/**
+ * 避免重复调用
+ * get_ins('key',function(){
+        my_function();
+    });
+ */
+function get_ins($key,$call){
+    global $_ins;
+   if($_ins[$key]){return;}else{$_ins[$key] = 1;echo $call();}
+}
 //包含一些必要的文件 
 include __DIR__ . '/inc/jquery.php';  
 include __DIR__ . '/inc/plugin.php'; 
