@@ -21,11 +21,7 @@ composer require thefunpower/auth
 
  
 
-### 开源协议
-
-这不是免费软件，仅供学习参考。
-
-仅为获得授权用户提供支持！！
+### 开源协议 
 
 [LICENSE](LICENSE.md)
 
