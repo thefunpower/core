@@ -1583,8 +1583,7 @@ function get_version(){
 
     return $version;
 }
-//包含一些必要的文件
-include __DIR__ . '/yii1-javascript-encode.php';
+//包含一些必要的文件 
 include __DIR__ . '/inc/jquery.php';  
 include __DIR__ . '/inc/plugin.php'; 
 include __DIR__ . '/inc/third.php'; 
