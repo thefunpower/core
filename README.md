@@ -1,36 +1,38 @@
-## core
+## TheFunpower
 
 TheFunpower core framework.
 
-### doucment
+### 查看手册
 
 http://thefunpower.netlify.qihetaiji.com/
 
 
-Composer 
+安装核心包 
 
 ~~~
 composer require thefunpower/core
 ~~~
 
-Auth
+安装权限包
 
 ~~~
 composer require thefunpower/auth
 ~~~
 
-### License
+ 
 
-It is not a free framework.
+### 开源协议
 
-Just used to our commerce customers.
+这不是免费软件，仅供学习参考。
+
+仅为获得授权用户提供支持！！
+
+[LICENSE](LICENSE.md)
 
 
+### 建议使用以下开源且协议非常宽松的PHP框架
 
-
-### Builder New App Using others open php frameworks.
-
-|  Framework   | Link  |
+|  框架名称   | 官方网址  |
 |  ----  | ----  |
 | Yii  | https://www.yiiframework.com/ |
 | ThinkPHP | https://www.thinkphp.cn/ |
