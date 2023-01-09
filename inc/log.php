@@ -90,46 +90,28 @@ CREATE TABLE IF NOT EXISTS `log` (
 
  */ 
 function write_log($msg, $level = 'info')
-{
-    if (!$msg) {
-        return;
-    }
-    $level = strtolower($level);
-    if (!is_array($msg)) {
-        $data['log'] = $msg;
-    } else {
-        $data = $msg;
-    }
-    $ret = do_action("log", $data); 
-    $trace = debug_backtrace(false)[0];
-    $file = $trace['file'];
-    $line = $trace['line'];
-    $trace = '';
-    if (in_array($level, ['warning', 'error', 'critical', 'alert'])) {
+{ 
+    global $config; 
+    $level = strtolower($level); 
+    $trace = debug_backtrace(false);  
+    Log::write($trace, $level);  
+    $last = count($trace)-1;  
+    if ($config['log_db'] && in_array($level, ['warning', 'error', 'critical', 'alert'])) {
         $arr = [];
         $arr['url'] = urldecode($_SERVER['REQUEST_URI']);
         $arr['level'] = $level;
-        $arr['file'] = $file;
-        $arr['line'] = $line;
-        if ($data['trace']) {
-            $trace = $data['trace'];
-            unset($data['trace']);
+        $arr['file'] = str_replace("\\","/",$trace[$last]['file']);
+        $arr['line'] = $trace[$last]['line']; 
+        if(!is_array($msg)){
+            $msg = ['log'=>$msg];
         }
-        $arr['msg']  = $data;
+        $arr['msg']  = $msg;
         $arr['trace'] = $trace;
         $arr['created_at'] = now();  
-        $arr = db_allow("log",$arr); 
-        db_insert('log', $arr);
-        
-    }else{
-        $arr = [];
-        $arr['trace'] = $data;
-        $arr['level'] = $level;
-        $arr['file'] = $file;
-        $arr['line'] = $line;
-    }
-    unset($arr['created_at']);
-    Log::write($arr, $level);
+        $arr = db_allow("log",$arr);  
+        db_insert('log', $arr);   
+    } 
+    do_action("log", $trace); 
 } 
 
 /**
