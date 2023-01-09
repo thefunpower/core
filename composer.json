@@ -12,9 +12,9 @@
     ],
     "require": {
         "php": ">=7.1",  
-        "thefunpower/vue": "^1.0",
-        "thefunpower/db_medoo": "^1.0",
-        "thefunpower/license_checker": "^1.0", 
+        "thefunpower/vue": "dev-main",
+        "thefunpower/db_medoo": "dev-main",
+        "thefunpower/license_checker": "dev-main", 
         "alchemy/zippy": "^1.0",
         "firebase/php-jwt": "^5.4",
         "guzzlehttp/guzzle": "^7.3",
