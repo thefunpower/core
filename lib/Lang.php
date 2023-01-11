@@ -29,12 +29,9 @@ class Lang
 
     public static function trans($name, $val = [], $pre = 'app')
     {
-        $arr = [];
-        if (!self::$lang_dir) {
-            self::set();
-        }
+        $lang = cookie('lang')?:'zh-cn';   
         if (!self::$obj[$pre]) {
-            $file = self::$lang_dir . $pre . '.php';
+            $file = PATH . 'lang/'.$lang.'/'. $pre . '.php';
             if (file_exists($file)) {
                 $arr = include $file;
             }
