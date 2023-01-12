@@ -127,11 +127,12 @@ function auto_include()
 }
 function _auto_include($dir_name){
     $_autoinclude_dir = PATH . $dir_name.'/';
-    $_actived = has_actived_plugin(); 
+    $_actived = has_actived_plugin();  
+    pr($_actived);
     foreach ($_actived as $name => $v) {
         $_autoinclude_file = $_autoinclude_dir . $name . '/include.php';  
         if (file_exists($_autoinclude_file)) {
-            include $_autoinclude_file;
+            import($_autoinclude_file);
         }
     }
 }

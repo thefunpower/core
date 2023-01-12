@@ -36,12 +36,10 @@ if (php_sapi_name() !== 'cli' && session_status() !== PHP_SESSION_ACTIVE) {
 include __DIR__ . '/inc/request.php'; 
 //配置时区
 ini_set('date.timezone', $config['timezone'] ?: 'Asia/Shanghai');
-//think-orm
-include __DIR__ . '/inc/orm.php';
 //加载共用函数
 include __DIR__ . '/helper.php';
 //加载css js配置
-include    PATH . '/boot/misc.ini.php';
+include PATH    . '/boot/misc.ini.php';
 include __DIR__ . '/inc/misc.php';
 //跨域
 include __DIR__ . '/inc/cross.php';
@@ -53,3 +51,12 @@ include __DIR__ . '/inc/cache.php';
 include __DIR__ . '/inc/log.php';  
 $url = $_SERVER['REQUEST_URI'];
 $plugin_name = substr($url, 1); 
+
+/**
+ 只加载这个文件的时候，如果需要开启插件建议直接加载app.php
+ 但如果是SAAS版本的需要加载些文件，而不是加载app.php 
+ SAAS版在boot/app.php中加载此文件后，需要执行
+
+ auto_include();
+ autoload_theme('admin'); 
+*/

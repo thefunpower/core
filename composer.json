@@ -11,7 +11,8 @@
         }
     ],
     "require": {
-        "php": ">=7.1",   
+        "php": ">=7.4",   
+        "mpdf/mpdf": "^8.0",
         "alchemy/zippy": "^1.0",
         "firebase/php-jwt": "^5.4",
         "guzzlehttp/guzzle": "^7.3",
