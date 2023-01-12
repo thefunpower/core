@@ -128,7 +128,6 @@ function auto_include()
 function _auto_include($dir_name){
     $_autoinclude_dir = PATH . $dir_name.'/';
     $_actived = has_actived_plugin();  
-    pr($_actived);
     foreach ($_actived as $name => $v) {
         $_autoinclude_file = $_autoinclude_dir . $name . '/include.php';  
         if (file_exists($_autoinclude_file)) {
@@ -1600,5 +1599,4 @@ function get_ins($key,$call){
 include __DIR__ . '/inc/jquery.php';  
 include __DIR__ . '/inc/plugin.php'; 
 include __DIR__ . '/inc/third.php'; 
-include __DIR__ . '/install.php'; 
-include __DIR__ . '/sub_site.php';
+include __DIR__ . '/install.php';
