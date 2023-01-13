@@ -27,14 +27,11 @@ class Mail
 	{
 		global $config;
 		if (!$dsn) {
-			$dsn = $config['mail_dsn'];
 			$mail_from = get_config('mail_from');
 			$pwd = get_config('mail_pwd');
 			$mail_smtp = get_config('mail_smtp');
 			$mail_port = get_config('mail_port');
-			if(!$dsn){
-				$dsn = "smtp://".$mail_from.":".$pwd."@".$mail_smtp.":".$mail_port; 
-			}
+			$dsn = "smtp://".$mail_from.":".$pwd."@".$mail_smtp.":".$mail_port;
 			self::$mail_from = $mail_from;
 		}
 		ini_set("default_socket_timeout", 3);
