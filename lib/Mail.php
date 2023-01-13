@@ -19,10 +19,10 @@ $config['mail_port'] = '465'; //465时可不填写
  * 发送邮件
 \lib\Mail::send([
     'from'   => '',
-    'replyTo'=>'sunkangchina@163.com',
+    'replyTo'=>'reply to this address',
     'to'     => 'your mail address',
-    'subject'=> "PDF", 
-    'html'   => "<p>登录网址为</p>",
+    'subject'=> "邮件标题", 
+    'html'   => "邮件内容",
     'addPart'=> [
         ['path'=>PATH.'/uploads/demo.pdf','name'=>'test.pdf'],
         ['path'=>PATH.'/uploads/demo.docx','name'=>'test1.docx'],
