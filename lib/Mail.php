@@ -27,7 +27,8 @@ $config['mail_port'] = '465'; //465时可不填写
         ['path'=>PATH.'/uploads/demo.pdf','name'=>'test.pdf'],
         ['path'=>PATH.'/uploads/demo.docx','name'=>'test1.docx'],
       ],
-   ]); 
+]); 
+更多用法： https://symfony.com/doc/current/mailer.html#html-content
 */
 namespace lib;
 
