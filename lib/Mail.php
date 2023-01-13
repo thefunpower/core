@@ -20,7 +20,7 @@ $config['mail_port'] = '465'; //465时可不填写
 \lib\Mail::send([
     'from'   => '',
     'replyTo'=>'sunkangchina@163.com',
-    'to'     => '68103403@qq.com',
+    'to'     => 'your mail address',
     'subject'=> "PDF", 
     'html'   => "<p>登录网址为</p>",
     'addPart'=> [
