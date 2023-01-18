@@ -1264,8 +1264,7 @@ function get_reffer($refer = '')
 {
     $refer = $refer ?: $_SERVER['HTTP_REFERER'];
     $refer = str_replace("http://", '', $refer);
-    $refer = str_replace("https://", '', $refer);
-    $refer = str_replace("/", '', $refer);
+    $refer = str_replace("https://", '', $refer); 
     return $refer;
 }
 /**
