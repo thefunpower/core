@@ -503,7 +503,7 @@ function is_ssl(){
 }
 /**
  * 设置、获取cookie
- *
+ * cookie_local 时禁用SSL
  * @param string $name
  * @param string $value
  * @param integer $expire
@@ -527,6 +527,9 @@ function cookie($name, $value = NULL, $expire = 0)
         'httponly' => $bool,
         'samesite' => 'None',
     ];
+    if($config['cookie_local']){
+        unset($opt['secure'],$opt['httponly'],$opt['samesite']);
+    }
     if(is_local()){
         unset($opt['samesite']);
     }
