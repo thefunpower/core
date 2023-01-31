@@ -746,7 +746,7 @@ function validate($labels, $data, $rules, $show_array = false)
                 break;
             }
         }
-        return ['code' => 250, 'msg' => $error, 'type' => 'error'];
+        return ['code' => 250, 'msg' => $error, 'type' => 'error','key'=>$k];
     } else {
         return;
     }
