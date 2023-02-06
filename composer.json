@@ -16,18 +16,13 @@
         "firebase/php-jwt": "^5.4",
         "guzzlehttp/guzzle": "^7.3",
         "phpseclib/phpseclib": "^2.0",
-        "bramus/router": "~1.6",
-        "phpoffice/phpspreadsheet": "^1.20",  
+        "bramus/router": "~1.6", 
         "symfony/yaml": "^5.3", 
         "vlucas/valitron": "^1.4", 
         "topthink/think-cache": "^2.0",
         "topthink/think-log": "^2.0",
-        "symfony/mailer": "^5.4",       
-        "catfan/medoo": "^2.1",
-        "predis/predis": "^2.0",
-        "ramsey/uuid": "^4.4",
-        "godruoyi/php-snowflake": "^2.1",
-        "endroid/qr-code": "^4.7"  
+        "symfony/mailer": "^5.4",     
+        "predis/predis": "^2.0" 
     }, 
     "autoload": { 
         "psr-0": {
