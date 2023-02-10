@@ -1463,7 +1463,37 @@ function get_block($name = ''){
         return $_core_block;
     } 
 }
-
+/**
+* 自动加载app目录下控制器及方法
+* $autoload->addPsr4('app\\',PATH.'app/');
+*/
+function auto_load_app_router($pre_name='app')
+{
+    global $class,$action; 
+    $uri = $_SERVER['REQUEST_URI']; 
+    if(substr($uri,0,1) == '/'){
+        $uri = substr($uri,1);
+    }
+    if(strpos($uri,'/') !== false){
+        $class = substr($uri,0,strrpos($uri,'/'));
+        $action = substr($uri,strrpos($uri,'/')+1);
+    }else{
+        $class  = $uri;
+        $action = 'index';
+    } 
+    $cls = $pre_name."\\".$class;
+    $cls = str_replace("/","\\",$cls);  
+    if(class_exists($cls) && method_exists($cls,$action)){
+        return (new $cls)->$action();
+    }else{
+        header('HTTP/1.1 404 Not Found');
+        if(function_exists('page_not_find')){
+            page_not_find();
+        }else{
+            echo "PAGE NOT FIND";    
+        }        
+    }
+}
 /**
 * 处理ZIP
 */
