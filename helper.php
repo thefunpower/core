@@ -1483,6 +1483,9 @@ function auto_load_app_router($pre_name='app')
     } 
     $cls = $pre_name."\\".$class;
     $cls = str_replace("/","\\",$cls);  
+    if(strpos($action,'?')!==false){
+        $action = substr($action,0,strpos($action,'?'));
+    }
     if(class_exists($cls) && method_exists($cls,$action)){
         return (new $cls)->$action();
     }else{
