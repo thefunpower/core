@@ -605,22 +605,33 @@ function price_format($yuan,$dot = 2)
 /**
  * 返回错误信息，JSON格式 
  */
-function json_error($arr = [])
+function json_error($arr = [],$is_array = false)
 {
     $arr['code'] = $arr['code'] ?: 250;
     $arr['type'] = $arr['type'] ?: 'error';
+    if($is_array){
+        return $arr;
+    }
     json($arr);
+}
+function array_error($arr = []){
+    return json_error($arr,true);
 }
 /**
  * 返回成功信息，JSON格式 
  */
-function json_success($arr = [])
+function json_success($arr = [],$is_array = false)
 {
     $arr['code'] = $arr['code'] ?: 0;
     $arr['type'] = $arr['type'] ?: 'success';
+    if($is_array){
+        return $arr;
+    }
     json($arr);
 } 
-
+function array_success($arr = []){
+    return json_success($arr,true);
+}
 /**
  * yaml转数组
  *
