@@ -1508,13 +1508,16 @@ function auto_load_app_router($pre_name='app')
         $class  = $uri;
         $action = 'index';
     } 
-    $cls = $pre_name."\\".$class;
-    $cls = str_replace("/","\\",$cls);  
+    $class = $pre_name."\\".$class;
+    $class = str_replace("/","\\",$class);  
     if(strpos($action,'?')!==false){
         $action = substr($action,0,strpos($action,'?'));
     }
-    if(class_exists($cls) && method_exists($cls,$action)){
-        return (new $cls)->$action();
+    if(strpos($class,'?')!==false){
+        $class = substr($class,0,strpos($class,'?'));
+    } 
+    if(class_exists($class) && method_exists($class,$action)){
+        return (new $class)->$action();
     }else{
         header('HTTP/1.1 404 Not Found');
         if(function_exists('page_not_find')){
