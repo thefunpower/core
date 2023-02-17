@@ -1,7 +1,7 @@
 {
     "name": "thefunpower/core",
     "type": "library",
-    "description": "sample core",
+    "description": "功能基础包",
     "keywords": ["php"],
     "license": "MIT",
     "authors": [
