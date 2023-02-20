@@ -996,10 +996,10 @@ function aes_encode($data, $key = '', $iv = '', $type = 'AES-128-CBC', $options 
 {
     global $config;
     if (!$key) {
-        $key = $config['aes_key'];
+        $key = $config['ak']?:$config['aes_key'];
     }
     if (!$iv) {
-        $iv  = $config['aes_iv'];
+        $iv  = $config['sk']?:$config['aes_iv'];
     }
     $obj = new \lib\Aes($key, $iv, $type, $options);
     return base64_encode($obj->encrypt($data));
@@ -1016,10 +1016,10 @@ function aes_decode($data, $key = '', $iv = '', $type = 'AES-128-CBC', $options 
 {
     global $config;
     if (!$key) {
-        $key = $config['aes_key'];
+        $key = $config['ak']?:$config['aes_key'];
     }
     if (!$iv) {
-        $iv  = $config['aes_iv'];
+        $iv  = $config['sk']?:$config['aes_iv'];
     }
     $data = base64_decode($data);
     $obj = new \lib\Aes($key, $iv, $type, $options);
