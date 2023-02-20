@@ -1384,13 +1384,13 @@ function verify_sample_sign_url($exp_time = 60){
 /**
  * 检查签名防止篡改
  */
-function signature_checker(){
-    if(!$_POST['_signature']){
-        $_POST = get_input(); 
-    } 
+function signature_checker($secret='',$array_encode = false){
+    if(!$secret){
+        $secret = get_config('sign_secret')?:'TheCoreFun2022';
+    }
     $_signature = $_POST['_signature'];
     unset($_POST['_signature']); 
-    $sign = sign_by_secret($_POST,'',true);
+    $sign = sign_by_secret($_POST,$secret,$array_encode);
     if($_signature != $sign){
         json_error(['msg'=>'签名错误'.$sign]);
     } 
