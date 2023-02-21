@@ -8,9 +8,6 @@
     Code Vesion: v1.0.x
 */
 
-if (!defined('VERSION')) {
-    die();
-}
 /**
  * 数组转tree 
  * 
@@ -1596,6 +1593,5 @@ function get_ins($key,$call){
 }
 //包含一些必要的文件 
 include __DIR__ . '/inc/jquery.php';  
-include __DIR__ . '/inc/plugin.php'; 
-include __DIR__ . '/inc/third.php'; 
+include __DIR__ . '/inc/plugin.php';  
 include __DIR__ . '/install.php';

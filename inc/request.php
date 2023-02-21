@@ -8,9 +8,6 @@
     Code Vesion: v1.0.x
 */
 
-if (!defined('VERSION')) {
-    die();
-}
 /**
  * 有\'内容转成'显示，与addslashes相反 stripslashes
  */ 
