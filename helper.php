@@ -1488,10 +1488,14 @@ function get_block($name = ''){
     } 
 }
 /**
-* 自动加载app目录下控制器及方法
+* 自动加载app目录下控制器及方法 
+* page_not_find() 定义错误页面
 * $autoload->addPsr4('app\\',PATH.'app/');
+* $router->set404(function() { 
+*    auto_load_app_router(['app','']);
+* });
 */
-function auto_load_app_router($pre_name='app')
+function auto_load_app_router($pre_name_arr=[])
 {
     global $class,$action; 
     $uri = $_SERVER['REQUEST_URI']; 
@@ -1504,25 +1508,26 @@ function auto_load_app_router($pre_name='app')
     }else{
         $class  = $uri;
         $action = 'index';
-    } 
-    $class = $pre_name."\\".$class;
-    $class = str_replace("/","\\",$class);  
-    if(strpos($action,'?')!==false){
-        $action = substr($action,0,strpos($action,'?'));
-    }
-    if(strpos($class,'?')!==false){
-        $class = substr($class,0,strpos($class,'?'));
-    } 
-    if(class_exists($class) && method_exists($class,$action)){
-        return (new $class)->$action();
+    }  
+    foreach($pre_name_arr as $pre_name){
+        $class_name = $pre_name."\\".$class;
+        $class_name = str_replace("/","\\",$class_name);  
+        if(strpos($action,'?')!==false){
+            $action = substr($action,0,strpos($action,'?'));
+        }
+        if(strpos($class_name,'?')!==false){
+            $class_name = substr($class_name,0,strpos($class_name,'?'));
+        }   
+        if(class_exists($class_name) && method_exists($class_name,$action)){
+            return (new $class_name)->$action();
+        } 
+    }  
+    if(function_exists('page_not_find')){
+        page_not_find();
     }else{
-        header('HTTP/1.1 404 Not Found');
-        if(function_exists('page_not_find')){
-            page_not_find();
-        }else{
-            echo "PAGE NOT FIND";    
-        }        
-    }
+        echo "PAGE 404";  
+        exit;  
+    }        
 }
 /**
 * 处理ZIP
