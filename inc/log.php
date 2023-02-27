@@ -18,7 +18,7 @@ function log_info($str,$name='app',$type='info'){
     if(is_array($str)){
         $str = json_encode($str,JSON_UNESCAPED_UNICODE);
     }
-    log_init($name)->$type($str,['ip'=>get_ip()]);
+    log_init($name)->$type($str,['IP'=>get_ip(),'REQUEST_URI'=>$_SERVER['REQUEST_URI']]);
 }
 /**
 * 记录错误日志
