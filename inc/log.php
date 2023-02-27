@@ -18,7 +18,7 @@ function log_info($str,$name='app',$type='warning'){
     if(is_array($str)){
         $str = json_encode($str,JSON_UNESCAPED_UNICODE);
     }
-    log_init($type,$name)->$type($str,['ip'=>get_ip()]);
+    log_init($name)->$type($str,['ip'=>get_ip()]);
 }
 /**
 * 记录错误日志
@@ -30,11 +30,11 @@ function log_error($str,$name='app'){
 /**
 * 初始化
 */
-function log_init($WARNING='WARNING',$channel_name='app')
+function log_init($channel_name='app')
 {  
     static $_log;
-    if($_log){
-        return $_log;
+    if($_log[$channel_name]){
+        return $_log[$channel_name];
     }
     $log_from = "web";
     if (is_cli()) {
@@ -46,12 +46,13 @@ function log_init($WARNING='WARNING',$channel_name='app')
     $dateFormat = "Y-m-d H:i:s"; 
     $output = "%datetime% > %level_name% > %message% %context% %extra%\n";
     do_action("monolog.output",$output);
-    $_log = new Monolog\Logger($channel_name);
+    $log = new Monolog\Logger($channel_name);
     $stream = new Monolog\Handler\StreamHandler($log_file); 
     $formatter = new Monolog\Formatter\LineFormatter($output, $dateFormat); 
     $stream->setFormatter($formatter);
-    do_action("monolog",$_log);
+    do_action("monolog",$log);
     do_action("monolog.stream",$stream);
-    $_log->pushHandler($stream);  
-    return $_log;
+    $log->pushHandler($stream);  
+    $_log[$channel_name] = $log;
+    return $log;
 }
