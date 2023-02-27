@@ -14,7 +14,7 @@
 /**
 * 写日志
 */
-function log_info($str,$name='app',$type='warning'){  
+function log_info($str,$name='app',$type='info'){  
     if(is_array($str)){
         $str = json_encode($str,JSON_UNESCAPED_UNICODE);
     }
