@@ -59,7 +59,11 @@ $plugin_name = substr($url, 1);
 * 处理异常
 */
 set_exception_handler(function ($e) {
-    $err = $e->getMessage();
-    do_action("exception",$err);
+    $err = $e->getMessage(); 
+    do_action("e",$e);
+    if(function_exists('exception')){
+    	exception($e);
+    } 
     log_error($err,'exception'); 
+    return;
 });
