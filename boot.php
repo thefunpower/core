@@ -55,3 +55,11 @@ $plugin_name = substr($url, 1);
  auto_include();
  autoload_theme('admin'); 
 */
+/**
+* 处理异常
+*/
+set_exception_handler(function ($e) {
+    $err = $e->getMessage();
+    do_action("exception",$err);
+    log_error($err,'exception'); 
+});
