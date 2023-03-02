@@ -5,7 +5,6 @@
     This is NOT a freeware
     LICENSE: https://github.com/thefunpower/core/blob/main/LICENSE.md 
     Connect Email: sunkangchina@163.com 
-    Code Vesion: v1.0.x
 */
 
 /**
@@ -1630,8 +1629,9 @@ function html_error($all){
         return $html;   
     }
     
-}
+} 
 //包含一些必要的文件 
 include __DIR__ . '/inc/jquery.php';  
 include __DIR__ . '/inc/plugin.php';  
+include __DIR__ . '/inc/image.php';  
 include __DIR__ . '/install.php';

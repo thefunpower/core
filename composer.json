@@ -22,7 +22,8 @@
         "topthink/think-cache": "^2.0", 
         "symfony/mailer": "^5.4",     
         "predis/predis": "^2.0",
-        "monolog/monolog": "^2.9"
+        "monolog/monolog": "^2.9",
+        "gregwar/image": "^2.1"
     }, 
     "autoload": { 
         "psr-0": {
