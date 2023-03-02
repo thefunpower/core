@@ -60,10 +60,22 @@ $plugin_name = substr($url, 1);
 */
 set_exception_handler(function ($e) {
     $err = $e->getMessage(); 
-    do_action("e",$e);
     if(function_exists('exception')){
-    	exception($e);
+        exception($e);
     } 
     log_error($err,'exception'); 
-    return;
+    do_action("e",$e); 
+    $err = ['msg'=>$e->getMessage(),'line'=>$e->getLine(),'file'=>$e->getFile()];
+    if(is_json_request()){ 
+        json_error($err);
+    }else{
+        if(DEBUG){ 
+            $html = html_error([
+                '错误信息：'=>$err['msg'],
+                '文件：'=>$err['file'],
+                '行号：'=>$err['line'],
+            ]);
+            echo $html;exit;
+        } 
+    }
 });

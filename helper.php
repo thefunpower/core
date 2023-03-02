@@ -1596,6 +1596,41 @@ function get_ins($key,$call){
    $key = "ins_function_".$key;
    if($_ins[$key]){return;}else{$_ins[$key] = 1;echo $call();}
 }
+
+/**
+* 判断是JSON请求
+*/
+function is_json_request(){
+    if(is_ajax() || $_SERVER['HTTP_CONTENT_TYPE'] == 'application/json'
+        || $_SERVER['CONTENT_TYPE'] == 'application/json'
+    ){ 
+        return true;
+    }else{
+        return false;
+    }
+}
+/**
+* 输出HTML错误页面
+*/
+function html_error($all){
+    if(is_array($all)){
+        $html = '<div class="alert alert-danger" role="alert">';
+        foreach($all as $k=>$v){ 
+            $html .=" <p>".$k.$v."</p>";  
+        }
+        $html .='</div>';
+    }else if(is_string($all)){
+        $html = '<div class="alert alert-danger" role="alert">';
+        $html .=" <p>".$all."</p>";  
+        $html .='</div>';
+    }
+    if(is_json_request()){
+
+    }else{
+        return $html;   
+    }
+    
+}
 //包含一些必要的文件 
 include __DIR__ . '/inc/jquery.php';  
 include __DIR__ . '/inc/plugin.php';  
