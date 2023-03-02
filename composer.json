@@ -23,7 +23,7 @@
         "symfony/mailer": "^5.4",     
         "predis/predis": "^2.0",
         "monolog/monolog": "^2.9",
-        "gregwar/image": "^2.1"
+        "intervention/image": "^2.7" 
     }, 
     "autoload": { 
         "psr-0": {
