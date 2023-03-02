@@ -18,10 +18,11 @@ function image_resize($local_url,$w,$h = NULL){
     if(substr($local_url,0,1) == '/'){
         $local_url = substr($local_url,1);
     }
-    $new_dir = get_dir($local_url)."_resize/";
+    $new_relative_url = get_dir($local_url)."_resize/";
+    $new_dir = PATH.$new_relative_url; 
     if(!is_dir($new_dir)) mkdir($new_dir,0777,true);
-    $unicode = "w_".$w."h_".$h;
-    $new_file_url = $new_dir.get_name($local_url).$unicode.'.'.$ext;
+    $unicode = "w_".$w."h_".$h; 
+    $new_file_url = $new_relative_url.get_name($local_url).$unicode.'.'.$ext;
     $new_file = PATH.$new_file_url;
     if(file_exists($new_file)){
         return cdn().$new_file_url;
@@ -32,8 +33,8 @@ function image_resize($local_url,$w,$h = NULL){
         return;
     } 
     $driver = image_init()->make($file);      
-    $driver = $driver->resize($w,$h);
-    $driver->save($new_file); 
+    $driver = $driver->resize($w,$h); 
+    $driver->save($new_file);  
     return cdn().$new_file_url;
 }
 
