@@ -6,7 +6,29 @@
     LICENSE: https://github.com/thefunpower/core/blob/main/LICENSE.md 
     Connect Email: sunkangchina@163.com 
 */
+/**
+ * 尝试多次运行
+ * $times 运行次数
+ * $usleep_time 毫秒
+ * 
+function get_test(){ 
+    echo 1;
+    return ['flag'=>'ok'];
+} 
+call_retry('get_test',5,300);
 
+ */
+function call_retry($func,$times=3,$usleep_time = 1000){
+    $res = $func(); 
+    if(is_array($res) && strtoupper($res['flag']) == 'OK'){
+        return;
+    } 
+    $times--;
+    if($times > 0){
+        usleep($usleep_time*1000);
+        call_retry($func,$times,$usleep_time);
+    } 
+}
 /**
  * 数组转tree 
  * 
