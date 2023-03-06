@@ -1645,6 +1645,16 @@ function html_error($all){
     }
     
 } 
+/** 
+* 数组转el-select
+*/
+function array_to_el_select($all,$v,$k){
+  $list = [];
+  foreach($all as $vv){
+    $list[] = ['label'=>$vv[$k],'value'=>$vv[$v]];
+  }
+  return $list;
+}
 //包含一些必要的文件 
 include __DIR__ . '/inc/jquery.php';  
 include __DIR__ . '/inc/plugin.php';  
