@@ -5,8 +5,40 @@
     This is NOT a freeware
     LICENSE: https://github.com/thefunpower/core/blob/main/LICENSE.md 
     Connect Email: sunkangchina@163.com 
+*/ 
+/**
+* 添加xss过滤
 */
-
+function get_xss_clean_ins(){
+    static $antiXss;
+    if(!$antiXss){
+        $antiXss = new voku\helper\AntiXSS();    
+    }
+    return $antiXss; 
+}
+/**
+* 防止xss
+*/
+function _xss_clean_str($str){ 
+    $ins = get_xss_clean_ins();
+    do_action("xss_clean",$ins);
+    return $ins->xss_clean($str); 
+}
+/**
+* 防止xss
+*/
+function xss_clean($arr){ 
+    foreach($arr as $k=>$v){
+        if(is_array($v)){
+            $_dd[$k] = xss_clean($v);
+        }else if($v&&is_string($v)){
+            $_dd[$k] = _xss_clean_str($v);
+        }else{
+            $_dd[$k] = $v;
+        }
+    }
+    return $_dd;
+}
 /**
  * 有\'内容转成'显示，与addslashes相反 stripslashes
  */ 
@@ -72,6 +104,10 @@ if (!function_exists('g')) {
         $val = get_post($key);
         if (!$val) {
             $val = $key?$_GET[$key]:$_GET;
+        }
+        global $config;
+        if($config['xss_clean'] == true){
+            $val = xss_clean($val);
         }
         return $val;
     }
