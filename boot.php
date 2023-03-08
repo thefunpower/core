@@ -69,6 +69,9 @@ set_exception_handler(function ($e) {
     }
     log_error($err,'exception'); 
     do_action("exception",$err);
+    if(!DEBUG){
+        return;
+    }    
     if(is_json_request()){ 
         json_error($err);
     }else{
