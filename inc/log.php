@@ -17,7 +17,14 @@ function log_info($str,$name='app',$type='info'){
     if(is_array($str)){
         $str = json_encode($str,JSON_UNESCAPED_UNICODE);
     }
-    log_init($name)->$type($str,['IP'=>get_ip(),'REQUEST_URI'=>$_SERVER['REQUEST_URI']]);
+    $par = ['IP'=>get_ip(),'REQUEST'=>$_SERVER['REQUEST_URI']?:$_SERVER['SCRIPT_NAME']]; 
+    $ts = debug_backtrace();
+    $last = $ts[count($ts)-1]; 
+    if(is_cli()){ 
+        unset($par['IP']); 
+    } 
+    $par['LINE'] = $last['line'];
+    log_init($name)->$type($str,$par);
 }
 /**
 * 记录错误日志
