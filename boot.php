@@ -61,10 +61,14 @@ set_exception_handler(function ($e) {
     $err = $e->getMessage(); 
     if(function_exists('exception')){
         exception($e);
-    } 
-    log_error($err,'exception'); 
-    do_action("e",$e); 
+    }  
     $err = ['msg'=>$e->getMessage(),'line'=>$e->getLine(),'file'=>$e->getFile()];
+    if(is_cli()){
+        pr($err);
+        return;
+    }
+    log_error($err,'exception'); 
+    do_action("exception",$err);
     if(is_json_request()){ 
         json_error($err);
     }else{
