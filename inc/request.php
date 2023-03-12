@@ -19,7 +19,7 @@ function get_xss_clean_ins(){
 /**
 * 防止xss
 */
-function _xss_clean_str($str){ 
+function xss_clean_str($str){ 
     $ins = get_xss_clean_ins();
     do_action("xss_clean",$ins);
     return $ins->xss_clean($str); 
@@ -27,17 +27,18 @@ function _xss_clean_str($str){
 /**
 * 防止xss
 */
-function xss_clean($arr){ 
-    foreach($arr as $k=>$v){
-        if(is_array($v)){
-            $_dd[$k] = xss_clean($v);
-        }else if($v&&is_string($v)){
-            $_dd[$k] = _xss_clean_str($v);
-        }else{
-            $_dd[$k] = $v;
+function xss_clean($input){ 
+    if(is_array($input)){
+        foreach($input as $k=>&$v){
+            if($v && is_string($v)){
+                $v = xss_clean_str($v);
+            } 
         }
+        return $input;
+    }else if($input && is_string($input)){
+        return xss_clean_str($input);
     }
-    return $_dd;
+    return $input;
 }
 /**
  * 有\'内容转成'显示，与addslashes相反 stripslashes
