@@ -31,7 +31,7 @@ class Menu
             'system' => [
                 'icon' => 'layui-icon layui-icon layui-icon-windows',
                 'label' => '系统',
-                'level' => 5,
+                'level' => 0,
                 'url' => "",
                 'children' => [
                     [
@@ -87,7 +87,7 @@ class Menu
                 }
             }
         }
-        $menus = Arr::order_by($menus,'level',SORT_ASC); 
+        $menus = Arr::order_by($menus,'level',SORT_DESC); 
         foreach($menus as $kk=>$vv){
             if($vv['children']){
                 $menus[$kk]['children'] = Arr::order_by($vv['children'],'level',SORT_ASC);
