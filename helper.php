@@ -1655,6 +1655,20 @@ function array_to_el_select($all,$v,$k){
   }
   return $list;
 }
+/**
+* 传入带http的URL返回 uploads/...这种类型的URL
+*/
+function get_upload_url($url){
+    if(strpos($f,'://') !== false){
+        $f = substr($f,strpos($f,'://')+3);
+        $f = substr($f,strpos($f,'/')+1);
+        return $f;
+    }else if(substr($f,0,1) == '/'){
+        return $f;
+    }else{
+        return $f;
+    }
+}
 //包含一些必要的文件 
 include __DIR__ . '/inc/jquery.php';  
 include __DIR__ . '/inc/plugin.php';  
