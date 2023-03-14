@@ -7,9 +7,26 @@
 */ 
 /**
 * 生成本地缩略图
+* 安装oss插件可使用阿里云oss图片处理
+* //支持aliyun、local 等
+* $config['image_drive'] = 'aliyun';
+*/
+function image_resize($local_url,$w,$h = null){
+    global $config;
+    $drive = $config['image_drive']?:'local';
+    $fun = "image_resize_".$drive; 
+    if(function_exists($fun)){
+        return $fun($local_url,$w,$h);
+    }else{
+        log_error("方法".$fun."不存在");
+    }
+}
+
+/**
+* 使用本地PHP GD生成
 * https://image.intervention.io/v2/usage/overview#basic-usage 
 */
-function image_resize($local_url,$w,$h = NULL){
+function image_resize_local($local_url,$w,$h = NULL){
     $ext = get_ext($local_url);
     if(strpos($local_url,'://')!==false){
         $local_url = substr($local_url,strpos($local_url,'://')+3);

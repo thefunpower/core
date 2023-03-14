@@ -29,8 +29,8 @@ function log_info($str,$name='app',$type='info'){
 /**
 * 记录错误日志
 */
-function log_error($str,$name='app'){  
-    log_info($str,$name,'error');
+function log_error($str){  
+    log_info($str,'error','error');
 }
 
 /**
