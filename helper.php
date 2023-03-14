@@ -1658,7 +1658,7 @@ function array_to_el_select($all,$v,$k){
 /**
 * 传入带http的URL返回 uploads/...这种类型的URL
 */
-function get_upload_url($url){
+function get_upload_url($f){
     if(strpos($f,'://') !== false){
         $f = substr($f,strpos($f,'://')+3);
         $f = substr($f,strpos($f,'/')+1);
