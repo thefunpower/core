@@ -1512,10 +1512,36 @@ function get_block($name = ''){
 function auto_load_app_router($pre_name_arr=[])
 {
     global $class,$action; 
-    $uri = $_SERVER['REQUEST_URI']; 
+    $uri = $_SERVER['REQUEST_URI'];   
+    if(strpos($uri,'?')!==false){
+        $uri = substr($uri,0,strpos($uri,'?'));
+    } 
+    global $config;
+    $allow_request_preg = $config['router_rule']?:[
+        'api',
+        'admin',
+        'comm',
+        'open',
+        'user',
+    ];
+    $flag = false; 
+    foreach($allow_request_preg as $v){
+        if(strpos($uri,"/".$v."/") !== false){
+            $flag = true; 
+            break;
+        }
+    }
+    if($flag == false){
+        if(function_exists('page_not_find')){
+            page_not_find();
+        }else{
+            echo "PAGE 404";  
+            exit;  
+        }    
+    }
     if(substr($uri,0,1) == '/'){
         $uri = substr($uri,1);
-    }
+    }  
     if(strpos($uri,'/') !== false){
         $class = substr($uri,0,strrpos($uri,'/'));
         $action = substr($uri,strrpos($uri,'/')+1);
@@ -1525,13 +1551,7 @@ function auto_load_app_router($pre_name_arr=[])
     }  
     foreach($pre_name_arr as $pre_name){
         $class_name = $pre_name."\\".$class;
-        $class_name = str_replace("/","\\",$class_name);  
-        if(strpos($action,'?')!==false){
-            $action = substr($action,0,strpos($action,'?'));
-        }
-        if(strpos($class_name,'?')!==false){
-            $class_name = substr($class_name,0,strpos($class_name,'?'));
-        }   
+        $class_name = str_replace("/","\\",$class_name);   
         if(class_exists($class_name) && method_exists($class_name,$action)){
             return (new $class_name)->$action();
         } 
@@ -1541,7 +1561,7 @@ function auto_load_app_router($pre_name_arr=[])
     }else{
         echo "PAGE 404";  
         exit;  
-    }        
+    }         
 }
 /**
 * 处理ZIP
