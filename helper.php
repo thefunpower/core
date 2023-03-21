@@ -1070,6 +1070,7 @@ function string_to_array($name,$array = '')
         "、",
         "|",
         ",",
+        " ",
         chr(10),
     ];
     foreach ($array as $str) {
