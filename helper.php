@@ -525,7 +525,14 @@ function cookie($name, $value = NULL, $expire = 0)
     $path   = $config['cookie_path'] ?: '/';
     $domain = $config['cookie_domain'] ?: '';
     if ($value === NULL) {
-        return $_COOKIE[$name];
+        $value = $_COOKIE[$name];
+        if(is_json($value)){
+            $value = json_decode($value,true);
+        }
+        return $value;
+    }
+    if(is_array($value)){
+        $value = json_encode($value);
     }
     $bool = is_ssl()?true:false; 
     $opt = [
