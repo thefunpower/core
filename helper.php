@@ -907,8 +907,11 @@ function get_config($title,$shop_id = '')
     if (is_array($title)) {
         if($shop_id){
             $new_title = [];
+            $in_array = [];
             foreach($title as $k){
-                $new_title[] = $k.$shop_id;
+                $new_k = $k.$shop_id;
+                $new_title[] = $new_k;
+                $in_array[$new_k] = $k;
             }
             $title = $new_title;
         }
@@ -916,7 +919,9 @@ function get_config($title,$shop_id = '')
         $all  = db_get("config", "*", ['title' => $title]);
         foreach ($all as $one) {
             $body = $one['body']; 
-            $list[$one['title']] = $body ?: $config[$one['title']];
+            $key  = $one['title'];
+            $list[$key] = $body ?: $config[$key];
+            $list[$in_array[$key]] = $list[$key];
         }
         return $list;
     } else {
