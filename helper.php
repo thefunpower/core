@@ -876,18 +876,19 @@ function view($name, $params = [])
 /**
  * 设置配置
  */
-function set_config($title, $body)
+function set_config($title,$body,$shop_id = '')
 {
+    if($shop_id){
+        $shop_id = "_".$shop_id;
+        $title = $title.$shop_id;
+    }
     if(in_array($title,[
         '_timestamp',
         '_signature',
     ])){
         return;
     }
-    $one = db_get_one("config", "*", ['title' => $title]);
-    if (is_array($body)) {
-        
-    }
+    $one = db_get_one("config", "*", ['title' => $title]); 
     if (!$one) {
         db_insert("config", ['title' => $title, 'body' => $body]);
     } else {
@@ -897,10 +898,20 @@ function set_config($title, $body)
 /**
  * 优先取数据库，未找到后取配置文件
  */
-function get_config($title)
+function get_config($title,$shop_id = '')
 {
+    if($shop_id){
+        $shop_id = "_".$shop_id;
+    }
     global $config;
     if (is_array($title)) {
+        if($shop_id){
+            $new_title = [];
+            foreach($title as $k){
+                $new_title[] = $k.$shop_id;
+            }
+            $title = $new_title;
+        }
         $list = [];
         $all  = db_get("config", "*", ['title' => $title]);
         foreach ($all as $one) {
@@ -909,6 +920,9 @@ function get_config($title)
         }
         return $list;
     } else {
+        if($shop_id){
+            $title = $title.$shop_id;
+        }
         $one  = db_get_one("config", "*", ['title' => $title]);
         $body = $one['body'];
         if (!$body) {
