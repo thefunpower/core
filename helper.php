@@ -1721,3 +1721,46 @@ include __DIR__ . '/inc/jquery.php';
 include __DIR__ . '/inc/plugin.php';  
 include __DIR__ . '/inc/image.php';  
 include __DIR__ . '/install.php';
+/**
+* 生成图表
+* https://echarts.apache.org/handbook/zh/how-to/chart-types/line/area-line
+* 
+echats(['id'=>'main1','width'=>600,'height'=>400],[
+    'title'=>[
+        'text'=>'ECharts 入门示例'
+    ],
+    'yAxis'=>"js:{}",
+    'legend'=>[
+        'data'=>['销量']
+    ],
+    'xAxis'=>[
+        'data'=>['衬衫', '羊毛衫', '雪纺衫', '裤子', '高跟鞋', '袜子']
+    ],
+    'series'=>[
+        [
+            'name'=>'销量',
+            'type'=>'bar',
+            'data'=>[5, 20, 36, 10, 10, 20]
+        ]
+    ] 
+]);
+*/
+function echats($ele,$options = []){ 
+    $ele_id = $ele['id'];
+    $width  = $ele['width'];
+    $height = $ele['height'];
+    $class  = $ele['class']; 
+    $echats = "var echart_".$ele_id." = echarts.init(document.getElementById('".$ele_id."'));\n
+    echart_".$ele_id.".setOption(".php_to_js($options).");"; 
+    add_action("view.end",function()use($echats)
+    {
+        ?>
+        <script type="text/javascript">
+            $(function(){
+                <?=$echats?>
+            });
+        </script>
+        <?php 
+    });
+    echo '<div id="'.$ele_id.'" class="'.$class.'" style="width: '.$width.'px;height:'.$height.'px;"></div>'."\n";
+}
