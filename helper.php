@@ -1515,7 +1515,7 @@ function block_end(){
     global $_core_block_name;
     $content = ob_get_contents();
     ob_end_clean();
-    return $_core_block[$_core_block_name] = trim($content);
+    return $_core_block[$_core_block_name][] = $content;
 }
 /**
  * 获取BLOCK
@@ -1716,6 +1716,41 @@ function get_upload_url($f){
         return $f;
     }
 }
+/**
+* 页面渲染底部
+*/
+add_action("view.end",function()
+{
+   render_js();
+});
+/**
+* 添加JS
+*/
+function add_js($code){
+    global $_app;
+    $_app['js_code'][] = $code;
+}
+/**
+* 输出JS
+*/
+function render_js(){
+    global $_app;
+    $js = get_block('js'); 
+    $all = $_app['js_code']?:[];
+    if($js){
+        $all = array_merge($all,$js);
+    }
+    if($all){
+        echo '<script type="text/javascript">
+        $(function(){';
+        foreach($all as $v){
+            echo $v."\n";
+        }
+        echo '});
+        </script>';
+    }
+}
+
 //包含一些必要的文件 
 include __DIR__ . '/inc/jquery.php';  
 include __DIR__ . '/inc/plugin.php';  
@@ -1752,15 +1787,6 @@ function echats($ele,$options = []){
     $class  = $ele['class']; 
     $echats = "var echart_".$ele_id." = echarts.init(document.getElementById('".$ele_id."'));\n
     echart_".$ele_id.".setOption(".php_to_js($options).");"; 
-    add_action("view.end",function()use($echats)
-    {
-        ?>
-        <script type="text/javascript">
-            $(function(){
-                <?=$echats?>
-            });
-        </script>
-        <?php 
-    });
+    add_js($echats);   
     echo '<div id="'.$ele_id.'" class="'.$class.'" style="width: '.$width.'px;height:'.$height.'px;"></div>'."\n";
 }
