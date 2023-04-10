@@ -1515,12 +1515,16 @@ function block_start($name){
 /**
  * BLOCK结束
  */
-function block_end(){
+function block_end($is_muit = false){
     global $_core_block;
     global $_core_block_name;
     $content = ob_get_contents();
     ob_end_clean();
-    return $_core_block[$_core_block_name][] = $content;
+    if($is_muit){
+        return $_core_block[$_core_block_name][] = $content;    
+    }else{
+        return $_core_block[$_core_block_name] = $content;
+    }    
 }
 /**
  * 获取BLOCK
@@ -1530,6 +1534,8 @@ function get_block($name = ''){
     if($name){
         return $_core_block[$name];
     }else{
+        unset($_core_block['js']);
+        unset($_core_block['css']);
         return $_core_block;
     } 
 }
