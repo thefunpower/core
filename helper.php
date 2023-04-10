@@ -1721,16 +1721,16 @@ function get_upload_url($f){
         return $f;
     }
 }
+
 /**
 * 页面渲染底部
-*/
+*/ 
 add_action("view.end",function()
-{
-   render_css_file();
-   render_js_file();
-   render_css();
-   render_js();
-
+{  
+   render_css_file(); 
+   render_css(); 
+   render_js_file(); 
+   render_js(); 
 });
 /**
 * 添加JS
@@ -1767,7 +1767,9 @@ function render_js_file(){
     $all = $_app['js']?:[]; 
     if($all){
         foreach($all as $v){
-            echo '<script type="text/javascript" src="'.$v.'"></script>'; 
+            if(is_string($v)){
+                echo '<script type="text/javascript" src="'.$v.'"></script>';     
+            }            
         }
     }
 }
@@ -1790,7 +1792,7 @@ function render_css(){
     }
     if($all){
         echo '<style type="text/css">';
-        foreach($all as $v){
+        foreach($all as $v){ 
             echo $v."\n";
         }
         echo '</style>';
@@ -1804,7 +1806,9 @@ function render_css_file(){
     $all = $_app['css']?:[]; 
     if($all){
         foreach($all as $v){
-            echo '<link href="'.$v.'" rel="stylesheet">'; 
+            if(is_string($v)){
+                echo '<link href="'.$v.'" rel="stylesheet">';     
+            }            
         }
     }
 }
