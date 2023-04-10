@@ -113,12 +113,17 @@ class Time
 		if ($data) {
 			$ret = [
 				strtotime($data[0]),
-				strtotime($data[1]),
+				strtotime($data[1])-86400,
 			];
 			if ($date_format) {
-				return [
-					date('Y-m-d H:i:s', $ret[0]),
-					date('Y-m-d H:i:s', $ret[1]),
+				$ret = [
+					date('Y-m-d 00:00:00', $ret[0]),
+					date('Y-m-d 23:59:59', $ret[1]),
+				];
+			}else{
+				$ret = [
+					strtotime($ret[0]),
+					strtotime($ret[1]),
 				];
 			}
 			return $ret;
