@@ -296,6 +296,9 @@ function css($file, $is_output = true)
         $_app['css'][$key] = $file;
     }
 }
+function add_css_file($file){
+    return css($file,false);
+}
 // 加载 JS文件 
 function js($file, $is_output = true)
 {
@@ -311,7 +314,9 @@ function js($file, $is_output = true)
         $_app['js'][md5($file)] = $file;
     }
 }
-
+function add_js_file($file){
+    return js($file,false);
+}
 /**
  * 数组转对象
  *
@@ -1721,7 +1726,11 @@ function get_upload_url($f){
 */
 add_action("view.end",function()
 {
+   render_css_file();
+   render_js_file();
+   render_css();
    render_js();
+
 });
 /**
 * 添加JS
@@ -1748,6 +1757,55 @@ function render_js(){
         }
         echo '});
         </script>';
+    }
+}
+/**
+* 输出JS文件
+*/
+function render_js_file(){
+    global $_app; 
+    $all = $_app['js']?:[]; 
+    if($all){
+        foreach($all as $v){
+            echo '<script type="text/javascript" src="'.$v.'"></script>'; 
+        }
+    }
+}
+/**
+* 添加JS
+*/
+function add_css($code){
+    global $_app;
+    $_app['css_code'][] = $code;
+}
+/**
+* 输出JS
+*/
+function render_css(){
+    global $_app;
+    $js = get_block('css'); 
+    $all = $_app['css_code']?:[];
+    if($js){
+        $all = array_merge($all,$js);
+    }
+    if($all){
+        echo '<style type="text/css">';
+        foreach($all as $v){
+            echo $v."\n";
+        }
+        echo '</style>';
+    }
+}
+/**
+* 输出css文件
+*/
+function render_css_file(){
+    global $_app; 
+    $all = $_app['css']?:[]; 
+    if($all){
+        foreach($all as $v){
+            echo '<link href="'.$v.'" rel="stylesheet">'; 
+        }
     }
 }
 
