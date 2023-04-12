@@ -79,3 +79,61 @@ function cache($key, $data = null, $second = null)
         return $data;
     }
 }
+
+
+/**
+* 依赖缓存
+* $data = cache_node('tree',[
+*    'table' => $this->table,
+*    'field' => 'updated_at'
+* ],function(){
+*      return $this->_tree();
+*  });
+*/
+function cache_node($key,$arr,$call)
+{
+    $table = $arr['table'];
+    $field = $arr['field']; 
+    if($table && $field){
+        $lastest_time = db_get_one($table,$field,['ORDER'=>[$field=>'DESC']])?:'2023-01-01';  
+    } 
+    $cache_id = "node_".$key.":data";
+    $cache_id_time = "node_".$key.":time"; 
+    $cache_time = cache($cache_id_time); 
+    if($lastest_time != $cache_time){
+        cache($cache_id_time,$lastest_time);
+        cache_delete($cache_id);
+    }
+    $cache_data = cache($cache_id);
+    if(!$cache_data){
+        $cache_data = $call();
+        cache($cache_id,$cache_data);
+    }
+    return $cache_data;
+}
+/**
+* 对一行记录做缓存 
+* $data = cache_node_id($this->table,1,function(){
+*    return db_get_one($this->table,'*',['id'=>1]);
+* });
+*/
+function cache_node_id($table,$nid,$call,$auto_update_cache = true){
+    $key = $table."_".$nid;
+    $cache_id = "node_".$key.":data";
+    $cache_id_time = "node_".$key.":time"; 
+    $cache_time = cache($cache_id_time); 
+    $lastest_time = '2023-01-01';
+    if($auto_update_cache){ 
+        $lastest_time = db_get_one($table,'cache_time',['id'=>$nid])?:'2023-01-01';      
+    }     
+    if($lastest_time != $cache_time){
+        cache($cache_id_time,$lastest_time);
+        cache_delete($cache_id);
+    }
+    $cache_data = cache($cache_id);
+    if(!$cache_data){
+        $cache_data = $call();
+        cache($cache_id,$cache_data);
+    }
+    return $cache_data;
+}
