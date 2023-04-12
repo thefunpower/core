@@ -124,7 +124,7 @@ function cache_node_id($table,$nid,$call,$auto_update_cache = true){
     $cache_time = cache($cache_id_time); 
     $lastest_time = '2023-01-01';
     if($auto_update_cache){ 
-        $lastest_time = db_get_one($table,'cache_time',['id'=>$nid])?:'2023-01-01';      
+        $lastest_time = db_get_one($table,'updated_at',['id'=>$nid])?:'2023-01-01';      
     }     
     if($lastest_time != $cache_time){
         cache($cache_id_time,$lastest_time);
