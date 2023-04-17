@@ -220,17 +220,6 @@ if (!function_exists('cdn')) {
     }
 }
 /**
-* 使用CDN地址
-*/
-function new_file_url($url){
-    if(strpos($url,'/uploads/') !== false){
-        return cdn().substr($url,strpos($url,'/uploads/')+1);
-    }else{
-        return $url;
-    }
-}
-
-/**
  * json输出 
  */
 function json($data)
