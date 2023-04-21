@@ -826,10 +826,9 @@ function get_file($id)
 /**
  * 获取主题 
  */
-function get_theme()
-{
-    global $config;
-    return $config['theme_front'] ?: 'default';
+function get_theme($theme_type = 'front')
+{ 
+    return cookie($theme_type.'_theme') ?: 'default';
 }
 /**
  * 加载theme下文件 
