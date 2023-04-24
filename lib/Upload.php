@@ -82,14 +82,18 @@ class Upload
      *  单个文件上传
      *  do_action("upload.mime", $mime); 
      */
-    public function one($http_opt = [],$ignore_user_id = false)
+    public function one($http_opt = [])
     { 
-        if(!$ignore_user_id){
-            $user_id = cookie(ADMIN_COOKIE_NAME) ?: api(false)['user_id']; 
-            if($user_id){
+        if(!self::$allow_upload){ 
+            if(cookie('can_upload') > 0 ){
                 self::$allow_upload = true;
-            } 
-        } 
+            }else{
+                $user_id = cookie(ADMIN_COOKIE_NAME) ?: api(false)['user_id']; 
+                if($user_id){
+                    self::$allow_upload = true;
+                } 
+            }
+        }
         if(!self::$allow_upload){
             json_error(['msg' => '上传文件被拦截，不支持当前用户上传文件']);
         } 
