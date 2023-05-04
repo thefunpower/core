@@ -222,17 +222,19 @@ if (!function_exists('cdn')) {
 /**
  * json输出 
  */
-function json($data)
-{
-    global $config;
-    $config['is_json'] = true;
-    //JSON输出前
-    do_action('end.data', $data);
-    echo json_encode($data,JSON_UNESCAPED_UNICODE);
-    //JSON输出后或页面渲染后
-    do_action("end");
-    exit;
-}
+if(!function_exists('json')){
+    function json($data)
+    {
+        global $config;
+        $config['is_json'] = true;
+        //JSON输出前
+        do_action('end.data', $data);
+        echo json_encode($data,JSON_UNESCAPED_UNICODE);
+        //JSON输出后或页面渲染后
+        do_action("end");
+        exit;
+    }
+} 
 /**
  * 域名
  */
@@ -522,64 +524,70 @@ function is_ssl(){
  * @param integer $expire
  * @return void
  */
-function cookie($name, $value = NULL, $expire = 0)
-{
-    global  $config;
-    $name   = $config['cookie_prefix'] . $name;
-    $path   = $config['cookie_path'] ?: '/';
-    $domain = $config['cookie_domain'] ?: '';
-    if ($value === NULL) {
-        $value = $_COOKIE[$name];
-        if(is_json($value)){
-            $value = json_decode($value,true);
+if(!function_exists('cookie')){
+    function cookie($name, $value = NULL, $expire = 0)
+    {
+        global  $config;
+        $name   = $config['cookie_prefix'] . $name;
+        $path   = $config['cookie_path'] ?: '/';
+        $domain = $config['cookie_domain'] ?: '';
+        if ($value === NULL) {
+            $value = $_COOKIE[$name];
+            if(is_json($value)){
+                $value = json_decode($value,true);
+            }
+            return $value;
         }
-        return $value;
+        if(is_array($value)){
+            $value = json_encode($value);
+        }
+        $bool = is_ssl()?true:false; 
+        $opt = [
+            'expires' => $expire,
+            'path' => $path,
+            'domain' => $domain,
+            'secure' => $bool,
+            'httponly' => $bool,
+            'samesite' => 'None',
+        ];
+        if(!$bool){
+            unset($opt['secure'],$opt['httponly'],$opt['samesite']);
+        } 
+        setcookie($name, $value, $opt);  
+        $_COOKIE[$name] = $value;
     }
-    if(is_array($value)){
-        $value = json_encode($value);
-    }
-    $bool = is_ssl()?true:false; 
-    $opt = [
-        'expires' => $expire,
-        'path' => $path,
-        'domain' => $domain,
-        'secure' => $bool,
-        'httponly' => $bool,
-        'samesite' => 'None',
-    ];
-    if(!$bool){
-        unset($opt['secure'],$opt['httponly'],$opt['samesite']);
-    } 
-    setcookie($name, $value, $opt);  
-    $_COOKIE[$name] = $value;
 }
 /**
  * 删除COOKIE 
  */ 
-function cookie_delete($name)
-{
-    global  $config;
-    $name   = $config['cookie_prefix'] . $name;
-    $path   = $config['cookie_path'] ?: '/';
-    $domain = $config['cookie_domain'] ?: '';  
-    $bool = is_ssl()?true:false; 
-    $opt = [
-        'expires' => time()-100,
-        'path'    => $path,
-        'domain'  => $domain,
-        'secure'  => $bool,
-        'httponly' => $bool,
-        'samesite' => 'None',
-    ];
-    if(!$bool){
-        unset($opt['secure'],$opt['httponly'],$opt['samesite']);
+if(!function_exists('cookie_delete')){
+    function cookie_delete($name)
+    {
+        global  $config;
+        $name   = $config['cookie_prefix'] . $name;
+        $path   = $config['cookie_path'] ?: '/';
+        $domain = $config['cookie_domain'] ?: '';  
+        $bool = is_ssl()?true:false; 
+        $opt = [
+            'expires' => time()-100,
+            'path'    => $path,
+            'domain'  => $domain,
+            'secure'  => $bool,
+            'httponly' => $bool,
+            'samesite' => 'None',
+        ];
+        if(!$bool){
+            unset($opt['secure'],$opt['httponly'],$opt['samesite']);
+        } 
+        setcookie($name, '', $opt);  
+        $_COOKIE[$name] = ''; 
     } 
-    setcookie($name, '', $opt);  
-    $_COOKIE[$name] = ''; 
 } 
-function remove_cookie($name)
-{
-    cookie_delete($name);
+if(!function_exists('remove_cookie')){
+    function remove_cookie($name)
+    {
+        cookie_delete($name);
+    } 
 } 
 
 /**
@@ -650,7 +658,7 @@ function json_error($arr = [],$is_array = false)
     if($is_array){
         return $arr;
     }
-    json($arr);
+    return json($arr);
 }
 function array_error($arr = []){
     return json_error($arr,true);
@@ -665,7 +673,7 @@ function json_success($arr = [],$is_array = false)
     if($is_array){
         return $arr;
     }
-    json($arr);
+    return json($arr);
 } 
 function array_success($arr = []){
     return json_success($arr,true);
@@ -784,23 +792,25 @@ instanceOf - Field contains an instance of the given class
 optional - Value does not need to be included in data array. If it is however, it must pass validation.
 arrayHasKeys - Field is an array and contains all specified keys.
  */
-function validate($labels, $data, $rules, $show_array = false)
-{
-    $v = new \lib\Validate($data);
-    $v->rules($rules);
-    $v->labels($labels);
-    $v->validate();
-    $error = $v->errors();
-    if ($error) {
-        if (!$show_array) {
-            foreach ($error as $k => $v) {
-                $error = $v[0];
-                break;
+if(!function_exists('validate')){
+    function validate($labels, $data, $rules, $show_array = false)
+    {
+        $v = new \lib\Validate($data);
+        $v->rules($rules);
+        $v->labels($labels);
+        $v->validate();
+        $error = $v->errors();
+        if ($error) {
+            if (!$show_array) {
+                foreach ($error as $k => $v) {
+                    $error = $v[0];
+                    break;
+                }
             }
+            return ['code' => 250, 'msg' => $error, 'type' => 'error','key'=>$k];
+        } else {
+            return;
         }
-        return ['code' => 250, 'msg' => $error, 'type' => 'error','key'=>$k];
-    } else {
-        return;
     }
 }
 /**
@@ -833,46 +843,48 @@ function get_theme($theme_type = 'front')
 /**
  * 加载theme下文件 
  */
-function view($name, $params = [])
-{
-    //访问文件被重复加载
-    static $_view_loaded;
-    $key = md5($name.json_encode($params));
-    if($_view_loaded[$key]){return;}
-    $_view_loaded[$key]  = true;
-    $dir = PATH . 'theme/';
-    $theme = get_theme();
-    if ($theme != 'default') {
-        $default_theme = 'default';
-    }
-    if (strpos($name, "@") !== false) {
-        $arr  = explode("@", $name);
-        $name = $arr[1];
-        $file_3 = PATH . 'plugins/' . $arr[0] . '/' . $name . '.php';
-        $name = $arr[0] . '/' . $name;
-    } 
-    $file_1 = $dir . $theme . '/' . $name . '.php';
-    $file_2 = $dir . $default_theme . '/' . $name . '.php';
-    if ($params) {
-        extract($params);
-    }
-    $file_1 = str_replace("//",'/',$file_1);
-    $file_2 = str_replace("//",'/',$file_2);
-    if($file_3){
-        $file_3 = str_replace("//",'/',$file_3);
-    }
-    if (file_exists($file_1)) {
-        include $file_1;
-    } else if (file_exists($file_2)) {
-        include $file_2;
-    } else if ($file_3 && file_exists($file_3)) {
-        include $file_3;
-    }else{
-        echo "<div style='color:red;'>视图文件不存在</div>";
-        echo "<div style='color:red;'>";
-        pr(array_filter([$file_1,$file_2,$file_3]));
-        echo "</div>";
-        exit;
+if(!function_exists('view')){
+    function view($name, $params = [])
+    {
+        //访问文件被重复加载
+        static $_view_loaded;
+        $key = md5($name.json_encode($params));
+        if($_view_loaded[$key]){return;}
+        $_view_loaded[$key]  = true;
+        $dir = PATH . 'theme/';
+        $theme = get_theme();
+        if ($theme != 'default') {
+            $default_theme = 'default';
+        }
+        if (strpos($name, "@") !== false) {
+            $arr  = explode("@", $name);
+            $name = $arr[1];
+            $file_3 = PATH . 'plugins/' . $arr[0] . '/' . $name . '.php';
+            $name = $arr[0] . '/' . $name;
+        } 
+        $file_1 = $dir . $theme . '/' . $name . '.php';
+        $file_2 = $dir . $default_theme . '/' . $name . '.php';
+        if ($params) {
+            extract($params);
+        }
+        $file_1 = str_replace("//",'/',$file_1);
+        $file_2 = str_replace("//",'/',$file_2);
+        if($file_3){
+            $file_3 = str_replace("//",'/',$file_3);
+        }
+        if (file_exists($file_1)) {
+            include $file_1;
+        } else if (file_exists($file_2)) {
+            include $file_2;
+        } else if ($file_3 && file_exists($file_3)) {
+            include $file_3;
+        }else{
+            echo "<div style='color:red;'>视图文件不存在</div>";
+            echo "<div style='color:red;'>";
+            pr(array_filter([$file_1,$file_2,$file_3]));
+            echo "</div>";
+            exit;
+        } 
     } 
 }
 
@@ -1005,7 +1017,7 @@ function set_theme($name)
 /*
 * 根据请求设置主题
 */
-if ($_GET['_theme']) {
+if (isset($_GET['_theme'])) {
     set_theme($_GET['_theme']);
 }
 /**
@@ -1076,9 +1088,11 @@ return [
     'welcome' => '你好{name}', 
 ]; 
  */
-function lang($name, $val = [], $pre = 'app')
-{
-    return lib\Lang::trans($name, $val, $pre);
+if(!function_exists('lang')){
+    function lang($name, $val = [], $pre = 'app')
+    {
+        return lib\Lang::trans($name, $val, $pre);
+    }
 }
  
 /**
@@ -1358,15 +1372,17 @@ function get_sub_domain($host = '')
     $host = $match[2];
     return str_replace("/", '', $host);
 }
-
-function admin_header()
-{
-    include PATH . ADMIN_DIR_NAME . '/header.php';
+if(!function_exists('admin_header')){
+    function admin_header()
+    {
+        include PATH . ADMIN_DIR_NAME . '/header.php';
+    }
 }
-
-function admin_footer()
-{
-    include PATH . ADMIN_DIR_NAME . '/footer.php';
+if(!function_exists('admin_footer')){
+    function admin_footer()
+    {
+        include PATH . ADMIN_DIR_NAME . '/footer.php';
+    } 
 } 
 
 /**
