@@ -35,7 +35,7 @@ function _local_plugin($dir_name = 'plugins')
 /**
 * 执行插件目录下SQL文件
 */
-function run_plugin_sql($plugins_dir='plugins',$plugin_name){
+function run_plugin_sql($plugins_dir='plugins',$plugin_name = ''){
     //执行依赖包的SQL
     $dir = PATH.$plugins_dir.'/'.$plugin_name.'/sql/*.sql';
     $fs = glob($dir);
