@@ -1,11 +1,5 @@
 ## TheFunpower
-
-TheFunpower core framework.
-
-### 查看手册
-
-http://thefunpower.netlify.qihetaiji.com/
-
+ 
 
 安装核心包 
 
