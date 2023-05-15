@@ -120,11 +120,6 @@ class Time
 					date('Y-m-d 00:00:00', $ret[0]),
 					date('Y-m-d 23:59:59', $ret[1]),
 				];
-			}else{
-				$ret = [
-					strtotime($ret[0]),
-					strtotime($ret[1]),
-				];
 			}
 			return $ret;
 		}
