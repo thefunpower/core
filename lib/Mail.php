@@ -94,7 +94,7 @@ class Mail
 		$pwd = get_config('mail_pwd');
 		$mail_smtp = get_config('mail_smtp');
 		$mail_port = get_config('mail_port')?:465;
-		$dsn = "smtp://".$mail_from.":".$pwd."@".$mail_smtp.":".$mail_port;
+		$dsn = get_config('mail_dsn')?:"smtp://".$mail_from.":".$pwd."@".$mail_smtp.":".$mail_port; 
 		self::$mail_from = $mail_from; 
 		ini_set("default_socket_timeout", 3);
 		$transport = Transport::fromDsn($dsn);
