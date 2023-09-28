@@ -11,17 +11,18 @@
 * //支持aliyun、local 等
 * $config['image_drive'] = 'aliyun';
 */
-function image_resize($local_url,$w,$h = null){
-    global $config;
-    $drive = $config['image_drive']?:'local';
-    $fun = "image_resize_".$drive; 
-    if(function_exists($fun)){
-        return $fun($local_url,$w,$h);
-    }else{
-        log_error("方法".$fun."不存在");
+if(!function_exists("image_resize")){
+    function image_resize($local_url,$w,$h = null){
+        global $config;
+        $drive = $config['image_drive']?:'local';
+        $fun = "image_resize_".$drive; 
+        if(function_exists($fun)){
+            return $fun($local_url,$w,$h);
+        }else{
+            log_error("方法".$fun."不存在");
+        }
     }
-}
-
+} 
 /**
 * 使用本地PHP GD生成
 * https://image.intervention.io/v2/usage/overview#basic-usage 

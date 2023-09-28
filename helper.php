@@ -512,10 +512,13 @@ function get_distance($longitude1, $latitude1, $longitude2, $latitude2, $unit = 
 /**
 * 判断是否是ssl
 */
-function is_ssl(){
-    global $config;
-    return  strpos($config['host'],'https://') !== false ?true:false;
+if(!function_exists("is_ssl")){
+    function is_ssl(){
+        global $config;
+        return  strpos($config['host'],'https://') !== false ?true:false;
+    }
 }
+
 /**
  * 设置、获取cookie
  * cookie_local 时禁用SSL
@@ -836,10 +839,13 @@ function get_file($id)
 /**
  * 获取主题 
  */
-function get_theme($theme_type = 'front')
-{ 
-    return cookie($theme_type.'_theme') ?: 'default';
+if(!function_exists("get_theme")){
+    function get_theme($theme_type = 'front')
+    { 
+        return cookie($theme_type.'_theme') ?: 'default';
+    }
 }
+
 /**
  * 加载theme下文件 
  */
