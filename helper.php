@@ -1209,12 +1209,14 @@ function timeago($time)
 /**
  * 请求是否是AJAX
  */
-function is_ajax()
-{
-    if (isset($_SERVER["HTTP_X_REQUESTED_WITH"]) && strtolower($_SERVER["HTTP_X_REQUESTED_WITH"]) == "xmlhttprequest") {
-        return true;
-    } else {
-        return false;
+if(!function_exists('is_ajax')){
+    function is_ajax()
+    {
+        if (isset($_SERVER["HTTP_X_REQUESTED_WITH"]) && strtolower($_SERVER["HTTP_X_REQUESTED_WITH"]) == "xmlhttprequest") {
+            return true;
+        } else {
+            return false;
+        }
     }
 }
 
