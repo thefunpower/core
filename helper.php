@@ -528,6 +528,9 @@ if(!function_exists("is_ssl")){
 if(!function_exists('cookie')){
     function cookie($name, $value = NULL, $expire = 0)
     {
+        if(function_exists('xcookie')){
+            return xcookie($name,$value,$expire);
+        }
         global  $config;
         $name   = $config['cookie_prefix'] . $name;
         $path   = $config['cookie_path'] ?: '/';
