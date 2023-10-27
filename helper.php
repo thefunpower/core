@@ -907,6 +907,7 @@ function set_config($title,$body,$shop_id = '')
     ])){
         return;
     }
+    $title = strtolower($title);
     $one = db_get_one("config", "*", ['title' => $title]); 
     if (!$one) {
         db_insert("config", ['title' => $title, 'body' => $body]);
@@ -935,6 +936,10 @@ function get_config($title,$shop_id = '')
             $title = $new_title;
         }
         $list = [];
+        $in_arr = [];
+        foreach($title as $kk){
+            $in_arr[] = strtolower($kk);
+        }
         $all  = db_get("config", "*", ['title' => $title]);
         foreach ($all as $one) {
             $body = $one['body']; 
@@ -947,7 +952,8 @@ function get_config($title,$shop_id = '')
         if($shop_id){
             $title = $title.$shop_id;
         }
-        $one  = db_get_one("config", "*", ['title' => $title]);
+        $title = strtolower($title);
+        $one   = db_get_one("config", "*", ['title' => $title]);
         $body = $one['body'];
         if (!$body) {
             return $config[$title];
