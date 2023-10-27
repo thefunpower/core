@@ -940,7 +940,7 @@ function get_config($title,$shop_id = '')
         foreach($title as $kk){
             $in_arr[] = strtolower($kk);
         }
-        $all  = db_get("config", "*", ['title' => $title]);
+        $all  = db_get("config", "*", ['title' => $in_arr]);
         foreach ($all as $one) {
             $body = $one['body']; 
             $key  = $one['title'];
