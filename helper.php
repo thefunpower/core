@@ -1870,14 +1870,43 @@ echats(['id'=>'main1','width'=>600,'height'=>400],[
     ] 
 ]);  
 */ 
+function echarts($ele,$options = []){
+    return echats($ele,$options);
+}
+
 function echats($ele,$options = []){ 
+    global $vue;
+    global $vue_echats;
     $ele_id = $ele['id'];
     $width  = $ele['width'];
     $height = $ele['height'];
-    $class  = $ele['class']; 
-    $echats = "var echart_".$ele_id." = echarts.init(document.getElementById('".$ele_id."'));\n
-    echart_".$ele_id.".setOption(".php_to_js($options).");"; 
+    $class  = $ele['class'];
+    if($vue){
+        $vue->data("echart_".$ele_id,'');
+        $top = "app.";
+    }  
+    $echats = $top."echart_".$ele_id." = echarts.init(document.getElementById('".$ele_id."'));\n
+    ".$top."echart_".$ele_id.".setOption(".php_to_js($options).");"; 
     $out['js'] = $echats;
     $out['html'] = '<div id="'.$ele_id.'" class="'.$class.'" style="width: '.$width.'px;height:'.$height.'px;"></div>'."\n";
+    if($vue){ 
+        $vue_echats["echart_".$ele_id] = $options; 
+    }
     return $out;
-} 
+}
+
+function echarts_reload(){
+    echats_reload();
+}
+
+function echats_reload(){
+    global $vue_echats;
+    if($vue_echats){
+        $js = '';
+        foreach($vue_echats as $k=>$v){
+            $js .= "app.".$k.".clear();\n";
+            $js .= "app.".$k.".setOption(".php_to_js($v).");\n";
+        }
+        return $js;
+    }
+}
