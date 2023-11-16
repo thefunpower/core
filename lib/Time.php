@@ -102,8 +102,12 @@ class Time
 		if(!$key){
 			$list = [];
 			foreach($arr as $k=>$v){
-				$a = $date_format?date('Y-m-d 00:00:00', $v[0]):strtotime($data[0]);
-				$b = $date_format?date('Y-m-d 23:59:59', $v[1]):strtotime($data[1])-86400
+				$a = strtotime($v[0]);
+				$b = strtotime($v[1])-86400;
+				if($date_format){
+					$a =date('Y-m-d 00:00:00', $a);
+					$b =date('Y-m-d 23:59:59', $b);
+				} 
 				$list[$k] = [$a,$b];
 			}
 			return $list;
