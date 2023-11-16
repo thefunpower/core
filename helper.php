@@ -1868,8 +1868,8 @@ echats(['id'=>'main1','width'=>600,'height'=>400],[
             'data'=>[5, 20, 36, 10, 10, 20]
         ]
     ] 
-]);
-*/
+]);  
+*/ 
 function echats($ele,$options = []){ 
     $ele_id = $ele['id'];
     $width  = $ele['width'];
@@ -1877,6 +1877,7 @@ function echats($ele,$options = []){
     $class  = $ele['class']; 
     $echats = "var echart_".$ele_id." = echarts.init(document.getElementById('".$ele_id."'));\n
     echart_".$ele_id.".setOption(".php_to_js($options).");"; 
-    add_js($echats);   
-    echo '<div id="'.$ele_id.'" class="'.$class.'" style="width: '.$width.'px;height:'.$height.'px;"></div>'."\n";
-}
+    $out['js'] = $echats;
+    $out['html'] = '<div id="'.$ele_id.'" class="'.$class.'" style="width: '.$width.'px;height:'.$height.'px;"></div>'."\n";
+    return $out;
+} 
