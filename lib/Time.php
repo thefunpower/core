@@ -87,7 +87,7 @@ class Time
 	/**
 	 * 取今日、本周、本月、本年、昨日、上周、上月、上年
 	 */
-	public static function get($key, $date_format = false)
+	public static function get($key = '', $date_format = false)
 	{
 		$arr = [
 			'today'      => ['today', 'tomorrow'],
@@ -99,6 +99,15 @@ class Time
 			'year'       => ['this year 1/1', 'next year 1/1'],
 			'lastyear'   => ['last year 1/1', 'this year 1/1'],
 		];
+		if(!$key){
+			$list = [];
+			foreach($arr as $k=>$v){
+				$a = $date_format?date('Y-m-d 00:00:00', $v[0]):strtotime($data[0]);
+				$b = $date_format?date('Y-m-d 23:59:59', $v[1]):strtotime($data[1])-86400
+				$list[$k] = [$a,$b];
+			}
+			return $list;
+		}
 		$data = $arr[$key];
 		if ($data) {
 			$ret = [
