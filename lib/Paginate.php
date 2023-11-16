@@ -1,9 +1,4 @@
-<?php
-/*
-    Copyright (c) 2021-2031, All rights reserved.  
-    Connect Email: sunkangchina@163.com 
-*/
-
+<?php 
 /**
  *  分页 
  *  类似淘宝分页

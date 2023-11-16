@@ -1,8 +1,4 @@
-<?php
-/*
-    Copyright (c) 2021-2031, All rights reserved.  
-    Connect Email: sunkangchina@163.com 
-*/
+<?php 
 if (!defined('ADMIN_DIR_NAME')) {
 	define("ADMIN_DIR_NAME", 'admin');
 }

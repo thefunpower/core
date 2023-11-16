@@ -1,8 +1,4 @@
 <?php 
-/*
-    Copyright (c) 2021-2031, All rights reserved.  
-    Connect Email: sunkangchina@163.com 
-*/
 /**
 * 获取checkbox选中数组 
 * jquery_checkbox_get_active('search','search')

@@ -1,11 +1,4 @@
 <?php
-
-/*
-    Copyright (c) 2021-2031, All rights reserved.  
-    Connect Email: sunkangchina@163.com 
-*/
-
-
 use Firebase\JWT\JWT as Firebase_JWT;
 
 /**

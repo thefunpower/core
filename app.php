@@ -1,8 +1,4 @@
-<?php
-/*
-    Copyright (c) 2021-2031, All rights reserved.  
-    Connect Email: sunkangchina@163.com 
-*/
+<?php 
 include __DIR__.'/boot.php';
 /**
  在项目boot/helper.php添加函数plugin_not_active处理插件未启用显示错误内容

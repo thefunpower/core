@@ -1,11 +1,4 @@
-<?php
-
-/*
-    Copyright (c) 2021-2031, All rights reserved.  
-    Connect Email: sunkangchina@163.com 
-*/
-
-
+<?php  
 namespace lib;
 
 class Aes

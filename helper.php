@@ -1,9 +1,5 @@
 <?php
-
-/*
-    Copyright (c) 2021-2031, All rights reserved.  
-    Connect Email: sunkangchina@163.com 
-*/
+ 
 /**
  * 尝试多次运行
  * $times 运行次数
