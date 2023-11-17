@@ -3,7 +3,7 @@
     "type": "library",
     "description": "功能基础包",
     "keywords": ["php"],
-    "license": "MIT",
+    "license": "Apache-2.0",
     "authors": [
         {
             "name": "kenken"
