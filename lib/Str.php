@@ -200,7 +200,7 @@ class Str
 	 * @param  int $length 截取长度
 	 * @return string
 	 */
-	public static function cut($string, $length)
+	public static function cut($string, $length,$append = '')
 	{
 		$new_str = '';
 		preg_match_all("/[\x01-\x7f]|[\xc2-\xdf][\x80-\xbf]|\xe0[\xa0-\xbf][\x80-\xbf]|[\xe1-\xef][\x80-\xbf][\x80-\xbf]|\xf0[\x90-\xbf][\x80-\xbf][\x80-\xbf]|[\xf1-\xf7][\x80-\xbf][\x80-\xbf][\x80-\xbf]/", $string, $info);
@@ -208,7 +208,7 @@ class Str
 			$new_str .= $info[0][$i];
 			$j = ord($info[0][$i]) > 127 ? $j + 2 : $j + 1;
 			if ($j > $length - 3) {
-				return $new_str . " ...";
+				return $new_str . $append;
 			}
 		}
 		return join('', $info[0]);
