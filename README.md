@@ -39,7 +39,7 @@ CREATE TABLE `plugin` (
 
 ### 开源协议 
 
-[LICENSE](LICENSE)
+[Apache License 2.0](LICENSE)
  
   
  
