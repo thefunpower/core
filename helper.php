@@ -1576,29 +1576,7 @@ function auto_load_app_router($pre_name_arr=[])
     if(strpos($uri,'?')!==false){
         $uri = substr($uri,0,strpos($uri,'?'));
     } 
-    global $config;
-    $allow_request_preg = $config['router_rule']?:[
-        'api',
-        'admin',
-        'comm',
-        'open',
-        'user',
-    ];
-    $flag = false; 
-    foreach($allow_request_preg as $v){
-        if(strpos($uri,"/".$v."/") !== false){
-            $flag = true; 
-            break;
-        }
-    }
-    if($flag == false){
-        if(function_exists('page_not_find')){
-            page_not_find();
-        }else{
-            echo "PAGE 404";  
-            exit;  
-        }    
-    }
+    global $config;   
     if(substr($uri,0,1) == '/'){
         $uri = substr($uri,1);
     }  
