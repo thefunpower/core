@@ -43,7 +43,7 @@ if (!function_exists('global_trim')) {
     function global_trim()
     {
         $in = array(&$_GET, &$_POST, &$_COOKIE, &$_REQUEST);
-        global_trim_inner(&$in);
+        global_trim_inner($in);
     }
 
     function global_trim_inner(&$in){
@@ -119,7 +119,7 @@ function get_input()
     $data = file_get_contents("php://input");
     if (is_json($data)) {
         json_decode($data, true);
-        global_trim_inner(&$data);
+        global_trim_inner($data);
     }
     return $data;
 }
