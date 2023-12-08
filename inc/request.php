@@ -57,6 +57,8 @@ if (!function_exists('global_trim')) {
     }
     global_trim();
     $_POST = xss_clean($_POST); 
+    $_GET  = xss_clean($_GET);  
+    $_REQUEST = xss_clean($_REQUEST); 
 }
 /**
  * 取GET
