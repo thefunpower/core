@@ -3,7 +3,22 @@ namespace lib;
 
 class Time
 {
-	 
+	
+	/**
+	* 取每月
+	* every_month('2023-01-01','2023-12-31')
+	*/
+	public static function every_month($start_month, $end_month)
+	{
+	    $list = [];
+	    while($start_month < $end_month){
+	        $time = strtotime($start_month);
+	        $last_day_of_month = date("Y-m-d",strtotime("last Day of this month 23:59:59",$time)); 
+	        $list[] = [$start_month,$last_day_of_month];
+	        $start_month = date("Y-m-01",strtotime("+1 month",$time)); 
+	    }
+	    return $list;
+	}
 	/**
 	 * 多少岁
 	 * @return string　 
