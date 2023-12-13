@@ -118,7 +118,7 @@ function get_input()
 {
     $data = file_get_contents("php://input");
     if (is_json($data)) {
-        json_decode($data, true);
+        $data = json_decode($data, true);
         global_trim_inner($data);
     }
     return $data;
