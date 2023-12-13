@@ -1042,46 +1042,31 @@ function admin_theme_url()
     return "/theme/" . cookie('admin_theme') . '/';
 }
 /**
- * AES加密
-// aes 加密
-$config['aes_key'] = "123456";
-$config['aes_iv']  = md5('app_sun');
-
-
-$token = urlencode(aes_encode($d)); 
+ * AES加密 
  */
-function aes_encode($data, $key = '', $iv = '', $type = 'AES-128-CBC', $options = '')
-{
-    global $config;
-    if (!$key) {
-        $key = $config['ak']?:$config['aes_key'];
+if(!function_exists('aes_encode')){
+    function aes_encode($data, $key = '', $iv = '', $type = 'AES-128-CBC', $options = '')
+    {    
+        if(is_array($data)){$data = json_encode($data);}
+        $obj = new \lib\Aes($key, $iv, $type, $options);
+        return base64_encode($obj->encrypt($data));
     }
-    if (!$iv) {
-        $iv  = $config['sk']?:$config['aes_iv'];
-    }
-    $obj = new \lib\Aes($key, $iv, $type, $options);
-    return base64_encode($obj->encrypt($data));
 }
 /**
- * AES解密 
-
-$token = $_GET['token']; 
-$token = aes_decode($token);
-pr($token);
-
+ * AES解密   
  */
-function aes_decode($data, $key = '', $iv = '', $type = 'AES-128-CBC', $options = '')
-{
-    global $config;
-    if (!$key) {
-        $key = $config['ak']?:$config['aes_key'];
+if(!function_exists('aes_decode')){
+    function aes_decode($data, $key = '', $iv = '', $type = 'AES-128-CBC', $options = '')
+    {
+        $data = base64_decode($data);
+        $obj = new \lib\Aes($key, $iv, $type, $options);
+        $data = $obj->decrypt($data);
+        if(is_json($data)){
+            return json_decode($data,true);
+        }else{
+            return $data;
+        }
     }
-    if (!$iv) {
-        $iv  = $config['sk']?:$config['aes_iv'];
-    }
-    $data = base64_decode($data);
-    $obj = new \lib\Aes($key, $iv, $type, $options);
-    return $obj->decrypt($data);
 }
 
 function el_page_sizes()
