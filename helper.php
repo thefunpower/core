@@ -1562,6 +1562,7 @@ function auto_load_app_router($pre_name_arr=[])
         $uri = substr($uri,0,strpos($uri,'?'));
     } 
     global $config;   
+    $uri = str_replace("//","/",$uri);
     if(substr($uri,0,1) == '/'){
         $uri = substr($uri,1);
     }  
