@@ -34,4 +34,4 @@ class Validate extends Validator
     }else{
         return false;    
     }    
-}, '手机号格式错误');
+}, '格式错误');
