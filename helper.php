@@ -1573,6 +1573,7 @@ function auto_load_app_router($pre_name_arr=[])
         $class  = $uri;
         $action = 'index';
     }  
+    $action = "action_".$action;
     foreach($pre_name_arr as $pre_name){
         $class_name = $pre_name."\\".$class;
         $class_name = str_replace("/","\\",$class_name);   
