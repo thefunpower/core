@@ -1566,6 +1566,9 @@ function auto_load_app_router($pre_name_arr=[])
     if(substr($uri,0,1) == '/'){
         $uri = substr($uri,1);
     }  
+    if(substr($uri,-1)=='/'){
+        $uri = substr($uri,0,-1);
+    }
     if(strpos($uri,'/') !== false){
         $class = substr($uri,0,strrpos($uri,'/'));
         $action = substr($uri,strrpos($uri,'/')+1);
@@ -1573,9 +1576,15 @@ function auto_load_app_router($pre_name_arr=[])
         $class  = $uri;
         $action = 'index';
     }  
-    $action = "action_".$action;
+    if(substr_count($uri,'/') == 1){
+        $class = $class.'\\'.$action;
+        $action = 'action_index'; 
+    }else {
+        $action = "action_".$action;    
+    }
+    
     foreach($pre_name_arr as $pre_name){
-        $class_name = $pre_name."\\".$class;
+        $class_name = $pre_name."\\".$class; 
         $class_name = str_replace("/","\\",$class_name);   
         if(class_exists($class_name) && method_exists($class_name,$action)){
             return (new $class_name)->$action();
