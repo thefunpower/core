@@ -180,11 +180,8 @@ function autoload_theme($name = "front")
  */
 function jump($url)
 {
-    if (substr($url, 0, 1) == '/') {
-        $url = substr($url, 1);
-    }
-    if (strpos($url, '://') === false) {
-        $url = host() . $url;
+    if (strpos($url, '://') === false && substr($url, 0, 1) != '/') {
+        $url = '/'.$url;
     } 
     header("Location: " . $url);
     exit;
