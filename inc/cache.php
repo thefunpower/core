@@ -51,9 +51,14 @@ function cache_delete($key)
 }
 /**
  * 缓存设置|获取
+ * 需要删除时可用 cache($key,null) 删除
  */
-function cache($key, $data = null, $second = null)
+function cache($key, $data = '', $second = null)
 {
+    if($data === null){
+        cache_delete($key);
+        return;
+    }
     if ($key && $data) {
         if (is_object($data)) {
             $data = (array)$data;
