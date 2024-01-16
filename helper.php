@@ -524,36 +524,40 @@ if(!function_exists("is_ssl")) {
  * @return void
  */
 if(!function_exists('cookie')) {
-    function cookie($name, $value = null, $expire = 0)
+    function cookie($name, $value = '', $expire = 0)
     {
         global  $config;
         $name   = $config['cookie_prefix'] . $name;
         $path   = $config['cookie_path'] ?: '/';
         $domain = $config['cookie_domain'] ?: '';
         if ($value === null) {
+            return cookie_delete($name);
+        }
+        if($name && $value) {
+            if(is_array($value)) {
+                $value = json_encode($value);
+            }
+            $bool = is_ssl() ? true : false;
+            $opt = [
+                'expires' => $expire,
+                'path' => $path,
+                'domain' => $domain,
+                'secure' => $bool,
+                'httponly' => $bool,
+                'samesite' => 'None',
+            ];
+            if(!$bool) {
+                unset($opt['secure'],$opt['httponly'],$opt['samesite']);
+            }
+            setcookie($name, $value, $opt);
+            $_COOKIE[$name] = $value;
+        } else {
             $value = $_COOKIE[$name];
             if(is_json($value)) {
                 $value = json_decode($value, true);
             }
             return $value;
         }
-        if(is_array($value)) {
-            $value = json_encode($value);
-        }
-        $bool = is_ssl() ? true : false;
-        $opt = [
-            'expires' => $expire,
-            'path' => $path,
-            'domain' => $domain,
-            'secure' => $bool,
-            'httponly' => $bool,
-            'samesite' => 'None',
-        ];
-        if(!$bool) {
-            unset($opt['secure'],$opt['httponly'],$opt['samesite']);
-        }
-        setcookie($name, $value, $opt);
-        $_COOKIE[$name] = $value;
     }
 }
 /**
