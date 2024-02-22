@@ -96,7 +96,7 @@ class Upload
         if($sub_dir){
             $sub_dir = $sub_dir.'/';
         }
-        $url =  'uploads/' . $this->domain .$sub_dir. $user_id . '/' . date('Ymd'); 
+        $url =  'uploads/' . $this->domain .'/'.$sub_dir. $user_id . '/' . date('Ymd'); 
         $url = str_replace("//","/",$url);
         $path  = PATH . $url . '/';
         if (!is_dir($path)) {
