@@ -1,96 +1,168 @@
 <?php
-/**
- * 上传
- */
 
-namespace core\sys\controller;
+namespace lib;
 
-use lib\Upload as UploadLib;
-use lib\Str;
+use Upload\Storage\FileSystem;
+use Upload\File;
 
-class upload extends \base\user_controller
+/*
+use lib\Upload;
+//是否总是上传
+Upload::$db = false;
+//是否把上传记录保存到数据库
+Upload::$db = true;
+//是否可上传
+Upload::$allow_upload = true;
+*/
+class Upload
 {
-    protected $upload;
-    protected function init()
-    {
-        parent::init();
-        $this->upload = new UploadLib();
-        $this->upload->user_id = get_cookie_user_id();
-    }
+    public $domain;
     /**
-     * 上传成功后
+     * 写入数据库
      */
-    protected function parse_uploaded($data)
+    public static $db = true;
+    public static $allow_upload = false;
+    public $user_id;
+    public function __construct()
     {
-        $url_resize = '/' . $data['url'];
-        if(in_array($data['ext'], ['jpg','jpeg','png','gif','webp'])) {
-            $url_resize = cdn_image_resize($url_resize);
+        global $config;
+        $host = $config['host'];
+        if (!$host) {
+            exit('请配置域名');
         }
-        $list = [
-            'url' => '/' . $data['url'],
-            'http_url' => cdn() . '/' . $data['url'],
-            'mime' => $data['mime'],
-            'size' => $data['size'],
-            'size_to' => Str::size((int)$data['size']),
-            'ext' => $data['ext'],
-            'url_resize' => $url_resize,
-        ];
-        //上传至OSS
-        uploader_to_oss('/' . $data['url']);
-        return $list;
+        $host = str_replace("https://", "", $host);
+        $host = str_replace("http://", "", $host);
+        $host = str_replace(":", "_", $host);
+        $host = str_replace(".", "_", $host);
+        $this->domain  = $host;
+        //上传初始化
+        do_action("upload.init", $this);
     }
     /**
-     * 单文件上传
+     * 批量上传
      */
-    public function action_one()
+    public function all()
     {
-        $ret = $this->upload->one();
-        $ret = $this->parse_uploaded($ret);
-        $ret['code'] = 0;
-        return $ret;
-    }
-    /**
-     * 多文件上传
-     */
-    public function action_muit()
-    {
-        $_POST['return_arr'] = 1;
         $list = [];
         foreach ($_FILES as $k => $v) {
             $_POST['file_key'] = $k;
-            $ret = $this->upload->one();
-            $ret = $this->parse_uploaded($ret);
-            $list[] = $ret;
+            $ret = $this->one();
+            if ($ret['url']) {
+                $new_url = $ret['url'];
+                $new_url = host() . $new_url;
+                $list[] = [
+                    'url' => $new_url
+                ];
+            }
         }
-        return ['data' => $list];
+        return $list;
+    }
+
+    /**
+     * 返回参数
+     */
+    public function return_params(&$model)
+    {
+        unset($_POST['file']);
+        do_action("upload", $model);
+        $model['post'] = $_POST ?: [];
+        $model['get']  = $_GET ?: [];
+        if (!$model['data']) {
+            $model['data'] = cdn() . $model['url'];
+        }
+    }
+
+    /**
+     *  单个文件上传
+     *  do_action("upload.mime", $mime);
+     */
+    public function one($http_opt = [])
+    {
+        if(!self::$allow_upload) {
+            if(cookie('can_upload') > 0) {
+                self::$allow_upload = true;
+            } else {
+                $user_id = cookie(ADMIN_COOKIE_NAME) ?: api(false)['user_id'];
+                if($user_id) {
+                    self::$allow_upload = true;
+                }
+            }
+        }
+        if(!self::$allow_upload) {
+            json_error(['msg' => '上传文件被拦截，不支持当前用户上传文件']);
+        }
+        global $config;
+        //上传文件前
+        do_action("upload.before", $this);
+        $file_key =  g('file_key') ?: 'file';
+        $sub_dir  = g('sub_dir');
+        if($sub_dir) {
+            $sub_dir = $sub_dir . '/';
+        }
+        $user_id = $this->user_id ?: $user_id;
+        $url =  'uploads/' . $this->domain . '/' . $sub_dir . $user_id . '/' . date('Ymd');
+        $url = str_replace("//", "/", $url);
+        $path  = PATH . $url . '/';
+        if (!is_dir($path)) {
+            mkdir($path, 0777, true);
+        }
+        $storage = new FileSystem($path);
+        $file    = new File($file_key, $storage);
+        $new_filename = uniqid();
+        $ori_name = $file->getNameWithExtension();
+        $file->setName($new_filename);
+        $name = $file->getName();
+        $md5  = $file->getMd5();
+        $size = $file->getSize();
+        $mime = $file->getMimetype();
+        $file_ext = $file->getExtension();
+        do_action("upload.mime", $mime);
+        do_action("upload.size", $size);
+        do_action("upload.ext", $file_ext);
+        if (self::$db) {
+            $f  = db_get_one('upload', '*', ['hash' => $md5]);
+            if ($f) {
+                $f['local_path'] = PATH . $f['url'];
+                //上传成功后
+                do_action("upload.after", $f);
+                $this->return_params($f);
+                return $f;
+            }
+        }
+        try {
+            $url = $url . '/' . $name . "." . $file_ext;
+            $file->upload();
+            $insert = [];
+            $insert['url']      = $url;
+            $insert['hash']     = $md5;
+            $insert['user_id']  = $user_id;
+            $insert['mime']     = $mime;
+            $insert['size']     = $size;
+            $insert['ext']      = $file_ext;
+            $insert['name']     = $http_opt['name'] ?: $ori_name;
+            $insert['created_at'] = date('Y-m-d H:i:s');
+            if (self::$db) {
+                $id = db_insert('upload', $insert);
+                $f  = db_get_one('upload', '*', ['id' => $id]);
+            } else {
+                $f = $insert;
+            }
+            $this->return_params($f);
+            $f['local_path'] = PATH . $url;
+            //上传成功后
+            do_action("upload.after", $f);
+            return $f;
+        } catch (\Exception $e) {
+            $errors = $file->getErrors();
+            return ['error' => $errors];
+        }
     }
     /**
-     * 裁剪
-     */
-    public function action_crop()
+    * 返回已上传文件总大小，单位M
+    */
+    public static function getSize()
     {
-        $f  = $_FILES['file'];
-        $type = $f['type'];
-        if ($f['error'] != 0) {
-            json(['code' => 250, 'msg' => '上传异常']);
-        }
-        $ext  = substr($type, strrpos($type, '/') + 1);
-        $tmp  = $f['tmp_name'];
-        $path = 'uploads/crop/' . date('Y-m') . "/";
-        $dest = PATH . $path;
-        if (!is_dir($dest)) {
-            mkdir($dest, 0777, true);
-        }
-        $ext = $ext ?: 'jpg';
-        $name = uniqid(true) . "." . $ext;
-        $dest = $dest . $name;
-        if (!move_uploaded_file($tmp, $dest)) {
-            return ['code' => 0, 'msg' => 'move file failed'];
-        }
-        $data['code'] = 0;
-        $data['status'] = 200;
-        $data['url']  =  '/' . $path . $name;
-        $data['http_url']  = cdn() . '/' . $path . $name;
-        return $data;
+        $size = db_get_sum("upload", "size");
+        return bcdiv($size, bcmul(1024, 1024), 2);
     }
 }
