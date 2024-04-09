@@ -23,6 +23,7 @@ class Upload
     public static $db = true;
     public static $allow_upload = false;
     public $user_id;
+    public $base_dir = 'uploads';
     public function __construct()
     {
         global $config;
@@ -100,7 +101,7 @@ class Upload
             $sub_dir = $sub_dir . '/';
         }
         $user_id = $this->user_id ?: $user_id;
-        $url =  'uploads/' . $this->domain . '/' . $sub_dir . $user_id . '/' . date('Ymd');
+        $url =  $this->base_dir.'/' . $this->domain . '/' . $sub_dir . $user_id . '/' . date('Ymd');
         $url = str_replace("//", "/", $url);
         $path  = PATH . $url . '/';
         if (!is_dir($path)) {
