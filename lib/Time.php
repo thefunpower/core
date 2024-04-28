@@ -75,6 +75,9 @@ class Time
         for ($i = 0; $i < $num; $i++) {
             $list[] = date("Y" . $separate . "m" . $separate . "d", strtotime($op . $i . " day", time()));
         }
+        if($op == '+') {
+            return $list;
+        }
         $list = array_reverse($list);
         return $list;
     }
@@ -88,6 +91,9 @@ class Time
         for ($i = 0; $i < $num; $i++) {
             $list[] = date("Y" . $separate . "m", strtotime($op . $i . " month", time()));
         }
+        if($op == '+') {
+            return $list;
+        }
         $list = array_reverse($list);
         return $list;
     }
@@ -97,7 +103,11 @@ class Time
      */
     public static function neer_years($num = 5, $op = '-')
     {
-        $start = date("Y", strtotime($op . ($num - 1) . " year", time()));
+        if($op == '-') {
+            $start = date("Y", strtotime($op . ($num - 1) . " year", time()));
+        } else {
+            $start = date("Y");
+        }
         $list  = [];
         for ($i = 1; $i <= $num; $i++) {
             $list[] = $start++;
