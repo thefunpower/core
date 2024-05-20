@@ -456,6 +456,9 @@ function get_ip($type = 0, $adv = false)
     } elseif (isset($_SERVER['REMOTE_ADDR'])) {
         $ip = $_SERVER['REMOTE_ADDR'];
     }
+    if(!$ip){
+        return;
+    }
     // IP地址合法验证
     $long = sprintf("%u", ip2long($ip));
     $ip   = $long ? array($ip, $long) : array('0.0.0.0', 0);
