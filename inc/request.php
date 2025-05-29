@@ -40,25 +40,20 @@ function xss_clean($input){
  * 对 GET POST COOKIE REQUEST请求字段串去除首尾空格
  */
 if (!function_exists('global_trim')) {
-    function global_trim()
-    {
+    function global_trim() {
         $in = array(&$_GET, &$_POST, &$_COOKIE, &$_REQUEST);
         global_trim_inner($in);
     }
 
-    function global_trim_inner(&$in){
-        foreach ($in as $k => $v) {
+    function global_trim_inner(&$in) {
+        foreach ($in as $k => &$v) {
             if (is_array($v)) {
-                foreach ($v as $key => $val) {
-                    if ($val && !is_array($val)) { 
-                        $val = trim($val);
-                    }
-                    $in[$k][$key] = $val;
-                    $in[] = &$in[$k][$key];
-                }
+                global_trim_inner($v);
+            } else {
+                $in[$k] = is_string($v) ? trim($v) : $v;
             }
-        } 
-    }
+        }
+    } 
     global_trim();
 }
 /**
